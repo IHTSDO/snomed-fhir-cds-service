@@ -1,0 +1,260 @@
+{
+	"info": {
+		"_postman_id": "ace244c1-4982-415e-b318-92c74cb4c4ff",
+		"name": "SNOMED CT - CDS Service - Demonstrator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1181409"
+	},
+	"item": [
+		{
+			"name": "List CDS \"Services\"",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{cds-url}}/cds-services",
+					"host": [
+						"{{cds-url}}"
+					],
+					"path": [
+						"cds-services"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "List CDS \"Services\"",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cds-url}}/cds-services",
+							"host": [
+								"{{cds-url}}"
+							],
+							"path": [
+								"cds-services"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Feb 2023 09:18:24 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"services\": [\n        {\n            \"id\": \"hello-test\"\n        },\n        {\n            \"id\": \"medication-order-select\",\n            \"prefetch\": {\n                \"diagnoses\": \"Condition?patient={{context.patientId}}&category=problem-list-item&status=active\",\n                \"draftMedicationOrders\": \"MedicationRequest?patient={{context.patientId}}&status=draft\",\n                \"patient\": \"Patient/{{context.patientId}}\"\n            }\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Call \"hello-test\" CDS service",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hook\": \"test-page\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cds-url}}/cds-services/hello-test",
+					"host": [
+						"{{cds-url}}"
+					],
+					"path": [
+						"cds-services",
+						"hello-test"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Call \"hello-test\" CDS service",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hook\": \"test-page\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cds-url}}/cds-services/hello-test",
+							"host": [
+								"{{cds-url}}"
+							],
+							"path": [
+								"cds-services",
+								"hello-test"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Feb 2023 09:20:02 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"cards\": [\n        {\n            \"uuid\": \"6a81e257-4f41-4e51-9261-9e50c32cce6d\",\n            \"summary\": \"Hello! The CDS Service is working.\",\n            \"detail\": \"This is an example card from the 'hello-test' CDS Service.\",\n            \"indicator\": \"info\",\n            \"source\": {\n                \"label\": \"http://example.com\"\n            }\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Call \"medication-order-select\" CDS service",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hook\": \"order-page\",\n    \"prefetch\": {\n        \"patient\": {\n            \"resourceType\": \"Patient\",\n            \"id\": \"155d3d80-f3f0-4b39-9207-0d122cf94a11\",\n            \"gender\": \"male\",\n            \"birthDate\": \"1974-12-25\",\n            \"identifier\": [\n                {\n                    \"type\": {\n                        \"coding\": [\n                            {\n                                \"system\": \"http://terminology.hl7.org/CodeSystem/v2-0203\",\n                                \"code\": \"MR\",\n                                \"display\": \"Medical Record Number\"\n                            }\n                        ],\n                        \"text\": \"Medical Record Number\"\n                    },\n                    \"system\": \"http://hospital.smarthealthit.org\",\n                    \"value\": \"276b501c-98d9-4837-8601-4700a93fa397\"\n                }\n            ],\n            \"name\": [\n                {\n                    \"use\": \"official\",\n                    \"family\": \"Montañez\",\n                    \"given\": [\n                        \"Clara\"\n                    ],\n                    \"prefix\": [\n                        \"Ms.\"\n                    ]\n                }\n            ]\n        },\n        \"diagnoses\": {\n            \"resourceType\": \"Bundle\",\n            \"id\": \"fbf11cc8-f69f-4f58-a12e-1db62c91be71\",\n            \"meta\": {\n                \"lastUpdated\": \"2023-02-27T05:16:44.649-05:00\"\n            },\n            \"type\": \"searchset\",\n            \"total\": 10,\n            \"link\": [\n                {\n                    \"relation\": \"self\",\n                    \"url\": \"https://r4.smarthealthit.org/Condition?_format=json&patient=155d3d80-f3f0-4b39-9207-0d122cf94a11\"\n                }\n            ],\n            \"entry\": [\n                {\n                    \"fullUrl\": \"https://r4.smarthealthit.org/Condition/f4ec0eff-be21-4400-ab16-455408e8381e\",\n                    \"resource\": {\n                        \"resourceType\": \"Condition\",\n                        \"id\": \"f4ec0eff-be21-4400-ab16-455408e8381e\",\n                        \"clinicalStatus\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-clinical\",\n                                    \"code\": \"active\"\n                                }\n                            ]\n                        },\n                        \"verificationStatus\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-ver-status\",\n                                    \"code\": \"confirmed\"\n                                }\n                            ]\n                        },\n                        \"code\": {\n                            \"coding\": [\n                                {\n                                    // This SNOMED CT concept has the synonym 'Fatty liver'\n                                    // The preferred term is 'Steatosis of liver'\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"197321007\",\n                                    \"display\": \"Steatosis of liver\"\n                                }\n                            ],\n                            \"text\": \"Steatosis of liver\"\n                        },\n                        \"subject\": {\n                            \"reference\": \"Patient/155d3d80-f3f0-4b39-9207-0d122cf94a11\"\n                        },\n                        \"encounter\": {\n                            \"reference\": \"Encounter/137ba397-f1f2-4462-84b6-d14bad3f2dd3\"\n                        },\n                        \"onsetDateTime\": \"2017-12-25T07:22:23+00:00\",\n                        \"abatementDateTime\": \"2018-01-01T07:22:23+00:00\",\n                        \"recordedDate\": \"2017-12-25T07:22:23+00:00\"\n                    },\n                    \"search\": {\n                        \"mode\": \"match\"\n                    },\n                    \"response\": {\n                        \"status\": \"200 OK\",\n                        \"etag\": \"W/\\\"3\\\"\"\n                    }\n                },\n                {\n                    \"fullUrl\": \"https://r4.smarthealthit.org/Condition/b7b46301-19e6-4787-a26b-65bccdee8b7f\",\n                    \"resource\": {\n                        \"resourceType\": \"Condition\",\n                        \"id\": \"b7b46301-19e6-4787-a26b-65bccdee8b7f\",\n                        \"clinicalStatus\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-clinical\",\n                                    \"code\": \"resolved\"\n                                }\n                            ]\n                        },\n                        \"verificationStatus\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-ver-status\",\n                                    \"code\": \"confirmed\"\n                                }\n                            ]\n                        },\n                        \"code\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"195662009\",\n                                    \"display\": \"Acute viral pharyngitis (disorder)\"\n                                }\n                            ],\n                            \"text\": \"Acute viral pharyngitis (disorder)\"\n                        },\n                        \"subject\": {\n                            \"reference\": \"Patient/155d3d80-f3f0-4b39-9207-0d122cf94a11\"\n                        },\n                        \"encounter\": {\n                            \"reference\": \"Encounter/85c8a666-3413-47aa-8180-3b1a66b87c26\"\n                        },\n                        \"onsetDateTime\": \"2020-04-30T07:22:23+00:00\",\n                        \"abatementDateTime\": \"2020-05-13T07:22:23+00:00\",\n                        \"recordedDate\": \"2020-04-30T07:22:23+00:00\"\n                    },\n                    \"search\": {\n                        \"mode\": \"match\"\n                    },\n                    \"response\": {\n                        \"status\": \"200 OK\",\n                        \"etag\": \"W/\\\"3\\\"\"\n                    }\n                }\n            ]\n        },\n        \"draftMedicationOrders\": {\n            \"resourceType\": \"Bundle\",\n            \"id\": \"be826c54-b905-40fb-bd90-c147a63ae4e8\",\n            \"entry\": [\n                {\n                    \"fullUrl\": \"https://r4.smarthealthit.org/MedicationRequest/5180e54d-0187-494a-9ca9-9dbfcab90ab6\",\n                    \"resource\": {\n                        \"resourceType\": \"MedicationRequest\",\n                        \"id\": \"5180e54d-0187-494a-9ca9-9dbfcab90ab6\",\n                        \"status\": \"active\",\n                        \"intent\": \"order\",\n                        \"medicationCodeableConcept\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"108600003\",\n                                    \"display\": \"Atorvastatin-containing product\"\n                                },\n                                {\n                                    \"system\": \"http://bahmni.org/cds\",\n                                    \"code\": \"36939d4e-d325-4819-9c81-91e1a0434f9a\",\n                                    \"display\": \"Atorvastatin 20 mg\"\n                                }\n                            ],\n                            \"text\": \"Atorvastatin 20 mg\"\n                        },\n                        \"subject\": {\n                            \"reference\": \"Patient/618b2992-eec7-45c9-8544-12c9f586b78c\"\n                        },\n                        \"encounter\": {\n                            \"reference\": \"Encounter/8f1950d4-13cc-4ea5-a9d0-855a4f4b9180\"\n                        },\n                        \"authoredOn\": \"2021-01-15T04:59:42+00:00\",\n                        \"requester\": {\n                            \"reference\": \"Practitioner/96333652-ed28-41d3-bb60-d435f478c8ed\"\n                        },\n                        \"reasonReference\": [\n                            {\n                                \"reference\": \"Condition/e21522b1-8006-4723-8b8d-bda8a575b87e\"\n                            }\n                        ],\n                        \"dosageInstruction\": [\n                            {\n                                \"sequence\": 1,\n                                \"timing\": {\n                                    \"repeat\": {\n                                        \"frequency\": 1,\n                                        \"period\": 1,\n                                        \"periodUnit\": \"d\"\n                                    }\n                                },\n                                \"asNeededBoolean\": false,\n                                \"doseAndRate\": [\n                                    {\n                                        \"type\": {\n                                            \"coding\": [\n                                                {\n                                                    \"system\": \"http://terminology.hl7.org/CodeSystem/dose-rate-type\",\n                                                    \"code\": \"ordered\",\n                                                    \"display\": \"Ordered\"\n                                                }\n                                            ]\n                                        },\n                                        \"doseQuantity\": {\n                                            \"value\": 1\n                                        }\n                                    }\n                                ]\n                            }\n                        ]\n                    },\n                    \"search\": {\n                        \"mode\": \"match\"\n                    },\n                    \"response\": {\n                        \"status\": \"200 OK\",\n                        \"etag\": \"W/\\\"4\\\"\"\n                    }\n                }\n            ]\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cds-url}}/cds-services/medication-order-select",
+					"host": [
+						"{{cds-url}}"
+					],
+					"path": [
+						"cds-services",
+						"medication-order-select"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Call \"medication-order-select\" CDS service",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hook\": \"order-page\",\n    \"prefetch\": {\n        \"patient\": {\n            \"resourceType\": \"Patient\",\n            \"id\": \"155d3d80-f3f0-4b39-9207-0d122cf94a11\",\n            \"gender\": \"male\",\n            \"birthDate\": \"1974-12-25\",\n            \"identifier\": [\n                {\n                    \"type\": {\n                        \"coding\": [\n                            {\n                                \"system\": \"http://terminology.hl7.org/CodeSystem/v2-0203\",\n                                \"code\": \"MR\",\n                                \"display\": \"Medical Record Number\"\n                            }\n                        ],\n                        \"text\": \"Medical Record Number\"\n                    },\n                    \"system\": \"http://hospital.smarthealthit.org\",\n                    \"value\": \"276b501c-98d9-4837-8601-4700a93fa397\"\n                }\n            ],\n            \"name\": [\n                {\n                    \"use\": \"official\",\n                    \"family\": \"Montañez\",\n                    \"given\": [\n                        \"Clara\"\n                    ],\n                    \"prefix\": [\n                        \"Ms.\"\n                    ]\n                }\n            ]\n        },\n        \"diagnoses\": {\n            \"resourceType\": \"Bundle\",\n            \"id\": \"fbf11cc8-f69f-4f58-a12e-1db62c91be71\",\n            \"meta\": {\n                \"lastUpdated\": \"2023-02-27T05:16:44.649-05:00\"\n            },\n            \"type\": \"searchset\",\n            \"total\": 10,\n            \"link\": [\n                {\n                    \"relation\": \"self\",\n                    \"url\": \"https://r4.smarthealthit.org/Condition?_format=json&patient=155d3d80-f3f0-4b39-9207-0d122cf94a11\"\n                }\n            ],\n            \"entry\": [\n                {\n                    \"fullUrl\": \"https://r4.smarthealthit.org/Condition/f4ec0eff-be21-4400-ab16-455408e8381e\",\n                    \"resource\": {\n                        \"resourceType\": \"Condition\",\n                        \"id\": \"f4ec0eff-be21-4400-ab16-455408e8381e\",\n                        \"clinicalStatus\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-clinical\",\n                                    \"code\": \"active\"\n                                }\n                            ]\n                        },\n                        \"verificationStatus\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-ver-status\",\n                                    \"code\": \"confirmed\"\n                                }\n                            ]\n                        },\n                        \"code\": {\n                            \"coding\": [\n                                {\n                                    // This SNOMED CT concept has the synonym 'Fatty liver'\n                                    // The preferred term is 'Steatosis of liver'\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"197321007\",\n                                    \"display\": \"Steatosis of liver\"\n                                }\n                            ],\n                            \"text\": \"Steatosis of liver\"\n                        },\n                        \"subject\": {\n                            \"reference\": \"Patient/155d3d80-f3f0-4b39-9207-0d122cf94a11\"\n                        },\n                        \"encounter\": {\n                            \"reference\": \"Encounter/137ba397-f1f2-4462-84b6-d14bad3f2dd3\"\n                        },\n                        \"onsetDateTime\": \"2017-12-25T07:22:23+00:00\",\n                        \"abatementDateTime\": \"2018-01-01T07:22:23+00:00\",\n                        \"recordedDate\": \"2017-12-25T07:22:23+00:00\"\n                    },\n                    \"search\": {\n                        \"mode\": \"match\"\n                    },\n                    \"response\": {\n                        \"status\": \"200 OK\",\n                        \"etag\": \"W/\\\"3\\\"\"\n                    }\n                },\n                {\n                    \"fullUrl\": \"https://r4.smarthealthit.org/Condition/b7b46301-19e6-4787-a26b-65bccdee8b7f\",\n                    \"resource\": {\n                        \"resourceType\": \"Condition\",\n                        \"id\": \"b7b46301-19e6-4787-a26b-65bccdee8b7f\",\n                        \"clinicalStatus\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-clinical\",\n                                    \"code\": \"resolved\"\n                                }\n                            ]\n                        },\n                        \"verificationStatus\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/condition-ver-status\",\n                                    \"code\": \"confirmed\"\n                                }\n                            ]\n                        },\n                        \"code\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"195662009\",\n                                    \"display\": \"Acute viral pharyngitis (disorder)\"\n                                }\n                            ],\n                            \"text\": \"Acute viral pharyngitis (disorder)\"\n                        },\n                        \"subject\": {\n                            \"reference\": \"Patient/155d3d80-f3f0-4b39-9207-0d122cf94a11\"\n                        },\n                        \"encounter\": {\n                            \"reference\": \"Encounter/85c8a666-3413-47aa-8180-3b1a66b87c26\"\n                        },\n                        \"onsetDateTime\": \"2020-04-30T07:22:23+00:00\",\n                        \"abatementDateTime\": \"2020-05-13T07:22:23+00:00\",\n                        \"recordedDate\": \"2020-04-30T07:22:23+00:00\"\n                    },\n                    \"search\": {\n                        \"mode\": \"match\"\n                    },\n                    \"response\": {\n                        \"status\": \"200 OK\",\n                        \"etag\": \"W/\\\"3\\\"\"\n                    }\n                }\n            ]\n        },\n        \"draftMedicationOrders\": {\n            \"resourceType\": \"Bundle\",\n            \"id\": \"be826c54-b905-40fb-bd90-c147a63ae4e8\",\n            \"entry\": [\n                {\n                    \"fullUrl\": \"https://r4.smarthealthit.org/MedicationRequest/5180e54d-0187-494a-9ca9-9dbfcab90ab6\",\n                    \"resource\": {\n                        \"resourceType\": \"MedicationRequest\",\n                        \"id\": \"5180e54d-0187-494a-9ca9-9dbfcab90ab6\",\n                        \"status\": \"active\",\n                        \"intent\": \"order\",\n                        \"medicationCodeableConcept\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"108600003\",\n                                    \"display\": \"Atorvastatin-containing product\"\n                                },\n                                {\n                                    \"system\": \"http://bahmni.org/cds\",\n                                    \"code\": \"36939d4e-d325-4819-9c81-91e1a0434f9a\",\n                                    \"display\": \"Atorvastatin 20 mg\"\n                                }\n                            ],\n                            \"text\": \"Atorvastatin 20 mg\"\n                        },\n                        \"subject\": {\n                            \"reference\": \"Patient/618b2992-eec7-45c9-8544-12c9f586b78c\"\n                        },\n                        \"encounter\": {\n                            \"reference\": \"Encounter/8f1950d4-13cc-4ea5-a9d0-855a4f4b9180\"\n                        },\n                        \"authoredOn\": \"2021-01-15T04:59:42+00:00\",\n                        \"requester\": {\n                            \"reference\": \"Practitioner/96333652-ed28-41d3-bb60-d435f478c8ed\"\n                        },\n                        \"reasonReference\": [\n                            {\n                                \"reference\": \"Condition/e21522b1-8006-4723-8b8d-bda8a575b87e\"\n                            }\n                        ],\n                        \"dosageInstruction\": [\n                            {\n                                \"sequence\": 1,\n                                \"timing\": {\n                                    \"repeat\": {\n                                        \"frequency\": 1,\n                                        \"period\": 1,\n                                        \"periodUnit\": \"d\"\n                                    }\n                                },\n                                \"asNeededBoolean\": false,\n                                \"doseAndRate\": [\n                                    {\n                                        \"type\": {\n                                            \"coding\": [\n                                                {\n                                                    \"system\": \"http://terminology.hl7.org/CodeSystem/dose-rate-type\",\n                                                    \"code\": \"ordered\",\n                                                    \"display\": \"Ordered\"\n                                                }\n                                            ]\n                                        },\n                                        \"doseQuantity\": {\n                                            \"value\": 1\n                                        }\n                                    }\n                                ]\n                            }\n                        ]\n                    },\n                    \"search\": {\n                        \"mode\": \"match\"\n                    },\n                    \"response\": {\n                        \"status\": \"200 OK\",\n                        \"etag\": \"W/\\\"4\\\"\"\n                    }\n                }\n            ]\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cds-url}}/cds-services/medication-order-select",
+							"host": [
+								"{{cds-url}}"
+							],
+							"path": [
+								"cds-services",
+								"medication-order-select"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Feb 2023 10:05:02 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"cards\": [\n        {\n            \"uuid\": \"488192ef-4dba-48c5-8d3a-7301c830b22b\",\n            \"summary\": \"Contraindication:Atorvastatin-containing product with Steatosis of liver.\",\n            \"detail\": \"Active liver disease is a contraindication for taking Atorvastatin drugs. This patient record has 'Steatosis of liver'.\",\n            \"indicator\": \"warning\",\n            \"source\": {\n                \"label\": \"https://en.wikipedia.org/wiki/Atorvastatin#Contraindications\"\n            }\n        }\n    ]\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "cds-url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

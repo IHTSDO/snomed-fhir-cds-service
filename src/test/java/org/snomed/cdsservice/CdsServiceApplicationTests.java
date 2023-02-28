@@ -1,4 +1,4 @@
-package org.snomed.cdshooks;
+package org.snomed.cdsservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

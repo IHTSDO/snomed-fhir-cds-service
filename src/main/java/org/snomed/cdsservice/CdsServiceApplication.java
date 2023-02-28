@@ -1,4 +1,4 @@
-package org.snomed.cdshooks;
+package org.snomed.cdsservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

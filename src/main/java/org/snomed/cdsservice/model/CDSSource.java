@@ -1,11 +1,11 @@
-package org.snomed.cdshooks.model;
+package org.snomed.cdsservice.model;
 
 public class CDSSource {
 
 	private final String label;
 	private String url;
 	private String icon;
-	private Coding topic;
+	private CDSCoding topic;
 
 	public CDSSource(String label) {
 		this.label = label;
@@ -31,11 +31,11 @@ public class CDSSource {
 		this.icon = icon;
 	}
 
-	public Coding getTopic() {
+	public CDSCoding getTopic() {
 		return topic;
 	}
 
-	public void setTopic(Coding topic) {
+	public void setTopic(CDSCoding topic) {
 		this.topic = topic;
 	}
 }

@@ -1,6 +1,6 @@
-package org.snomed.cdshooks.rest.pojo;
+package org.snomed.cdsservice.rest.pojo;
 
-import org.snomed.cdshooks.model.CDSService;
+import org.snomed.cdsservice.service.CDSService;
 
 import java.util.List;
 

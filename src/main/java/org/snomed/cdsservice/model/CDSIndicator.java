@@ -1,4 +1,4 @@
-package org.snomed.cdshooks.model;
+package org.snomed.cdsservice.model;
 
 public enum CDSIndicator {
 

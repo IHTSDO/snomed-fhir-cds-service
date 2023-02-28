@@ -1,7 +1,7 @@
-package org.snomed.cdshooks.rest;
+package org.snomed.cdsservice.rest;
 
-import org.snomed.cdshooks.rest.pojo.ServicesList;
-import org.snomed.cdshooks.service.CDSServicesService;
+import org.snomed.cdsservice.rest.pojo.ServicesList;
+import org.snomed.cdsservice.service.CDSServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

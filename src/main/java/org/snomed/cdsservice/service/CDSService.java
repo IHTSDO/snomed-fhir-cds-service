@@ -1,6 +1,14 @@
-package org.snomed.cdshooks.model;
+package org.snomed.cdsservice.service;
+
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.ResourceType;
+import org.jetbrains.annotations.NotNull;
+import org.snomed.cdsservice.model.CDSCard;
+import org.snomed.cdsservice.rest.pojo.CDSRequest;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A CDS Service that can be called by an EHR.
@@ -23,7 +31,7 @@ public abstract class CDSService {
 	// to perform and provide on each service call. The key is a string that describes the type of data
 	// being requested and the value is a string representing the FHIR query.
 	// See Prefetch Template. https://cds-hooks.hl7.org/2.0/#prefetch-template
-	private String prefetch;
+	private Map<String, String> prefetch;
 
 	// Human-friendly description of any preconditions for the use of this CDS Service.
 	private String usageRequirements;
@@ -32,7 +40,13 @@ public abstract class CDSService {
 		this.id = id;
 	}
 
-	public abstract List<CDSCard> call();
+	public abstract List<CDSCard> call(CDSRequest cdsRequest);
+
+	@NotNull
+	protected static List<Bundle.BundleEntryComponent> getResourcesByType(Bundle bundle, ResourceType resourceType) {
+		return bundle.getEntry().stream().filter(component -> component.getResource() != null && component.getResource().getResourceType() == resourceType)
+				.collect(Collectors.toList());
+	}
 
 	public String getId() {
 		return id;
@@ -62,11 +76,11 @@ public abstract class CDSService {
 		this.description = description;
 	}
 
-	public String getPrefetch() {
+	public Map<String, String> getPrefetch() {
 		return prefetch;
 	}
 
-	public void setPrefetch(String prefetch) {
+	public void setPrefetch(Map<String, String> prefetch) {
 		this.prefetch = prefetch;
 	}
 
