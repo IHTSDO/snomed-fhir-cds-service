@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "fbf11cc8-f69f-4f58-a12e-1db62c91be71",
+  "meta": {
+    "lastUpdated": "2023-02-27T05:16:44.649-05:00"
+  },
+  "type": "searchset",
+  "total": 10,
+  "link": [
+    {
+      "relation": "self",
+      "url": "https://r4.smarthealthit.org/Condition?_format=json&patient=155d3d80-f3f0-4b39-9207-0d122cf94a11"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://r4.smarthealthit.org/Condition/f4ec0eff-be21-4400-ab16-455408e8381e",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "f4ec0eff-be21-4400-ab16-455408e8381e",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "197321007",
+              "display": "Steatosis of liver"
+            }
+          ],
+          "text": "Steatosis of liver"
+        },
+        "subject": {
+          "reference": "Patient/155d3d80-f3f0-4b39-9207-0d122cf94a11"
+        },
+        "encounter": {
+          "reference": "Encounter/137ba397-f1f2-4462-84b6-d14bad3f2dd3"
+        },
+        "onsetDateTime": "2017-12-25T07:22:23+00:00",
+        "abatementDateTime": "2018-01-01T07:22:23+00:00",
+        "recordedDate": "2017-12-25T07:22:23+00:00"
+      },
+      "search": {
+        "mode": "match"
+      },
+      "response": {
+        "status": "200 OK",
+        "etag": "W/\"3\""
+      }
+    },
+    {
+      "fullUrl": "https://r4.smarthealthit.org/Condition/b7b46301-19e6-4787-a26b-65bccdee8b7f",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "b7b46301-19e6-4787-a26b-65bccdee8b7f",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "resolved"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "195662009",
+              "display": "Acute viral pharyngitis (disorder)"
+            }
+          ],
+          "text": "Acute viral pharyngitis (disorder)"
+        },
+        "subject": {
+          "reference": "Patient/155d3d80-f3f0-4b39-9207-0d122cf94a11"
+        },
+        "encounter": {
+          "reference": "Encounter/85c8a666-3413-47aa-8180-3b1a66b87c26"
+        },
+        "onsetDateTime": "2020-04-30T07:22:23+00:00",
+        "abatementDateTime": "2020-05-13T07:22:23+00:00",
+        "recordedDate": "2020-04-30T07:22:23+00:00"
+      },
+      "search": {
+        "mode": "match"
+      },
+      "response": {
+        "status": "200 OK",
+        "etag": "W/\"3\""
+      }
+    }
+  ]
+}

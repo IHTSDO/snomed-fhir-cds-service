@@ -11,6 +11,11 @@ public class CDSSource {
 		this.label = label;
 	}
 
+	public CDSSource(String label, String url) {
+		this.label = label;
+		this.url = url;
+	}
+
 	public String getLabel() {
 		return label;
 	}

@@ -55,4 +55,8 @@ public class CDSRequest {
 	public Map<String, String> getPrefetchStrings() {
 		return prefetchStrings;
 	}
+
+	public void setPrefetchStrings(Map<String, String> prefetchStrings) {
+		this.prefetchStrings = prefetchStrings;
+	}
 }
