@@ -53,7 +53,7 @@ public class CDSTrigger {
 	private Collection<Coding> getIntersection(Collection<Coding> codingsA, Collection<Coding> codingsB) {
 		return codingsA.stream().filter(codingA -> {
 			for (Coding codingB : codingsB) {
-				if (codingA.getSystem().equals(codingB.getSystem()) && codingA.getCode().equals(codingB.getCode())) {
+				if (codingA.getSystem() != null && codingA.getSystem().equals(codingB.getSystem()) && codingA.getCode().equals(codingB.getCode())) {
 					return true;
 				}
 			}
