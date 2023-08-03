@@ -32,11 +32,21 @@ public class CDSTrigger {
 
 			cardInstance.setSummary(processTextTemplate(cardInstance.getSummary(), conditionIntersection, medicationIntersection));
 			cardInstance.setDetail(processTextTemplate(cardInstance.getDetail(), conditionIntersection, medicationIntersection));
+			addReferenceMedicationToCDSCard(medicationIntersection, cardInstance);
+			addReferenceConditionToCDSCard(conditionIntersection, cardInstance);
 
 			return cardInstance;
 		} else {
 			return null;
 		}
+	}
+
+	private void addReferenceMedicationToCDSCard(Collection<Coding> medicationIntersection, CDSCard cardInstance) {
+		cardInstance.setReferenceMedication(new CDSReference(medicationIntersection.stream().map(coding -> new CDSCoding(coding.getSystem(), coding.getCode())).collect(Collectors.toList())));
+	}
+
+	private void addReferenceConditionToCDSCard(Collection<Coding> conditionIntersection, CDSCard cardInstance) {
+		cardInstance.setReferenceCondition(new CDSReference(conditionIntersection.stream().map(coding -> new CDSCoding(coding.getSystem(), coding.getCode())).collect(Collectors.toList())));
 	}
 
 	private String processTextTemplate(String text, Collection<Coding> conditionIntersection, Collection<Coding> medicationIntersection) {

@@ -148,7 +148,7 @@ public class MedicationConditionRuleLoaderService {
 					}
 				}
 				if (rowNumber > 1 && !Strings.isNullOrEmpty(source) && medicationSnomedCode != null && conditionSnomedCode != null) {
-					CDSCard cdsCard = new CDSCard(uuid, cardSummary, cardDetail, CDSIndicator.valueOf(cardIndicator), new CDSSource(source, sourceLink));
+					CDSCard cdsCard = new CDSCard(uuid, cardSummary, cardDetail, CDSIndicator.valueOf(cardIndicator), new CDSSource(source, sourceLink), null, null);
 					Collection<Coding> medicationCodings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medicationSnomedCode));
 					Collection<Coding> conditionCodings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(conditionSnomedCode));
 					logger.info("Created trigger {} / {}", medicationLabel, conditionLabel);

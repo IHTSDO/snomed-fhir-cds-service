@@ -6,6 +6,8 @@ import jakarta.annotation.PostConstruct;
 import org.hl7.fhir.r4.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.snomed.cdsservice.model.CDSCard;
+import org.snomed.cdsservice.model.CDSCoding;
+import org.snomed.cdsservice.model.CDSReference;
 import org.snomed.cdsservice.model.CDSTrigger;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,15 +60,51 @@ public class MedicationOrderSelectService extends CDSService {
 		Set<Coding> draftMedicationOrderCodings = getCodings(draftMedicationOrders.stream().map(MedicationRequest::getMedicationCodeableConcept));
 
 		List<CDSCard> cards = new ArrayList<>();
-
 		for (CDSTrigger trigger : triggers) {
 			CDSCard card = trigger.createRelevantCard(activeDiagnosesCodings, draftMedicationOrderCodings);
 			if (card != null) {
+				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedication(), draftMedicationOrders);
+				addCodesFromOtherCodingSystemsForConditions(card.getReferenceCondition(), activeDiagnoses);
 				cards.add(card);
 			}
 		}
 
 		return cards;
+	}
+
+	private void addCodesFromOtherCodingSystemsForConditions(CDSReference referenceCondition, List<Condition> activeDiagnoses) {
+		CDSCoding cdsCoding = referenceCondition.getCoding().get(0);
+		Optional<Condition> optionalCondition = activeDiagnoses.stream().filter(condition -> {
+			List<Coding> codingList = condition.getCode().getCoding();
+			Optional<Coding> optionalCoding = codingList.stream().filter(coding -> coding.getCode().equals(cdsCoding.getCode()) && coding.getSystem().equals(cdsCoding.getSystem())).findFirst();
+			return optionalCoding.isPresent();
+		}).findFirst();
+		optionalCondition.ifPresent(getCDSReferenceConditionConsumer(referenceCondition));
+	}
+
+	private void addCodesFromOtherCodingSystemsForDraftMedications(CDSReference referenceMedication, List<MedicationRequest> draftMedicationOrders) {
+		CDSCoding cdsCoding = referenceMedication.getCoding().get(0);
+		Optional<MedicationRequest> optionalMedicationRequest = draftMedicationOrders.stream().filter(medicationRequest -> {
+			List<Coding> codingList = medicationRequest.getMedicationCodeableConcept().getCoding();
+			Optional<Coding> optionalCoding = codingList.stream().filter(coding -> coding.getCode().equals(cdsCoding.getCode()) && coding.getSystem().equals(cdsCoding.getSystem())).findFirst();
+			return optionalCoding.isPresent();
+		}).findFirst();
+		optionalMedicationRequest.ifPresent(getCDSReferenceMedicationReqquestConsumer(referenceMedication));
+	}
+
+	@NotNull
+	private Consumer<Condition> getCDSReferenceConditionConsumer(CDSReference reference) {
+		return condition -> reference.setCoding(condition.getCode().getCoding().stream().map(getCodingCDSCodingFunction()).collect(Collectors.toList()));
+	}
+
+	@NotNull
+	private Consumer<MedicationRequest> getCDSReferenceMedicationReqquestConsumer(CDSReference reference) {
+		return medicationRequest -> reference.setCoding(medicationRequest.getMedicationCodeableConcept().getCoding().stream().map(getCodingCDSCodingFunction()).collect(Collectors.toList()));
+	}
+
+	@NotNull
+	private Function<Coding, CDSCoding> getCodingCDSCodingFunction() {
+		return coding -> new CDSCoding(coding.getSystem(), coding.getCode(), coding.getDisplay());
 	}
 
 	@NotNull

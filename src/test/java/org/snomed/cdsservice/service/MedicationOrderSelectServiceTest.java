@@ -4,7 +4,9 @@ import org.hl7.fhir.r4.model.Coding;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.snomed.cdsservice.model.CDSCard;
+import org.snomed.cdsservice.model.CDSCoding;
 import org.snomed.cdsservice.model.CDSIndicator;
+import org.snomed.cdsservice.model.CDSReference;
 import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.model.CDSTrigger;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
@@ -45,7 +47,9 @@ class MedicationOrderSelectServiceTest {
 						"Contraindication: {{ActualMedication}} with patient condition {{ActualCondition}}.",
 						"The use of {{RuleMedication}} is contraindicated when the patient has {{RuleCondition}}.",
 						CDSIndicator.warning,
-						new CDSSource("Wikipedia"))
+						new CDSSource("Wikipedia"),
+						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "108600003"))),
+						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007"))))
 				);
 		service.setTriggers(List.of(trigger));
 	}
@@ -66,6 +70,8 @@ class MedicationOrderSelectServiceTest {
 		assertEquals("Contraindication: \"Atorvastatin-containing product\" with patient condition \"Steatosis of liver\".", cdsCard.getSummary());
 		assertEquals(CDSIndicator.warning, cdsCard.getIndicator());
 		assertEquals("The use of Atorvastatin is contraindicated when the patient has Disease of liver.", cdsCard.getDetail());
+		assertEquals("108600003", cdsCard.getReferenceMedication().getCoding().get(0).getCode());
+		assertEquals("197321007", cdsCard.getReferenceCondition().getCoding().get(0).getCode());
 	}
 
 }
