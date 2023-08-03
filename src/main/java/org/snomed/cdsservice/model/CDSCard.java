@@ -14,12 +14,18 @@ public class CDSCard {
 
 	private final CDSSource source;
 
-	public CDSCard(String uuid, String summary, String detail, CDSIndicator indicator, CDSSource source) {
+	private CDSReference referenceMedication;
+
+	private CDSReference referenceCondition;
+
+	public CDSCard(String uuid, String summary, String detail, CDSIndicator indicator, CDSSource source, CDSReference referenceMedication, CDSReference referenceCondition) {
 		this.uuid = uuid;
 		this.summary = summary;
 		this.detail = detail;
 		this.indicator = indicator;
 		this.source = source;
+		this.referenceMedication = referenceMedication;
+		this.referenceCondition = referenceCondition;
 	}
 
 	public String getUuid() {
@@ -50,7 +56,24 @@ public class CDSCard {
 		return source;
 	}
 
+
+	public CDSReference getReferenceMedication() {
+		return referenceMedication;
+	}
+
+	public void setReferenceMedication(CDSReference referenceMedication) {
+		this.referenceMedication = referenceMedication;
+	}
+
+	public CDSReference getReferenceCondition() {
+		return referenceCondition;
+	}
+
+	public void setReferenceCondition(CDSReference referenceCondition) {
+		this.referenceCondition = referenceCondition;
+	}
+
 	public CDSCard cloneCard() {
-		return new CDSCard(uuid, summary, detail, indicator, source);
+		return new CDSCard(uuid, summary, detail, indicator, source, referenceMedication, referenceCondition);
 	}
 }

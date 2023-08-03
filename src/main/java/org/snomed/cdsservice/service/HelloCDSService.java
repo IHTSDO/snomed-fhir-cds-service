@@ -18,7 +18,7 @@ public class HelloCDSService extends CDSService {
 	@Override
 	public List<CDSCard> call(CDSRequest cdsRequest) {
 		CDSCard card = new CDSCard("22e982b7-4786-4afe-9f67-5af8266363f6",
-				"Hello! The CDS Service is working.", null, CDSIndicator.info, new CDSSource("http://example.com"));
+				"Hello! The CDS Service is working.", null, CDSIndicator.info, new CDSSource("http://example.com"), null, null);
 		card.setDetail("This is an example card from the 'hello-test' CDS Service.");
 		return List.of(card);
 	}
