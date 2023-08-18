@@ -1,0 +1,4 @@
+UUID,Medication1,Medication1 SNOMED Code,Medication2,Medication2 SNOMED Code,Card Indicator,Card Summary,Card Detail,Source,Source Link
+9bb0mr39-4ff0-0305-1990-000000000001,Atorvastatin,108600003,Propranolol,55745002,warning,Contraindication of drug-drug interaction: {{ActualMedication1}} with {{ActualMedication2}}.,The use of {{RuleMedication1}} is contraindicated with {{RuleMedication2}}.,,
+9bb0mr39-4ff0-0305-1990-000000000002,Allopurinol,25246002,Amiodarone,69236009,critical,Contraindication of drug-drug interaction: {{ActualMedication1}} with {{ActualMedication2}}.,The use of {{RuleMedication1}} is contraindicated with {{RuleMedication2}}.,,
+9bb0mr39-4ff0-0305-1990-000000000003,Amiodarone,69236009,Albendazole,96119002,info,Contraindication of drug-drug interaction: {{ActualMedication1}} with {{ActualMedication2}}.,The use of {{RuleMedication1}} is contraindicated with {{RuleMedication2}}.,,

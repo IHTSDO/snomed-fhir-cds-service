@@ -9,6 +9,7 @@ import org.snomed.cdsservice.model.CDSIndicator;
 import org.snomed.cdsservice.model.CDSReference;
 import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.model.CDSTrigger;
+import org.snomed.cdsservice.model.CDSTriggerType;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,6 +31,9 @@ class MedicationOrderSelectServiceTest {
 
 	@MockBean
 	private MedicationConditionRuleLoaderService ruleLoaderService;
+
+	@MockBean
+	private MedicationRuleLoaderService medicationRuleLoaderService;
 
 	@Autowired
 	private MedicationOrderSelectService service;
@@ -48,10 +54,10 @@ class MedicationOrderSelectServiceTest {
 						"The use of {{RuleMedication}} is contraindicated when the patient has {{RuleCondition}}.",
 						CDSIndicator.warning,
 						new CDSSource("Wikipedia"),
-						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "108600003"))),
-						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007"))))
-				);
-		service.setTriggers(List.of(trigger));
+						Stream.of(new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "108600003")))).collect(Collectors.toList()),
+						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007")))),
+				CDSTriggerType.DRUG_DIAGNOSIS);
+		service.setMedicationOrderSelectTriggers(List.of(trigger));
 	}
 
 	@Test
@@ -70,7 +76,7 @@ class MedicationOrderSelectServiceTest {
 		assertEquals("Contraindication: \"Atorvastatin-containing product\" with patient condition \"Steatosis of liver\".", cdsCard.getSummary());
 		assertEquals(CDSIndicator.warning, cdsCard.getIndicator());
 		assertEquals("The use of Atorvastatin is contraindicated when the patient has Disease of liver.", cdsCard.getDetail());
-		assertEquals("108600003", cdsCard.getReferenceMedication().getCoding().get(0).getCode());
+		assertEquals("108600003", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertEquals("197321007", cdsCard.getReferenceCondition().getCoding().get(0).getCode());
 	}
 
