@@ -1,5 +1,6 @@
 package org.snomed.cdsservice.model;
 
+import java.util.List;
 public class CDSCard {
 
 	private final String uuid;
@@ -14,17 +15,17 @@ public class CDSCard {
 
 	private final CDSSource source;
 
-	private CDSReference referenceMedication;
+	private List<CDSReference> referenceMedications;
 
 	private CDSReference referenceCondition;
 
-	public CDSCard(String uuid, String summary, String detail, CDSIndicator indicator, CDSSource source, CDSReference referenceMedication, CDSReference referenceCondition) {
+	public CDSCard(String uuid, String summary, String detail, CDSIndicator indicator, CDSSource source, List<CDSReference> referenceMedications, CDSReference referenceCondition) {
 		this.uuid = uuid;
 		this.summary = summary;
 		this.detail = detail;
 		this.indicator = indicator;
 		this.source = source;
-		this.referenceMedication = referenceMedication;
+		this.referenceMedications = referenceMedications;
 		this.referenceCondition = referenceCondition;
 	}
 
@@ -57,12 +58,12 @@ public class CDSCard {
 	}
 
 
-	public CDSReference getReferenceMedication() {
-		return referenceMedication;
+	public List<CDSReference> getReferenceMedications() {
+		return referenceMedications;
 	}
 
-	public void setReferenceMedication(CDSReference referenceMedication) {
-		this.referenceMedication = referenceMedication;
+	public void setReferenceMedications(List<CDSReference> referenceMedications) {
+		this.referenceMedications = referenceMedications;
 	}
 
 	public CDSReference getReferenceCondition() {
@@ -74,6 +75,6 @@ public class CDSCard {
 	}
 
 	public CDSCard cloneCard() {
-		return new CDSCard(uuid, summary, detail, indicator, source, referenceMedication, referenceCondition);
+		return new CDSCard(uuid, summary, detail, indicator, source, referenceMedications, referenceCondition);
 	}
 }

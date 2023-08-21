@@ -29,7 +29,12 @@ public class MedicationOrderSelectService extends CDSService {
 	@Autowired
 	private MedicationConditionRuleLoaderService ruleLoaderService;
 
-	private List<CDSTrigger> triggers;
+	@Autowired
+	private MedicationRuleLoaderService medicationRuleLoaderService;
+
+	private List<CDSTrigger> medicationOrderSelectTriggers;
+
+	private List<CDSTrigger> drugDrugInteractionTriggers;
 
 	public MedicationOrderSelectService() {
 		super("medication-order-select");
@@ -42,7 +47,8 @@ public class MedicationOrderSelectService extends CDSService {
 
 	@PostConstruct
 	public void init() throws ServiceException {
-		triggers = ruleLoaderService.loadTriggers();
+		medicationOrderSelectTriggers = ruleLoaderService.loadTriggers();
+		drugDrugInteractionTriggers = medicationRuleLoaderService.loadTriggers();
 	}
 
 	@Override
@@ -60,14 +66,22 @@ public class MedicationOrderSelectService extends CDSService {
 		Set<Coding> draftMedicationOrderCodings = getCodings(draftMedicationOrders.stream().map(MedicationRequest::getMedicationCodeableConcept));
 
 		List<CDSCard> cards = new ArrayList<>();
-		for (CDSTrigger trigger : triggers) {
+		for (CDSTrigger trigger : medicationOrderSelectTriggers) {
 			CDSCard card = trigger.createRelevantCard(activeDiagnosesCodings, draftMedicationOrderCodings);
 			if (card != null) {
-				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedication(), draftMedicationOrders);
+				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedications(), draftMedicationOrders);
 				addCodesFromOtherCodingSystemsForConditions(card.getReferenceCondition(), activeDiagnoses);
 				cards.add(card);
 			}
 		}
+
+		drugDrugInteractionTriggers.forEach(trigger -> {
+			CDSCard card = trigger.createRelevantCard(draftMedicationOrderCodings, draftMedicationOrderCodings);
+			if (card != null) {
+				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedications(), draftMedicationOrders);
+				cards.add(card);
+			}
+		});
 
 		return cards;
 	}
@@ -82,14 +96,17 @@ public class MedicationOrderSelectService extends CDSService {
 		optionalCondition.ifPresent(getCDSReferenceConditionConsumer(referenceCondition));
 	}
 
-	private void addCodesFromOtherCodingSystemsForDraftMedications(CDSReference referenceMedication, List<MedicationRequest> draftMedicationOrders) {
-		CDSCoding cdsCoding = referenceMedication.getCoding().get(0);
-		Optional<MedicationRequest> optionalMedicationRequest = draftMedicationOrders.stream().filter(medicationRequest -> {
-			List<Coding> codingList = medicationRequest.getMedicationCodeableConcept().getCoding();
-			Optional<Coding> optionalCoding = codingList.stream().filter(coding -> coding.getCode().equals(cdsCoding.getCode()) && coding.getSystem().equals(cdsCoding.getSystem())).findFirst();
-			return optionalCoding.isPresent();
-		}).findFirst();
-		optionalMedicationRequest.ifPresent(getCDSReferenceMedicationReqquestConsumer(referenceMedication));
+	private void addCodesFromOtherCodingSystemsForDraftMedications(List<CDSReference> referenceMedications, List<MedicationRequest> draftMedicationOrders) {
+		referenceMedications.forEach(referenceMedication -> {
+			CDSCoding cdsCoding = referenceMedication.getCoding().get(0);
+			Optional<MedicationRequest> optionalMedicationRequest = draftMedicationOrders.stream().filter(medicationRequest -> {
+				List<Coding> codingList = medicationRequest.getMedicationCodeableConcept().getCoding();
+				Optional<Coding> optionalCoding = codingList.stream().filter(coding -> coding.getCode().equals(cdsCoding.getCode()) && coding.getSystem().equals(cdsCoding.getSystem())).findFirst();
+				return optionalCoding.isPresent();
+			}).findFirst();
+			optionalMedicationRequest.ifPresent(getCDSReferenceMedicationReqquestConsumer(referenceMedication));
+		});
+
 	}
 
 	@NotNull
@@ -128,7 +145,7 @@ public class MedicationOrderSelectService extends CDSService {
 		return resources;
 	}
 
-	public void setTriggers(List<CDSTrigger> triggers) {
-		this.triggers = triggers;
+	public void setMedicationOrderSelectTriggers(List<CDSTrigger> medicationOrderSelectTriggers) {
+		this.medicationOrderSelectTriggers = medicationOrderSelectTriggers;
 	}
 }
