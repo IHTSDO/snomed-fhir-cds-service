@@ -1,5 +1,6 @@
 package org.snomed.cdsservice.service;
 
+import com.google.common.base.Strings;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.utilities.CSVReader;
 import org.slf4j.Logger;
@@ -50,6 +51,7 @@ public class MedicationRuleLoaderService {
             };
 
             csvReader.readHeaders();
+            int rowNumber = 1;
             while (csvReader.line()) {
                 String uuid = csvReader.cell(expectedHeadings[0]);
                 String medication1Label = csvReader.cell(expectedHeadings[1]);
@@ -62,13 +64,26 @@ public class MedicationRuleLoaderService {
                 String source = csvReader.cell(expectedHeadings[8]);
                 String sourceLink = csvReader.cell(expectedHeadings[9]);
 
-                if (medication1SnomedCode != null && medication2SnomedCode != null) {
-                    CDSCard cdsCard = new CDSCard(uuid, cardSummary, cardDetail, CDSIndicator.valueOf(cardIndicator), new CDSSource(source, sourceLink), null, null);
-                    Collection<Coding> medication1Codings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medication1SnomedCode));
-                    Collection<Coding> medication2Codings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medication2SnomedCode));
-                    logger.info("Created trigger {} / {}", medication1Label, medication2Label);
-                    triggers.add(new CDSTrigger(medication1Label, medication1Codings, medication2Label, medication2Codings, cdsCard, CDSTriggerType.DRUG_DRUG));
+                if (Strings.isNullOrEmpty(medication1SnomedCode) || Strings.isNullOrEmpty(medication2SnomedCode) || Strings.isNullOrEmpty(source)) {
+                    logger.info("Ignoring row {}, medication1SnomedCode {} medication2SnomedCode {} source {} ", rowNumber, medication1SnomedCode, medication2SnomedCode, source);
+                    continue;
                 }
+
+                if (medication1SnomedCode != null && medication1SnomedCode.contains("|") && !medication1SnomedCode.startsWith("ECL=")) {
+                    medication1SnomedCode = medication1SnomedCode.substring(medication1SnomedCode.indexOf("|")).trim();
+                }
+
+                if (medication2SnomedCode != null && medication2SnomedCode.contains("|") && !medication2SnomedCode.startsWith("ECL=")) {
+                    medication2SnomedCode = medication2SnomedCode.substring(medication2SnomedCode.indexOf("|")).trim();
+                }
+
+                CDSCard cdsCard = new CDSCard(uuid, cardSummary, cardDetail, CDSIndicator.valueOf(cardIndicator), new CDSSource(source, sourceLink), null, null);
+                Collection<Coding> medication1Codings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medication1SnomedCode));
+                Collection<Coding> medication2Codings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medication2SnomedCode));
+                logger.info("Created trigger {} / {}", medication1Label, medication2Label);
+                triggers.add(new CDSTrigger(medication1Label, medication1Codings, medication2Label, medication2Codings, cdsCard, CDSTriggerType.DRUG_DRUG));
+
+                rowNumber++;
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
