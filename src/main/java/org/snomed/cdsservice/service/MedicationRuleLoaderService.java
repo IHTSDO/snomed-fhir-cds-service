@@ -26,8 +26,8 @@ public class MedicationRuleLoaderService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${rules.medication-medication.csv}")
-    private String csvPath;
+    @Value("${rules.medication-medication.tsv}")
+    private String tsvPath;
 
     @Autowired
     private FHIRTerminologyServerClient tsClient;
@@ -35,8 +35,10 @@ public class MedicationRuleLoaderService {
 
     public List<CDSTrigger> loadTriggers() throws ServiceException {
         List<CDSTrigger> triggers = new ArrayList<>();
-        try (FileInputStream file = new FileInputStream(csvPath)) {
+        try (FileInputStream file = new FileInputStream(tsvPath)) {
             CSVReader csvReader = new CSVReader(file);
+            char TAB_DELIMITER = '\t';
+            csvReader.setDelimiter(TAB_DELIMITER);
             String[] expectedHeadings = new String[]{
                     "UUID",
                     "Medication1",
