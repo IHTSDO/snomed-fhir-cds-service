@@ -44,10 +44,14 @@ public class FHIRTerminologyServerClient {
 				ValueSet body = response.getBody();
 				ValueSetExpansion expansion = body.getExpansion();
 				List<CDSCoding> contains = expansion.getContains();
-				codings.addAll(contains);
-				Integer total = expansion.getTotal();
-				moreToLoad = (total != null && codings.size() < total) || contains.isEmpty();
-				offset = codings.size();
+				if (contains != null) {
+					codings.addAll(contains);
+					Integer total = expansion.getTotal();
+					moreToLoad = (total != null && codings.size() < total) || contains.isEmpty();
+					offset = codings.size();
+				} else {
+					moreToLoad = false;
+				}
 			}
 			System.out.println(codings.size());
 			valueSetCache.put(valueSetURI, codings.stream().map(cdsCoding -> new Coding(cdsCoding.getSystem(), cdsCoding.getCode(), null)).collect(Collectors.toList()));
