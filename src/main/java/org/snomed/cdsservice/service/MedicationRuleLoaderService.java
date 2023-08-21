@@ -9,7 +9,7 @@ import org.snomed.cdsservice.model.CDSCard;
 import org.snomed.cdsservice.model.CDSIndicator;
 import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.model.CDSTrigger;
-import org.snomed.cdsservice.model.CDSTriggerType;
+import org.snomed.cdsservice.model.MedicationInterationCDSTrigger;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.util.SnomedValueSetUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class MedicationRuleLoaderService {
     private FHIRTerminologyServerClient tsClient;
 
 
-    public List<CDSTrigger> loadTriggers() {
+    public List<CDSTrigger> loadTriggers() throws ServiceException {
         List<CDSTrigger> triggers = new ArrayList<>();
         try (FileInputStream file = new FileInputStream(csvPath)) {
             CSVReader csvReader = new CSVReader(file);
@@ -81,12 +81,12 @@ public class MedicationRuleLoaderService {
                 Collection<Coding> medication1Codings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medication1SnomedCode));
                 Collection<Coding> medication2Codings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medication2SnomedCode));
                 logger.info("Created trigger {} / {}", medication1Label, medication2Label);
-                triggers.add(new CDSTrigger(medication1Label, medication1Codings, medication2Label, medication2Codings, cdsCard, CDSTriggerType.DRUG_DRUG));
+                triggers.add(new MedicationInterationCDSTrigger(medication1Label, medication1Codings, medication2Label, medication2Codings, cdsCard));
 
                 rowNumber++;
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ServiceException("Failed to read CDS drug drug interaction rules from tab separated file", e);
         }
         return triggers;
     }

@@ -13,7 +13,7 @@ import org.snomed.cdsservice.model.CDSCard;
 import org.snomed.cdsservice.model.CDSIndicator;
 import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.model.CDSTrigger;
-import org.snomed.cdsservice.model.CDSTriggerType;
+import org.snomed.cdsservice.model.MedicationConditionCDSTrigger;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.util.SnomedSpreadsheetUtil;
 import org.snomed.cdsservice.util.SnomedValueSetUtil;
@@ -153,7 +153,7 @@ public class MedicationConditionRuleLoaderService {
 					Collection<Coding> medicationCodings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medicationSnomedCode));
 					Collection<Coding> conditionCodings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(conditionSnomedCode));
 					logger.info("Created trigger {} / {}", medicationLabel, conditionLabel);
-					triggers.add(new CDSTrigger(medicationLabel, medicationCodings, conditionLabel, conditionCodings, cdsCard, CDSTriggerType.DRUG_DIAGNOSIS));
+					triggers.add(new MedicationConditionCDSTrigger(medicationLabel, medicationCodings, conditionLabel, conditionCodings, cdsCard));
 				}
 			}
 		} catch (IOException e) {

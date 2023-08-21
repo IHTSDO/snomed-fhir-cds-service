@@ -9,7 +9,7 @@ import org.snomed.cdsservice.model.CDSIndicator;
 import org.snomed.cdsservice.model.CDSReference;
 import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.model.CDSTrigger;
-import org.snomed.cdsservice.model.CDSTriggerType;
+import org.snomed.cdsservice.model.MedicationConditionCDSTrigger;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,7 +40,7 @@ class MedicationOrderSelectServiceTest {
 
 	@BeforeEach
 	void setMockOutput() {
-		CDSTrigger trigger = new CDSTrigger(
+		CDSTrigger trigger = new MedicationConditionCDSTrigger(
 				"Atorvastatin",
 				Collections.singleton(new Coding("http://snomed.info/sct", "108600003", null)),
 				"Disease of liver",
@@ -55,8 +55,7 @@ class MedicationOrderSelectServiceTest {
 						CDSIndicator.warning,
 						new CDSSource("Wikipedia"),
 						Stream.of(new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "108600003")))).collect(Collectors.toList()),
-						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007")))),
-				CDSTriggerType.DRUG_DIAGNOSIS);
+						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007")))));
 		service.setMedicationOrderSelectTriggers(List.of(trigger));
 	}
 
