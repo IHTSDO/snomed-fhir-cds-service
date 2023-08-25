@@ -30,7 +30,10 @@ public class MedicationOrderSelectService extends CDSService {
 	private MedicationConditionRuleLoaderService ruleLoaderService;
 
 	@Autowired
-	private MedicationRuleLoaderService medicationRuleLoaderService;
+	private MedicationCombinationRuleLoaderService medicationRuleLoaderService;
+
+	@Autowired
+	private SnomedMedicationDefinedDailyDoseService definedDailyDoseService;
 
 	private List<CDSTrigger> medicationOrderSelectTriggers;
 
@@ -60,16 +63,16 @@ public class MedicationOrderSelectService extends CDSService {
 
 		IParser parser = fhirContext.newJsonParser();
 		List<Condition> activeDiagnoses = getPrefetchResourcesFromBundle(prefetch, "conditions", Condition.class, parser);
-		List<MedicationRequest> draftMedicationOrders = getPrefetchResourcesFromBundle(prefetch, "draftMedicationRequests", MedicationRequest.class, parser);
+		List<MedicationRequest> medicationRequests = getPrefetchResourcesFromBundle(prefetch, "draftMedicationRequests", MedicationRequest.class, parser);
 
 		Set<Coding> activeDiagnosesCodings = getCodings(activeDiagnoses.stream().map(Condition::getCode));
-		Set<Coding> draftMedicationOrderCodings = getCodings(draftMedicationOrders.stream().map(MedicationRequest::getMedicationCodeableConcept));
+		Set<Coding> draftMedicationOrderCodings = getCodings(medicationRequests.stream().map(MedicationRequest::getMedicationCodeableConcept));
 
 		List<CDSCard> cards = new ArrayList<>();
 		for (CDSTrigger trigger : medicationOrderSelectTriggers) {
 			CDSCard card = trigger.createRelevantCard(activeDiagnosesCodings, draftMedicationOrderCodings);
 			if (card != null) {
-				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedications(), draftMedicationOrders);
+				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedications(), medicationRequests);
 				addCodesFromOtherCodingSystemsForConditions(card.getReferenceCondition(), activeDiagnoses);
 				cards.add(card);
 			}
@@ -78,10 +81,12 @@ public class MedicationOrderSelectService extends CDSService {
 		drugDrugInteractionTriggers.forEach(trigger -> {
 			CDSCard card = trigger.createRelevantCard(draftMedicationOrderCodings, draftMedicationOrderCodings);
 			if (card != null) {
-				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedications(), draftMedicationOrders);
+				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedications(), medicationRequests);
 				cards.add(card);
 			}
 		});
+
+		cards.addAll(definedDailyDoseService.checkMedications(medicationRequests));
 
 		return cards;
 	}

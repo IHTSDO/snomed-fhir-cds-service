@@ -1,5 +1,7 @@
 package org.snomed.cdsservice.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -21,15 +23,20 @@ public class SnomedValueSetUtil {
 	public static String getSNOMEDValueSetURI(String snomedCodeOrECL) {
 		if (snomedCodeOrECL.startsWith("ECL=")) {
 			String ecl = snomedCodeOrECL.substring(4);
-			String encodedECL = URLEncoder.encode(ecl, StandardCharsets.UTF_8);
-			for (Map.Entry<String, String> decodeEntry : eclDecodeForReadabililtyMap.entrySet()) {
-				encodedECL = encodedECL.replace(decodeEntry.getKey(), decodeEntry.getValue());
-			}
-			return "http://snomed.info/sct?fhir_vs=ecl/" + encodedECL;
+			return getSnomedECLValueSetURI(ecl);
 		} else {
 			// This code and all descendants
 			return "http://snomed.info/sct?fhir_vs=isa/" + snomedCodeOrECL;
 		}
+	}
+
+	@NotNull
+	public static String getSnomedECLValueSetURI(String ecl) {
+		String encodedECL = URLEncoder.encode(ecl, StandardCharsets.UTF_8);
+		for (Map.Entry<String, String> decodeEntry : eclDecodeForReadabililtyMap.entrySet()) {
+			encodedECL = encodedECL.replace(decodeEntry.getKey(), decodeEntry.getValue());
+		}
+		return "http://snomed.info/sct?fhir_vs=ecl/" + encodedECL;
 	}
 
 }

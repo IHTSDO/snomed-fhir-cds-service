@@ -2,7 +2,7 @@ package org.snomed.cdsservice;
 
 import org.junit.jupiter.api.Test;
 import org.snomed.cdsservice.service.MedicationConditionRuleLoaderService;
-import org.snomed.cdsservice.service.MedicationRuleLoaderService;
+import org.snomed.cdsservice.service.MedicationCombinationRuleLoaderService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -13,7 +13,7 @@ class CdsServiceApplicationTests {
 	private MedicationConditionRuleLoaderService ruleLoaderService;
 
 	@MockBean
-	private MedicationRuleLoaderService medicationRuleLoaderService;
+	private MedicationCombinationRuleLoaderService medicationRuleLoaderService;
 
 	@Test
 	void contextLoads() {

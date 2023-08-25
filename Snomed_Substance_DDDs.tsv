@@ -1,0 +1,1607 @@
+atc_code	atc_name	snomed_code	snomed_label	ddd	uom	adm_r	note
+A01AA01	sodium fluoride	6910009	Sodium fluoride (substance)	1.1	mg	O	0.5 mg fluoride
+A01AB02	hydrogen peroxide	387171003	Hydrogen peroxide (substance)	60	mg	O	NA
+A01AB03	chlorhexidine	373568007	Chlorhexidine (substance)	30	mg	O	NA
+A01AB04	amphotericin B	77703004	Amphotericin B (substance)	40	mg	O	NA
+A01AB05	polynoxylin	395837009	Polynoxylin (substance)	0.18	g	O	NA
+A01AB06	domiphen	387295005	Domiphen (substance)	3	mg	O	NA
+A01AB07	oxyquinoline	77245001	Oxyquinoline (substance)	80	mg	O	NA
+A01AB09	miconazole	372738006	Miconazole (substance)	0.2	g	O	NA
+A01AB10	natamycin	372712006	Natamycin (substance)	20	mg	O	NA
+A01AB23	minocycline	372653009	Minocycline (substance)	1	mg	O	NA
+A02AA04	magnesium hydroxide	387337001	Magnesium hydroxide (substance)	3	g	O	NA
+A02AB02	algeldrate	273944007	Aluminium hydroxide (substance)	5	g	O	NA
+A02AB04	dihydroxialumini sodium carbonate	3031003	Dihydroxyaluminum sodium carbonate (substance)	4	g	O	NA
+A02BA01	cimetidine	373541007	Cimetidine (substance)	0.8	g	O	NA
+A02BA01	cimetidine	373541007	Cimetidine (substance)	0.8	g	P	NA
+A02BA02	ranitidine	372755005	Ranitidine (substance)	0.3	g	O	NA
+A02BA02	ranitidine	372755005	Ranitidine (substance)	0.3	g	P	NA
+A02BA03	famotidine	387211002	Famotidine (substance)	40	mg	O	NA
+A02BA03	famotidine	387211002	Famotidine (substance)	40	mg	P	NA
+A02BA04	nizatidine	386887009	Nizatidine (substance)	0.3	g	O	NA
+A02BA04	nizatidine	386887009	Nizatidine (substance)	0.3	g	P	NA
+A02BA06	roxatidine	699481007	Roxatidine (substance)	0.15	g	O	NA
+A02BA07	ranitidine bismuth citrate	386886000	Ranitidine bismuth citrate (substance)	0.8	g	O	NA
+A02BB01	misoprostol	387242007	Misoprostol (substance)	0.8	mg	O	NA
+A02BC01	omeprazole	387137007	Omeprazole (substance)	20	mg	O	NA
+A02BC01	omeprazole	387137007	Omeprazole (substance)	20	mg	P	NA
+A02BC02	pantoprazole	395821003	Pantoprazole (substance)	40	mg	O	NA
+A02BC02	pantoprazole	395821003	Pantoprazole (substance)	40	mg	P	NA
+A02BC03	lansoprazole	386888004	Lansoprazole (substance)	30	mg	O	NA
+A02BC04	rabeprazole	422225001	Rabeprazole (substance)	20	mg	O	NA
+A02BC05	esomeprazole	396047003	Esomeprazole (substance)	30	mg	O	NA
+A02BC05	esomeprazole	396047003	Esomeprazole (substance)	30	mg	P	NA
+A02BC06	dexlansoprazole	441863009	Dexlansoprazole (substance)	30	mg	O	NA
+A02BX01	carbenoxolone	387273006	Carbenoxolone (substance)	0.15	g	O	NA
+A02BX02	sucralfate	387387008	Sucralfate (substance)	4	g	O	NA
+A02BX03	pirenzepine	398669004	Pirenzepine (substance)	0.1	g	O	NA
+A02BX03	pirenzepine	398669004	Pirenzepine (substance)	20	mg	P	NA
+A02BX05	bismuth subcitrate	735064002	Bismuth subcitrate potassium (substance)	0.48	g	O	NA
+A02BX14	rebamipide	1172393005	Rebamipide (substance)	0.3	g	O	NA
+A03AA01	oxyphencyclimine	27499006	Oxyphencyclimine (substance)	20	mg	O	NA
+A03AA04	mebeverine	419830007	Mebeverine (substance)	0.3	g	O	NA
+A03AA05	trimebutine	698184001	Trimebutine (substance)	0.6	g	O	NA
+A03AA07	dicycloverine	372732007	Dicycloverine (substance)	80	mg	O	NA
+A03AA07	dicycloverine	372732007	Dicycloverine (substance)	80	mg	P	NA
+A03AB01	benzilone	71380009	Benzarone (substance)	70	mg	O	NA
+A03AB02	glycopyrronium bromide	387122008	Glycopyrronium bromide (substance)	3	mg	O	NA
+A03AB02	glycopyrronium bromide	387122008	Glycopyrronium bromide (substance)	0.3	mg	P	NA
+A03AB02	glycopyrronium bromide	387122008	Glycopyrronium bromide (substance)	3	mg	R	NA
+A03AB03	oxyphenonium	69506001	Oxyphenonium (substance)	25	mg	O	NA
+A03AB04	penthienate	19524002	Penthienate (substance)	15	mg	O	NA
+A03AB05	propantheline	372721007	Propantheline (substance)	60	mg	O	NA
+A03AB05	propantheline	372721007	Propantheline (substance)	60	mg	P	NA
+A03AB07	methantheline	2796008	Methantheline (substance)	0.15	g	O	NA
+A03AB08	tridihexethyl	36872003	Tridihexethyl (substance)	0.125	g	O	NA
+A03AB09	isopropamide	20468007	Isopropamide (substance)	10	mg	O	NA
+A03AB10	hexocyclium	373763000	Hexocyclium (substance)	0.15	g	O	NA
+A03AB11	poldine	386985000	Poldine (substance)	12	mg	O	NA
+A03AB12	mepenzolate	372834001	Mepenzolate (substance)	0.1	g	O	NA
+A03AB14	pipenzolate	387425004	Pipenzolate (substance)	20	mg	O	NA
+A03AD01	papaverine	372784001	Papaverine (substance)	0.1	g	O	NA
+A03AD01	papaverine	372784001	Papaverine (substance)	0.1	g	P	NA
+A03AD02	drotaverine	719933003	Drotaverine (substance)	0.1	g	O	NA
+A03AD02	drotaverine	719933003	Drotaverine (substance)	0.1	g	P	NA
+A03AE01	alosetron	116509006	Alosetron (substance)	1	mg	O	NA
+A03AX04	pinaverium	698023008	Pinaverium bromide (substance)	0.15	g	O	NA
+A03AX13	silicones	13652007	Silicone (substance)	0.5	g	O	NA
+A03BA01	atropine	372832002	Atropine (substance)	1.5	mg	O	NA
+A03BA01	atropine	372832002	Atropine (substance)	1.5	mg	P	NA
+A03BA03	hyoscyamine	372757002	Hyoscyamine (substance)	1.2	mg	O	NA
+A03BA04	belladonna total alkaloids	391816007	Belladonna alkaloid (substance)	1	mg	O	NA
+A03BB01	butylscopolamine	1156229000	Butylscopolamine (substance)	60	mg	O	NA
+A03BB01	butylscopolamine	1156229000	Butylscopolamine (substance)	60	mg	P	NA
+A03BB01	butylscopolamine	1156229000	Butylscopolamine (substance)	60	mg	R	NA
+A03BB03	methylscopolamine	372690005	Methscopolamine (substance)	12	mg	O	NA
+A03BB03	methylscopolamine	372690005	Methscopolamine (substance)	12	mg	P	NA
+A03FA01	metoclopramide	372776000	Metoclopramide (substance)	30	mg	O	NA
+A03FA01	metoclopramide	372776000	Metoclopramide (substance)	30	mg	P	NA
+A03FA01	metoclopramide	372776000	Metoclopramide (substance)	30	mg	R	NA
+A03FA02	cisapride	387164008	Cisapride (substance)	30	mg	O	NA
+A03FA02	cisapride	387164008	Cisapride (substance)	30	mg	R	NA
+A03FA03	domperidone	387181004	Domperidone (substance)	30	mg	O	NA
+A03FA03	domperidone	387181004	Domperidone (substance)	30	mg	P	NA
+A03FA03	domperidone	387181004	Domperidone (substance)	0.12	g	R	NA
+A03FA05	alizapride	724156007	Alizapride (substance)	0.15	g	O	NA
+A03FA05	alizapride	724156007	Alizapride (substance)	0.15	g	P	NA
+A04AA01	ondansetron	372487007	Ondansetron (substance)	16	mg	O	NA
+A04AA01	ondansetron	372487007	Ondansetron (substance)	16	mg	P	NA
+A04AA01	ondansetron	372487007	Ondansetron (substance)	16	mg	R	NA
+A04AA02	granisetron	372489005	Granisetron (substance)	2	mg	O	NA
+A04AA02	granisetron	372489005	Granisetron (substance)	3	mg	P	NA
+A04AA02	granisetron	372489005	Granisetron (substance)	3.1	mg	TD	NA
+A04AA03	tropisetron	395917006	Tropisetron (substance)	5	mg	O	NA
+A04AA03	tropisetron	395917006	Tropisetron (substance)	5	mg	P	NA
+A04AA04	dolasetron	372488002	Dolasetron (substance)	0.2	g	O	NA
+A04AA04	dolasetron	372488002	Dolasetron (substance)	0.1	g	P	NA
+A04AA05	palonosetron	404852008	Palonosetron (substance)	0.5	mg	O	NA
+A04AA05	palonosetron	404852008	Palonosetron (substance)	0.25	mg	P	NA
+A04AD05	metopimazine	772344001	Metopimazine (substance)	15	mg	O	NA
+A04AD05	metopimazine	772344001	Metopimazine (substance)	15	mg	P	NA
+A04AD11	nabilone	395806009	Nabilone (substance)	3	mg	O	NA
+A04AD12	aprepitant	409205009	Aprepitant (substance)	165	mg	O	NA
+A04AD12	aprepitant	409205009	Aprepitant (substance)	150	mg	P	Refers to fosaprepitant
+A04AD14	rolapitant	715254008	Rolapitant (substance)	0.18	g	O	NA
+A05AA01	chenodeoxycholic acid	82490009	Chenodeoxycholic acid (substance)	1	g	O	NA
+A05AA02	ursodeoxycholic acid	41143004	Ursodeoxycholic acid (substance)	0.75	g	O	NA
+A05AA04	obeticholic acid	720257002	Obeticholic acid (substance)	10	mg	O	NA
+A06AA01	liquid paraffin	111089004	Mineral oil (substance)	15	g	O	NA
+A06AA02	docusate sodium	387088007	Docusate sodium (substance)	0.15	g	O	NA
+A06AB01	oxyphenisatine	346604000	Oxyphenisatin (substance)	10	mg	O	NA
+A06AB02	bisacodyl	387075009	Bisacodyl (substance)	10	mg	O	NA
+A06AB02	bisacodyl	387075009	Bisacodyl (substance)	10	mg	R	NA
+A06AB03	dantron	387364000	Dantron (substance)	50	mg	O	NA
+A06AB04	phenolphthalein	19595005	Phenolphthalein (substance)	0.2	g	O	NA
+A06AB05	castor oil	34239008	Castor oil (substance)	20	g	O	NA
+A06AB08	sodium picosulfate	395881001	Sodium picosulfate (substance)	5	mg	O	NA
+A06AC01	ispaghula (psylla seeds)	54141007	Psyllium seed (substance)	7	g	O	NA
+A06AC03	sterculia	42033003	Sterculia gum (substance)	8	g	O	NA
+A06AC06	methylcellulose	387131008	Methylcellulose (substance)	2	g	O	NA
+A06AC08	polycarbophil calcium	412105005	Calcium polycarbophil (substance)	2.5	g	O	NA
+A06AD01	magnesium carbonate	387401007	Magnesium carbonate (substance)	7	g	O	NA
+A06AD02	magnesium oxide	66389008	Magnesium oxide (substance)	7	g	O	NA
+A06AD04	magnesium sulfate	387202002	Magnesium sulfate (substance)	7	g	O	NA
+A06AD11	lactulose	273945008	Lactulose (substance)	6.7	g	O	NA
+A06AD12	lactitol	418929008	Lactitol (substance)	10	g	O	NA
+A06AD15	macrogol	8030004	Macrogol (substance)	10	g	O	NA
+A06AD18	sorbitol	19839007	Sorbitol (substance)	10	g	O	NA
+A06AH01	methylnaltrexone bromide	433519000	Methylnaltrexone bromide (substance)	6	mg	P	NA
+A06AH03	naloxegol	719411008	Naloxegol (substance)	25	mg	O	NA
+A06AH05	naldemedine	733465009	Naldemedine (substance)	0.2	mg	O	NA
+A06AX04	linaclotide	703126002	Linaclotide (substance)	0.29	mg	O	NA
+A06AX05	prucalopride	699273008	Prucalopride (substance)	2	mg	O	NA
+A06AX06	tegaserod	417025001	Tegaserod (substance)	12	mg	O	NA
+A06AX07	plecanatide	725134000	Plecanatide (substance)	3	mg	O	NA
+A07AA01	neomycin	373528008	Neomycin (substance)	5	g	O	NA
+A07AA02	nystatin	387048002	Nystatin (substance)	1.5	MU	O	NA
+A07AA03	natamycin	372712006	Natamycin (substance)	0.3	g	O	NA
+A07AA05	polymyxin B	372824005	Polymyxin B (substance)	3	MU	O	NA
+A07AA06	paromomycin	38044001	Paromomycin (substance)	3	g	O	NA
+A07AA07	amphotericin B	77703004	Amphotericin B (substance)	0.4	g	O	NA
+A07AA08	kanamycin	387396008	Kanamycin (substance)	3	g	O	NA
+A07AA09	vancomycin	372735009	Vancomycin (substance)	2	g	O	NA
+A07AA10	colistin	387412007	Colistin (substance)	9	MU	O	NA
+A07AA11	rifaximin	412553001	Rifaximin (substance)	0.6	g	O	NA
+A07AA12	fidaxomicin	703664004	Fidaxomicin (substance)	0.4	g	O	NA
+A07AB02	phthalylsulfathiazole	16359004	Phthalylsulfathiazole (substance)	9	g	O	NA
+A07AB03	sulfaguanidine	387500006	Sulfaguanidine (substance)	4	g	O	NA
+A07AC01	miconazole	372738006	Miconazole (substance)	1	g	O	NA
+A07AX03	nifuroxazide	703471002	Nifuroxazide (substance)	0.6	g	O	NA
+A07BA01	medicinal charcoal	32519007	Activated charcoal (substance)	5	g	O	NA
+A07DA01	diphenoxylate	15052009	Diphenoxylate (substance)	15	mg	O	NA
+A07DA02	opium	21919007	Opium (substance)	0.1	g	O	NA
+A07DA03	loperamide	387040009	Loperamide (substance)	10	mg	O	NA
+A07DA05	loperamide oxide	1269134006	Loperamide oxide (substance)	5	mg	O	NA
+A07DA06	eluxadoline	716119001	Eluxadoline (substance)	0.2	g	O	NA
+A07EA06	budesonide	395726003	Budesonide (substance)	9	mg	O	NA
+A07EA06	budesonide	395726003	Budesonide (substance)	2	mg	SL	NA
+A07EB01	cromoglicic acid	372672009	Cromoglicic acid (substance)	0.8	g	O	NA
+A07EC01	sulfasalazine	387248006	Sulfasalazine (substance)	2	g	O	NA
+A07EC01	sulfasalazine	387248006	Sulfasalazine (substance)	2	g	R	NA
+A07EC02	mesalazine	387501005	Mesalazine (substance)	1.5	g	O	NA
+A07EC02	mesalazine	387501005	Mesalazine (substance)	1.5	g	R	NA
+A07EC03	olsalazine	386890003	Olsalazine (substance)	1	g	O	NA
+A07EC04	balsalazide	420557005	Balsalazide (substance)	6.75	g	O	NA
+A07FA02	saccharomyces boulardii	700441006	Saccharomyces boulardii (substance)	1	g	O	NA
+A08AA01	phentermine	373343009	Phentermine (substance)	15	mg	O	NA
+A08AA02	fenfluramine	387451002	Fenfluramine (substance)	0.12	g	O	NA
+A08AA03	amfepramone	387303009	Amfepramone (substance)	75	mg	O	NA
+A08AA04	dexfenfluramine	412366002	Dexfenfluramine (substance)	30	mg	O	NA
+A08AA05	mazindol	387232005	Mazindol (substance)	1	mg	O	NA
+A08AA10	sibutramine	386838007	Sibutramine (substance)	10	mg	O	NA
+A08AB01	orlistat	387007000	Orlistat (substance)	0.36	g	O	NA
+A08AX01	rimonabant	422794008	Rimonabant (substance)	20	mg	O	NA
+A09AB01	glutamic acid hydrochloride	38909000	Glutamic acid hydrochloride (substance)	1.5	g	O	NA
+A09AB02	betaine hydrochloride	391841000	Betaine hydrochloride (substance)	1	g	O	NA
+A09AB04	citric acid	75399008	Citric acid (substance)	2	g	O	NA
+A10AB01	insulin (human)	96367001	Human insulin (substance)	40	U	P	NA
+A10AB02	insulin (beef)	4700006	Beef insulin (substance)	40	U	P	NA
+A10AB03	insulin (pork)	67296003	Pork insulin (substance)	40	U	P	NA
+A10AB04	insulin lispro	412210000	Insulin lispro (substance)	40	U	P	NA
+A10AB05	insulin aspart	325072002	Insulin aspart (substance)	40	U	P	NA
+A10AB06	insulin glulisine	411530000	Insulin glulisine (substance)	40	U	P	NA
+A10AC01	insulin (human)	96367001	Human insulin (substance)	40	U	P	NA
+A10AC02	insulin (beef)	4700006	Beef insulin (substance)	40	U	P	NA
+A10AC03	insulin (pork)	67296003	Pork insulin (substance)	40	U	P	NA
+A10AD01	insulin (human)	96367001	Human insulin (substance)	40	U	P	NA
+A10AD02	insulin (beef)	4700006	Beef insulin (substance)	40	U	P	NA
+A10AD03	insulin (pork)	67296003	Pork insulin (substance)	40	U	P	NA
+A10AD04	insulin lispro	412210000	Insulin lispro (substance)	40	U	P	NA
+A10AD05	insulin aspart	325072002	Insulin aspart (substance)	40	U	P	NA
+A10AE01	insulin (human)	96367001	Human insulin (substance)	40	U	P	NA
+A10AE02	insulin (beef)	4700006	Beef insulin (substance)	40	U	P	NA
+A10AE03	insulin (pork)	67296003	Pork insulin (substance)	40	U	P	NA
+A10AE04	insulin glargine	411529005	Insulin glargine (substance)	40	U	P	NA
+A10AE05	insulin detemir	414515005	Insulin detemir (substance)	40	U	P	NA
+A10AE06	insulin degludec	710281005	Insulin degludec (substance)	40	U	P	NA
+A10AF01	insulin (human)	96367001	Human insulin (substance)	15	mg	Inhal.powder	NA
+A10BA01	phenformin	362949009	Phenformin (substance)	0.1	g	O	NA
+A10BA02	metformin	372567009	Metformin (substance)	2	g	O	NA
+A10BB01	glibenclamide	384978002	Glibenclamide (substance)	7	mg	O	microcryst.substance
+A10BB01	glibenclamide	384978002	Glibenclamide (substance)	10	mg	O	NA
+A10BB02	chlorpropamide	386991003	Chlorpropamide (substance)	0.375	g	O	NA
+A10BB03	tolbutamide	373481003	Tolbutamide (substance)	1.5	g	O	NA
+A10BB04	glibornuride	419384001	Glibornuride (substance)	38	mg	O	NA
+A10BB05	tolazamide	387186009	Tolazamide (substance)	0.5	g	O	NA
+A10BB07	glipizide	387143009	Glipizide (substance)	10	mg	O	NA
+A10BB08	gliquidone	395732008	Gliquidone (substance)	60	mg	O	NA
+A10BB09	gliclazide	395731001	Gliclazide (substance)	60	mg	O	NA
+A10BB12	glimepiride	386966003	Glimepiride (substance)	2	mg	O	NA
+A10BB31	acetohexamide	387210001	Acetohexamide (substance)	0.5	g	O	NA
+A10BC01	glymidine	419090008	Glymidine (substance)	1	g	O	NA
+A10BF01	acarbose	386965004	Acarbose (substance)	0.3	g	O	NA
+A10BF02	miglitol	109071007	Miglitol (substance)	0.3	g	O	NA
+A10BF03	voglibose	1163442006	Voglibose (substance)	0.6	mg	O	NA
+A10BG01	troglitazone	386967007	Troglitazone (substance)	0.4	g	O	NA
+A10BG02	rosiglitazone	395869000	Rosiglitazone (substance)	6	mg	O	NA
+A10BG03	pioglitazone	395828009	Pioglitazone (substance)	30	mg	O	NA
+A10BH01	sitagliptin	423307000	Sitagliptin (substance)	0.1	g	O	NA
+A10BH02	vildagliptin	428611002	Vildagliptin (substance)	0.1	g	O	NA
+A10BH03	saxagliptin	443087004	Saxagliptin (substance)	5	mg	O	NA
+A10BH04	alogliptin	702799001	Alogliptin (substance)	25	mg	O	NA
+A10BH05	linagliptin	702798009	Linagliptin (substance)	5	mg	O	NA
+A10BJ01	exenatide	416859008	Exenatide (substance)	0.286	mg	P	depot inj
+A10BJ01	exenatide	416859008	Exenatide (substance)	15	mcg	P	NA
+A10BJ02	liraglutide	444828003	Liraglutide (substance)	1.5	mg	P	NA
+A10BJ03	lixisenatide	708808004	Lixisenatide (substance)	20	mcg	P	NA
+A10BJ04	albiglutide	703129009	Albiglutide (substance)	5.7	mg	P	NA
+A10BJ05	dulaglutide	714080005	Dulaglutide (substance)	0.16	mg	P	NA
+A10BJ06	semaglutide	764283003	Semaglutide (substance)	0.11	mg	P	NA
+A10BK01	dapagliflozin	703674001	Dapagliflozin (substance)	10	mg	O	NA
+A10BK02	canagliflozin	703676004	Canagliflozin (substance)	0.2	g	O	NA
+A10BK03	empagliflozin	703894008	Empagliflozin (substance)	17.5	mg	O	NA
+A10BK04	ertugliflozin	764274008	Ertugliflozin (substance)	10	mg	O	NA
+A10BX02	repaglinide	386964000	Repaglinide (substance)	4	mg	O	NA
+A10BX03	nateglinide	387070004	Nateglinide (substance)	0.36	g	O	NA
+A10BX06	benfluorex	719681008	Benfluorex (substance)	0.45	g	O	NA
+A11CA01	retinol (vit A)	82622003	Retinol (substance)	50	TU	O	NA
+A11CA01	retinol (vit A)	82622003	Retinol (substance)	50	TU	P	NA
+A11CC02	dihydrotachysterol	126235007	Dihydrotachysterol (substance)	1	mg	O	NA
+A11CC03	alfacalcidol	11984007	Alfacalcidol (substance)	1	mcg	O	NA
+A11CC03	alfacalcidol	11984007	Alfacalcidol (substance)	1	mcg	P	NA
+A11CC04	calcitriol	259333003	Calcitriol (substance)	1	mcg	O	NA
+A11CC04	calcitriol	259333003	Calcitriol (substance)	1	mcg	P	NA
+A11CC05	colecalciferol	18414002	Colecalciferol (substance)	20	mcg	O	NA
+A11DA01	thiamine (vit B1)	259659006	Thiamine (substance)	50	mg	O	NA
+A11DA01	thiamine (vit B1)	259659006	Thiamine (substance)	50	mg	P	NA
+A11GA01	ascorbic acid (vit C)	43706004	Ascorbic acid (substance)	0.2	g	O	NA
+A11GA01	ascorbic acid (vit C)	43706004	Ascorbic acid (substance)	0.2	g	P	NA
+A11HA01	nicotinamide	173196005	Nicotinamide (substance)	0.15	g	O	NA
+A11HA02	pyridoxine (vit B6)	430469009	Pyridoxine (substance)	0.16	g	O	NA
+A11HA02	pyridoxine (vit B6)	430469009	Pyridoxine (substance)	0.16	g	P	NA
+A12AA01	calcium phosphate	44044007	Calcium phosphate (substance)	2	g	O	NA
+A12AA02	calcium glubionate	32445001	Calcium glubionate (substance)	2.75	g	P	NA
+A12AA03	calcium gluconate	387292008	Calcium gluconate (substance)	3	g	O	NA
+A12AA03	calcium gluconate	387292008	Calcium gluconate (substance)	3	g	P	NA
+A12AA04	calcium carbonate	387307005	Calcium carbonate (substance)	3	g	O	NA
+A12AA05	calcium lactate	387217003	Calcium lactate (substance)	2	g	O	NA
+A12AA06	calcium lactate gluconate	422232005	Calcium lactate gluconate (substance)	3	g	O	equivalent to 0.5 g Ca2+
+A12AA07	calcium chloride	387377009	Calcium chloride (substance)	0.2	g	P	NA
+A12AA10	calcium glucoheptonate	71714008	Calcium gluceptate (substance)	3	g	O	NA
+A12BA01	potassium chloride	8631001	Potassium chloride (substance)	3	g	O	NA
+A12BA02	potassium citrate	387450001	Potassium citrate (substance)	4	g	O	NA
+A12CA01	sodium chloride	387390002	Sodium chloride (substance)	1	g	O	NA
+A12CB01	zinc sulfate	387367007	Zinc sulfate (substance)	0.6	g	O	NA
+A12CC01	magnesium chloride	45733002	Magnesium chloride (substance)	2.5	g	O	NA
+A12CC01	magnesium chloride	45733002	Magnesium chloride (substance)	0.8	g	P	NA
+A12CC02	magnesium sulfate	387202002	Magnesium sulfate (substance)	3	g	O	NA
+A12CC02	magnesium sulfate	387202002	Magnesium sulfate (substance)	1	g	P	NA
+A12CC03	magnesium gluconate	116126005	Magnesium gluconate (substance)	5	g	O	NA
+A12CC04	magnesium citrate	387052002	Magnesium citrate (substance)	2	g	O	NA
+A12CD01	sodium fluoride	6910009	Sodium fluoride (substance)	88	mg	O	40 mg fluoride
+A12CD02	sodium monofluorophosphate	83873000	Sodium monofluorophosphate (substance)	0.152	g	O	20 mg fluoride
+A12CE01	sodium selenate	91007007	Sodium selenate (substance)	0.2	mg	O	Se
+A12CE02	sodium selenite	96277001	Sodium selenite (substance)	0.2	mg	O	Se
+A12CE02	sodium selenite	96277001	Sodium selenite (substance)	0.2	mg	P	NA
+A14AA02	stanozolol	126103004	Stanozolol (substance)	5	mg	O	NA
+A14AA02	stanozolol	126103004	Stanozolol (substance)	3.5	mg	P	NA
+A14AA03	metandienone	126126006	Methandrostenolone (substance)	5	mg	O	NA
+A14AA04	metenolone	96346001	Mesterolone (substance)	10	mg	O	NA
+A14AA04	metenolone	96346001	Mesterolone (substance)	7	mg	P	NA
+A14AA05	oxymetholone	126101002	Oxymetholone (substance)	0.25	g	O	NA
+A14AB01	nandrolone	126171003	Nandrolone (substance)	2	mg	P	NA
+A14AB02	ethylestrenol	126170002	Ethylestrenol (substance)	2	mg	O	NA
+A16AA01	levocarnitine	372601001	Levocarnitine (substance)	2	g	O	NA
+A16AA01	levocarnitine	372601001	Levocarnitine (substance)	2	g	P	NA
+A16AA04	mercaptamine	373457005	Mercaptamine (substance)	2	g	O	NA
+A16AA05	carglumic acid	412295009	Carglumic acid (substance)	0.2	g	O	NA
+A16AA06	betaine	43356007	Betaine (substance)	6	g	O	NA
+A16AB02	imiglucerase	386968002	Imiglucerase (substance)	300	U	P	NA
+A16AB03	agalsidase alfa	424905009	Agalsidase alfa (substance)	1	mg	P	NA
+A16AB04	agalsidase beta	424725004	Agalsidase beta (substance)	5	mg	P	NA
+A16AB05	laronidase	409264006	Laronidase (substance)	1	TU	P	NA
+A16AB06	sacrosidase	108962007	Sacrosidase (substance)	68	TU	O	NA
+A16AB07	alglucosidase alfa	703393008	Alglucosidase alfa (substance)	0.1	g	P	NA
+A16AB10	velaglucerase alfa	444773003	Velaglucerase alfa (substance)	300	U	P	NA
+A16AB12	elosulfase alfa	702395005	Elosulfase alfa (substance)	20	mg	P	NA
+A16AB14	sebelipase alfa	719375007	Sebelipase alfa (substance)	5	mg	P	NA
+A16AB17	cerliponase alfa	734039005	Cerliponase alfa (substance)	21	mg	P	NA
+A16AX03	sodium phenylbutyrate	387058003	Sodium phenylbutyrate (substance)	20	g	O	NA
+A16AX04	nitisinone	385996000	Nitisinone (substance)	20	mg	O	NA
+A16AX05	zinc acetate	395952003	Zinc acetate (substance)	0.15	g	O	NA
+A16AX06	miglustat	412296005	Miglustat (substance)	0.3	g	O	NA
+A16AX08	teduglutide	710807004	Teduglutide (substance)	5	mg	P	NA
+A16AX09	glycerol phenylbutyrate	782573007	Glycerol phenylbutyrate (substance)	15	g	O	NA
+A16AX10	eliglustat	714006001	Eliglustat (substance)	0.168	g	O	NA
+A16AX12	trientine	373456001	Trientine (substance)	0.45	g	O	Expressed as trientine
+A16AX14	migalastat	765340000	Migalastat (substance)	61.5	mg	O	NA
+A16AX15	telotristat	733734004	Telotristat (substance)	0.75	g	O	NA
+B01AA01	dicoumarol	79209008	Dicoumarol (substance)	0.1	g	O	NA
+B01AA02	phenindione	387260007	Phenindione (substance)	0.1	g	O	NA
+B01AA03	warfarin	372756006	Warfarin (substance)	7.5	mg	O	NA
+B01AA03	warfarin	372756006	Warfarin (substance)	7.5	mg	P	NA
+B01AA04	phenprocoumon	59488002	Phenprocoumon (substance)	3	mg	O	NA
+B01AA07	acenocoumarol	387457003	Acenocoumarol (substance)	5	mg	O	NA
+B01AA08	ethyl biscoumacetate	51739000	Ethyl biscoumacetate (substance)	0.6	g	O	NA
+B01AB01	heparin	372877000	Heparin (substance)	10	TU	P	NA
+B01AB02	antithrombin III	34086003	Antithrombin III (substance)	2.1	TU	P	NA
+B01AB04	dalteparin	372563008	Dalteparin (substance)	2.5	TU	P	anti Xa
+B01AB05	enoxaparin	372562003	Enoxaparin (substance)	2	TU	P	anti Xa
+B01AB06	nadroparin	699946002	Nadroparin (substance)	2.85	TU	P	anti Xa
+B01AB08	reviparin	395998002	Reviparin (substance)	1.43	TU	P	anti Xa
+B01AB09	danaparoid	372564002	Danaparoid (substance)	1.5	TU	P	anti Xa
+B01AB10	tinzaparin	412608008	Tinzaparin (substance)	3.5	TU	P	anti Xa
+B01AB11	sulodexide	698844007	Sulodexide (substance)	500	LSU	O	LSU = lipoprotein lipase releasing units
+B01AB11	sulodexide	698844007	Sulodexide (substance)	500	LSU	P	LSU = lipoprotein lipase releasing units
+B01AB12	bemiparin	410964003	Bemiparin (substance)	2.5	TU	P	NA
+B01AC04	clopidogrel	386952008	Clopidogrel (substance)	75	mg	O	NA
+B01AC05	ticlopidine	386950000	Ticlopidine (substance)	0.5	g	O	NA
+B01AC07	dipyridamole	387371005	Dipyridamole (substance)	0.4	g	O	NA
+B01AC07	dipyridamole	387371005	Dipyridamole (substance)	0.2	g	P	NA
+B01AC08	carbasalate calcium	111122008	Calcium carbaspirin (substance)	1	tablet	O	NA
+B01AC11	iloprost	395740002	Iloprost (substance)	0.15	mg	Inhal.solution	NA
+B01AC11	iloprost	395740002	Iloprost (substance)	50	mcg	P	NA
+B01AC13	abciximab	386951001	Abciximab (substance)	25	mg	P	NA
+B01AC16	eptifibatide	386998009	Eptifibatide (substance)	0.2	g	P	NA
+B01AC17	tirofiban	386953003	Tirofiban (substance)	10	mg	P	NA
+B01AC18	triflusal	698872000	Triflusal (substance)	0.6	g	O	NA
+B01AC21	treprostinil	443570007	Treprostinil (substance)	4.3	mg	P	NA
+B01AC22	prasugrel	443129001	Prasugrel (substance)	10	mg	O	NA
+B01AC23	cilostazol	116087001	Cilostazol (substance)	0.2	g	O	NA
+B01AC24	ticagrelor	698805004	Ticagrelor (substance)	0.18	g	O	NA
+B01AC25	cangrelor	716118009	Cangrelor (substance)	50	mg	P	NA
+B01AC26	vorapaxar	708718003	Vorapaxar (substance)	2.08	mg	O	NA
+B01AC27	selexipag	717359004	Selexipag (substance)	1.8	mg	O	NA
+B01AD01	streptokinase	395889004	Streptokinase (substance)	1.5	MU	P	NA
+B01AD02	alteplase	387152000	Alteplase (substance)	0.1	g	P	NA
+B01AD03	anistreplase	386958007	Anistreplase (substance)	30	U	P	NA
+B01AD04	urokinase	59082006	Urokinase (substance)	3	MU	P	NA
+B01AD07	reteplase	386957002	Reteplase (substance)	20	U	P	NA
+B01AD11	tenecteplase	387066007	Tenecteplase (substance)	40	mg	P	NA
+B01AE01	desirudin	407117009	Desirudin (substance)	30	mg	P	NA
+B01AE02	lepirudin	386955005	Lepirudin (substance)	0.25	g	P	NA
+B01AE03	argatroban	116508003	Argatroban (substance)	0.2	g	P	NA
+B01AE05	ximelagatran	415853004	Ximelagatran (substance)	48	mg	O	NA
+B01AE06	bivalirudin	129498009	Bivalirudin (substance)	0.25	g	P	NA
+B01AE07	dabigatran etexilate	700029008	Dabigatran etexilate (substance)	0.3	g	O	NA
+B01AF01	rivaroxaban	442031002	Rivaroxaban (substance)	20	mg	O	NA
+B01AF02	apixaban	698090000	Apixaban (substance)	10	mg	O	NA
+B01AF03	edoxaban	712778008	Edoxaban (substance)	60	mg	O	NA
+B01AX01	defibrotide	442263003	Defibrotide (substance)	1.75	g	P	NA
+B01AX05	fondaparinux	708189008	Fondaparinux (substance)	2.5	mg	P	NA
+B01AX07	caplacizumab	784411004	Caplacizumab (substance)	10	mg	P	NA
+B02AA01	aminocaproic acid	59882007	Aminocaproic acid (substance)	16	g	O	NA
+B02AA01	aminocaproic acid	59882007	Aminocaproic acid (substance)	16	g	P	NA
+B02AA02	tranexamic acid	386960009	Tranexamic acid (substance)	2	g	O	NA
+B02AA02	tranexamic acid	386960009	Tranexamic acid (substance)	2	g	P	NA
+B02AB01	aprotinin	386961008	Aprotinin (substance)	500	TU	P	NA
+B02BA01	phytomenadione	66656000	Phytomenadione (substance)	20	mg	O	NA
+B02BA01	phytomenadione	66656000	Phytomenadione (substance)	20	mg	P	NA
+B02BA02	menadione	412244007	Menadione (substance)	10	mg	O	NA
+B02BA02	menadione	412244007	Menadione (substance)	2	mg	P	NA
+B02BB01	fibrinogen, human	418326009	Human fibrinogen (substance)	5	g	P	NA
+B02BX04	romiplostim	439122000	Romiplostim (substance)	30	mcg	P	NA
+B02BX05	eltrombopag	432005001	Eltrombopag (substance)	50	mg	O	NA
+B02BX06	emicizumab	763611007	Emicizumab (substance)	15	mg	P	NA
+B03AA01	ferrous glycine sulfate	396058007	Ferrous glycine sulfate (substance)	0.2	g	O	Fe2+
+B03AA02	ferrous fumarate	387289009	Ferrous fumarate (substance)	0.2	g	O	Fe2+
+B03AA03	ferrous gluconate	387147005	Ferrous gluconate (substance)	0.2	g	O	Fe2+
+B03AA04	ferrous carbonate	55540005	Ferrous carbonate (substance)	0.2	g	O	Fe2+
+B03AA05	ferrous chloride	76617007	Ferrous chloride (substance)	0.2	g	O	Fe2+
+B03AA06	ferrous succinate	419213004	Ferrous succinate (substance)	0.2	g	O	Fe2+
+B03AA07	ferrous sulfate	387402000	Ferrous sulfate (substance)	0.2	g	O	Fe2+
+B03AB01	ferric sodium citrate	763035003	Ferric citrate (substance)	0.75	g	O	Fe3+
+B03AB03	sodium feredetate	395880000	Sodium feredetate (substance)	0.17	g	O	Fe3+
+B03BA01	cyanocobalamin	419382002	Cyanocobalamin (substance)	70	mcg	N	NA
+B03BA01	cyanocobalamin	419382002	Cyanocobalamin (substance)	1	mg	O	NA
+B03BA01	cyanocobalamin	419382002	Cyanocobalamin (substance)	20	mcg	P	NA
+B03BA03	hydroxocobalamin	1217428002	Hydroxocobalamin (substance)	20	mcg	P	NA
+B03BA05	mecobalamin	259512006	Mecobalamin (substance)	1.5	mg	O	NA
+B03BA05	mecobalamin	259512006	Mecobalamin (substance)	0.2	mg	P	NA
+B03BB01	folic acid	63718003	Folic acid (substance)	0.4	mg	O	prophylactic dose
+B03BB01	folic acid	63718003	Folic acid (substance)	10	mg	P	therapeutic dose
+B03XA01	erythropoietin	83042003	Erythropoietin (substance)	1	TU	P	NA
+B03XA02	darbepoetin alfa	385608005	Darbepoetin alfa (substance)	4.5	mcg	P	NA
+B03XA03	methoxy polyethylene glycol-epoetin beta	425913002	Methoxy polyethylene glycol-epoetin beta (substance)	4	mcg	P	NA
+B06AC02	icatibant	703834005	Icatibant (substance)	30	mg	P	NA
+B06AC04	conestat alfa	713468002	Conestat alfa (substance)	3.5	TU	P	NA
+B06AC05	lanadelumab	773956002	Lanadelumab (substance)	21.4	mg	P	NA
+B06AC05	lanadelumab	773956002	Lanadelumab (substance)	NA	NA	NA	NA
+C01AA04	digitoxin	373534001	Digitoxin (substance)	0.1	mg	O	NA
+C01AA04	digitoxin	373534001	Digitoxin (substance)	0.1	mg	P	NA
+C01AA05	digoxin	387461009	Digoxin (substance)	0.25	mg	O	NA
+C01AA05	digoxin	387461009	Digoxin (substance)	0.25	mg	P	NA
+C01AA06	lanatoside C	387338006	Lanatoside C (substance)	1	mg	O	NA
+C01AA06	lanatoside C	387338006	Lanatoside C (substance)	1	mg	R	NA
+C01AA07	deslanoside	16214005	Deslanoside (substance)	1	mg	P	Acute treatment
+C01AA08	metildigoxin	418574005	Metildigoxin (substance)	0.2	mg	O	NA
+C01AA08	metildigoxin	418574005	Metildigoxin (substance)	0.2	mg	P	NA
+C01AC01	g-strophanthin	35966009	Ouabain (substance)	0.25	mg	P	NA
+C01AC03	cymarin	13722006	Cymarin (substance)	2.5	mg	O	NA
+C01BA01	quinidine	372697008	Quinidine (substance)	1.2	g	O	NA
+C01BA02	procainamide	372589008	Procainamide (substance)	3	g	O	NA
+C01BA02	procainamide	372589008	Procainamide (substance)	3	g	P	NA
+C01BA03	disopyramide	372844004	Disopyramide (substance)	0.4	g	O	NA
+C01BA03	disopyramide	372844004	Disopyramide (substance)	0.4	g	P	NA
+C01BA04	sparteine	377002	Sparteine (substance)	0.2	g	P	NA
+C01BA05	ajmaline	1156230005	Ajmaline (substance)	0.3	g	O	NA
+C01BB01	lidocaine	387480006	Lidocaine (substance)	3	g	P	NA
+C01BB02	mexiletine	372909002	Mexiletine (substance)	0.8	g	O	NA
+C01BB02	mexiletine	372909002	Mexiletine (substance)	0.8	g	P	NA
+C01BB03	tocainide	372479006	Tocainide (substance)	1.2	g	O	NA
+C01BB03	tocainide	372479006	Tocainide (substance)	1.2	g	P	NA
+C01BB04	aprindine	413431008	Acridine (substance)	0.1	g	O	NA
+C01BB04	aprindine	413431008	Acridine (substance)	0.1	g	P	NA
+C01BC03	propafenone	372910007	Propafenone (substance)	0.3	g	O	NA
+C01BC03	propafenone	372910007	Propafenone (substance)	0.3	g	P	NA
+C01BC04	flecainide	372751001	Flecainide (substance)	0.2	g	O	NA
+C01BC04	flecainide	372751001	Flecainide (substance)	0.2	g	P	NA
+C01BC08	encainide	372749000	Encainide (substance)	0.1	g	O	NA
+C01BD01	amiodarone	372821002	Amiodarone (substance)	0.2	g	O	NA
+C01BD01	amiodarone	372821002	Amiodarone (substance)	0.2	g	P	NA
+C01BD05	ibutilide	372500009	Ibutilide (substance)	1	mg	P	NA
+C01BD07	dronedarone	443195003	Dronedarone (substance)	0.8	g	O	NA
+C01BG01	moracizine	373726009	Moracizine (substance)	0.75	g	O	NA
+C01BG11	vernakalant	698874004	Vernakalant (substance)	0.2	g	P	NA
+C01CA01	etilefrine	96255000	Etilefrine (substance)	50	mg	O	NA
+C01CA01	etilefrine	96255000	Etilefrine (substance)	50	mg	P	NA
+C01CA02	isoprenaline	372781009	Isoprenaline (substance)	90	mg	O	NA
+C01CA02	isoprenaline	372781009	Isoprenaline (substance)	90	mg	P	NA
+C01CA03	norepinephrine	45555007	Norepinephrine (substance)	6	mg	P	NA
+C01CA04	dopamine	412383006	Dopamine (substance)	0.5	g	P	NA
+C01CA05	norfenefrine	96256004	Norfenefrine (substance)	25	mg	O	NA
+C01CA06	phenylephrine	372771005	Phenylephrine (substance)	4	mg	P	NA
+C01CA07	dobutamine	387145002	Dobutamine (substance)	0.5	g	P	NA
+C01CA08	oxedrine	419339003	Oxedrine (substance)	0.2	g	O	NA
+C01CA08	oxedrine	419339003	Oxedrine (substance)	0.2	g	P	NA
+C01CA09	metaraminol	372728001	Metaraminol (substance)	50	mg	P	NA
+C01CA10	methoxamine	372769005	Methoxamine (substance)	30	mg	P	NA
+C01CA11	mephentermine	38648002	Mephentermine (substance)	30	mg	P	NA
+C01CA14	dopexamine	419490003	Dopexamine (substance)	0.5	g	P	NA
+C01CA16	ibopamine	717169003	Ibopamine (substance)	0.3	g	O	NA
+C01CA17	midodrine	372504000	Midodrine (substance)	30	mg	O	NA
+C01CA24	epinephrine	387362001	Epinephrine (substance)	0.5	mg	P	NA
+C01CA26	ephedrine	387358007	Ephedrine (substance)	50	mg	P	NA
+C01CA27	droxidopa	426390004	Droxidopa (substance)	1	g	O	NA
+C01CE01	amrinone	412411004	Amrinone (substance)	0.5	g	P	NA
+C01CE02	milrinone	373441005	Milrinone (substance)	50	mg	P	NA
+C01CE03	enoximone	396042009	Enoximone (substance)	1	g	P	NA
+C01CX07	xamoterol	418668004	Xamoterol (substance)	0.4	g	O	NA
+C01CX08	levosimendan	442795003	Levosimendan (substance)	11	mg	P	NA
+C01DA02	glyceryl trinitrate	387404004	Glyceryl trinitrate (substance)	5	mg	O	NA
+C01DA02	glyceryl trinitrate	387404004	Glyceryl trinitrate (substance)	2.5	mg	oral aerosol	NA
+C01DA02	glyceryl trinitrate	387404004	Glyceryl trinitrate (substance)	2.5	mg	SL	NA
+C01DA02	glyceryl trinitrate	387404004	Glyceryl trinitrate (substance)	5	mg	TD	NA
+C01DA05	pentaerithrityl tetranitrate	386836006	Pentaerithrityl tetranitrate (substance)	0.12	g	O	NA
+C01DA08	isosorbide dinitrate	387332007	Isosorbide dinitrate (substance)	60	mg	O	NA
+C01DA08	isosorbide dinitrate	387332007	Isosorbide dinitrate (substance)	20	mg	oral aerosol	NA
+C01DA08	isosorbide dinitrate	387332007	Isosorbide dinitrate (substance)	20	mg	SL	NA
+C01DA08	isosorbide dinitrate	387332007	Isosorbide dinitrate (substance)	0.1	g	TD	NA
+C01DA13	eritrityl tetranitrate	62368002	Eritrityl tetranitrate (substance)	90	mg	O	NA
+C01DA14	isosorbide mononitrate	386854005	Isosorbide mononitrate (substance)	40	mg	O	NA
+C01DX02	prenylamine	387288001	Prenylamine (substance)	0.12	g	O	NA
+C01DX03	oxyfedrine	419339003	Oxedrine (substance)	40	mg	O	NA
+C01DX03	oxyfedrine	419339003	Oxedrine (substance)	40	mg	P	NA
+C01DX08	heptaminol	96259006	Heptaminol (substance)	0.45	g	O	NA
+C01DX08	heptaminol	96259006	Heptaminol (substance)	0.45	g	P	NA
+C01DX09	imolamine	717169003	Ibopamine (substance)	90	mg	O	NA
+C01DX16	nicorandil	395809002	Nicorandil (substance)	40	mg	O	NA
+C01DX19	nesiritide	385678006	Nesiritide (substance)	1.5	mg	P	NA
+C01EA01	alprostadil	48988008	Alprostadil (substance)	0.5	mg	P	NA
+C01EB10	adenosine	35431001	Adenosine (substance)	15	mg	P	NA
+C01EB15	trimetazidine	703365009	Trimetazidine (substance)	40	mg	O	NA
+C01EB16	ibuprofen	387207008	Ibuprofen (substance)	30	mg	P	NA
+C01EB17	ivabradine	421228002	Ivabradine (substance)	10	mg	O	NA
+C01EB18	ranolazine	420365007	Ranolazine (substance)	1.5	g	O	NA
+C01EB21	regadenoson	430242005	Regadenoson (substance)	0.4	mg	P	NA
+C02AA02	reserpine	387447004	Reserpine (substance)	0.5	mg	O	NA
+C02AA02	reserpine	387447004	Reserpine (substance)	0.5	mg	P	NA
+C02AC01	clonidine	372805007	Clonidine (substance)	0.45	mg	O	NA
+C02AC01	clonidine	372805007	Clonidine (substance)	0.45	mg	P	NA
+C02AC02	guanfacine	372507007	Guanfacine (substance)	3	mg	O	NA
+C02AC04	tolonidine	42566009	Toluidine (substance)	0.75	mg	O	NA
+C02AC05	moxonidine	395805008	Moxonidine (substance)	0.3	mg	O	NA
+C02BA01	trimetaphan	373771001	Trimetaphan (substance)	0.25	g	P	NA
+C02CA01	prazosin	387433003	Prazosin (substance)	5	mg	O	NA
+C02CA04	doxazosin	372508002	Doxazosin (substance)	4	mg	O	NA
+C02CA06	urapidil	698807007	Urapidil (substance)	0.12	g	O	NA
+C02CA06	urapidil	698807007	Urapidil (substance)	50	mg	P	NA
+C02CC01	betanidine	418981008	Betanidine (substance)	0.1	g	O	NA
+C02CC02	guanethidine	387456007	Guanethidine (substance)	30	mg	O	NA
+C02CC04	debrisoquine	396010003	Debrisoquine (substance)	20	mg	O	NA
+C02CC07	guanoxabenz	372867002	Guanabenz (substance)	25	mg	O	NA
+C02DA01	diazoxide	387328001	Diazoxide (substance)	0.3	g	P	NA
+C02DB01	dihydralazine	703113001	Dihydralazine (substance)	75	mg	O	NA
+C02DB01	dihydralazine	703113001	Dihydralazine (substance)	25	mg	P	NA
+C02DB02	hydralazine	387125005	Hydralazine (substance)	0.1	g	O	NA
+C02DC01	minoxidil	387272001	Minoxidil (substance)	20	mg	O	NA
+C02DD01	nitroprusside	372860000	Nitroprusside (substance)	50	mg	P	NA
+C02KD01	ketanserin	442141001	Ketanserin (substance)	40	mg	O	NA
+C02KD01	ketanserin	442141001	Ketanserin (substance)	40	mg	P	NA
+C02KX01	bosentan	385559004	Bosentan (substance)	0.25	g	O	NA
+C02KX02	ambrisentan	428159003	Ambrisentan (substance)	7.5	mg	O	NA
+C02KX03	sitaxentan	428709002	Sitaxentan (substance)	0.1	g	O	NA
+C02KX04	macitentan	710283008	Macitentan (substance)	10	mg	O	NA
+C02KX05	riociguat	713333001	Riociguat (substance)	4.5	mg	O	NA
+C03AA01	bendroflumethiazide	387520007	Bendroflumethiazide (substance)	2.5	mg	O	NA
+C03AA02	hydroflumethiazide	395946004	Hydroflumethiazide (substance)	25	mg	O	NA
+C03AA03	hydrochlorothiazide	387525002	Hydrochlorothiazide (substance)	25	mg	O	NA
+C03AA04	chlorothiazide	372782002	Chlorothiazide (substance)	0.5	g	O	NA
+C03AA05	polythiazide	387492006	Polythiazide (substance)	1	mg	O	NA
+C03AA06	trichlormethiazide	11473005	Trichlormethiazide (substance)	4	mg	O	NA
+C03AA07	cyclopenthiazide	396009008	Cyclopenthiazide (substance)	0.5	mg	O	NA
+C03AA08	methyclothiazide	387373008	Methyclothiazide (substance)	5	mg	O	NA
+C03AA09	cyclothiazide	37006008	Cyclothiazide (substance)	5	mg	O	NA
+C03BA02	quinethazone	41261002	Quinethazone (substance)	50	mg	O	NA
+C03BA03	clopamide	395940005	Clopamide (substance)	10	mg	O	NA
+C03BA04	chlortalidone	387324004	Chlortalidone (substance)	25	mg	O	NA
+C03BA05	mefruside	406772008	Mefruside (substance)	25	mg	O	NA
+C03BA08	metolazone	387123003	Metolazone (substance)	5	mg	O	NA
+C03BA10	xipamide	395923001	Xipamide (substance)	20	mg	O	NA
+C03BA11	indapamide	387419003	Indapamide (substance)	2.5	mg	O	NA
+C03BD01	theobromine	75371004	Theobromine (substance)	4	g	O	NA
+C03CA01	furosemide	387475002	Furosemide (substance)	40	mg	O	NA
+C03CA01	furosemide	387475002	Furosemide (substance)	40	mg	P	NA
+C03CA02	bumetanide	387498005	Bumetanide (substance)	1	mg	O	NA
+C03CA02	bumetanide	387498005	Bumetanide (substance)	1	mg	P	NA
+C03CA04	torasemide	108476002	Torasemide (substance)	15	mg	O	NA
+C03CA04	torasemide	108476002	Torasemide (substance)	15	mg	P	NA
+C03CC01	etacrynic acid	373536004	Etacrynic acid (substance)	50	mg	O	NA
+C03CC01	etacrynic acid	373536004	Etacrynic acid (substance)	50	mg	P	NA
+C03DA01	spironolactone	387078006	Spironolactone (substance)	75	mg	O	NA
+C03DA02	potassium canrenoate	419615001	Potassium canrenoate (substance)	0.4	g	P	NA
+C03DA04	eplerenone	407010008	Eplerenone (substance)	50	mg	O	NA
+C03DB01	amiloride	387503008	Amiloride (substance)	10	mg	O	NA
+C03DB02	triamterene	387053007	Triamterene (substance)	0.1	g	O	NA
+C03XA01	tolvaptan	443058000	Tolvaptan (substance)	30	mg	O	NA
+C04AA01	isoxsuprine	372818004	Isoxsuprine (substance)	60	mg	O	NA
+C04AA01	isoxsuprine	372818004	Isoxsuprine (substance)	60	mg	P	NA
+C04AA02	buphenine	111140007	Nylidrin (substance)	30	mg	O	NA
+C04AA31	bamethan	703404009	Bamethan (substance)	75	mg	O	NA
+C04AB01	phentolamine	372863003	Phentolamine (substance)	10	mg	O	NA
+C04AB01	phentolamine	372863003	Phentolamine (substance)	10	mg	P	NA
+C04AB02	tolazoline	363554004	Tolazoline (substance)	75	mg	O	NA
+C04AC01	nicotinic acid	273943001	Nicotinic acid (substance)	0.2	g	O	NA
+C04AC01	nicotinic acid	273943001	Nicotinic acid (substance)	0.2	g	P	NA
+C04AC02	nicotinyl alcohol (pyridylcarbinol)	419062009	Nicotinyl alcohol (substance)	0.3	g	O	NA
+C04AC02	nicotinyl alcohol (pyridylcarbinol)	419062009	Nicotinyl alcohol (substance)	0.3	g	P	NA
+C04AC03	inositol nicotinate	414506003	Inositol niacinate (substance)	1.2	g	O	NA
+C04AD02	xantinol nicotinate	708562005	Xantinol nicotinate (substance)	0.9	g	O	NA
+C04AD02	xantinol nicotinate	708562005	Xantinol nicotinate (substance)	0.9	g	P	NA
+C04AD03	pentoxifylline	387522004	Pentoxifylline (substance)	1	g	O	NA
+C04AD03	pentoxifylline	387522004	Pentoxifylline (substance)	0.3	g	P	NA
+C04AX01	cyclandelate	387405003	Cyclandelate (substance)	0.6	g	O	NA
+C04AX02	phenoxybenzamine	372838003	Phenoxybenzamine (substance)	30	mg	O	NA
+C04AX20	buflomedil	703405005	Buflomedil (substance)	0.6	g	O	NA
+C04AX21	naftidrofuryl	395992001	Naftidrofuryl (substance)	0.6	g	O	NA
+C04AX30	azapetine	30827002	Azapetine (substance)	0.15	g	O	NA
+C07AA01	alprenolol	96294004	Alprenolol (substance)	0.4	g	O	NA
+C07AA01	alprenolol	96294004	Alprenolol (substance)	0.4	g	P	NA
+C07AA02	oxprenolol	387583006	Oxprenolol (substance)	0.16	g	O	NA
+C07AA02	oxprenolol	387583006	Oxprenolol (substance)	0.16	g	P	NA
+C07AA03	pindolol	387102009	Pindolol (substance)	15	mg	O	NA
+C07AA03	pindolol	387102009	Pindolol (substance)	15	mg	P	NA
+C07AA05	propranolol	372772003	Propranolol (substance)	0.16	g	O	NA
+C07AA05	propranolol	372772003	Propranolol (substance)	0.16	g	P	NA
+C07AA06	timolol	372880004	Timolol (substance)	20	mg	O	NA
+C07AA06	timolol	372880004	Timolol (substance)	20	mg	P	NA
+C07AA07	sotalol	372911006	Sotalol (substance)	0.16	g	O	NA
+C07AA07	sotalol	372911006	Sotalol (substance)	0.16	g	P	NA
+C07AA12	nadolol	387482003	Nadolol (substance)	0.16	g	O	NA
+C07AA15	carteolol	386866004	Carteolol (substance)	10	mg	O	NA
+C07AA16	tertatolol	716124003	Tertatolol (substance)	5	mg	O	NA
+C07AA23	penbutolol	372505004	Penbutolol (substance)	40	mg	O	NA
+C07AB01	practolol	387436006	Practolol (substance)	0.3	g	O	NA
+C07AB01	practolol	387436006	Practolol (substance)	20	mg	P	NA
+C07AB02	metoprolol	372826007	Metoprolol (substance)	0.15	g	O	NA
+C07AB02	metoprolol	372826007	Metoprolol (substance)	0.15	g	P	NA
+C07AB03	atenolol	387506000	Atenolol (substance)	75	mg	O	NA
+C07AB03	atenolol	387506000	Atenolol (substance)	75	mg	P	NA
+C07AB04	acebutolol	372815001	Acebutolol (substance)	0.4	g	O	NA
+C07AB04	acebutolol	372815001	Acebutolol (substance)	0.4	g	P	NA
+C07AB05	betaxolol	409276006	Betaxolol (substance)	20	mg	O	NA
+C07AB07	bisoprolol	386868003	Bisoprolol (substance)	10	mg	O	NA
+C07AB08	celiprolol	395960002	Celiprolol (substance)	0.2	g	O	NA
+C07AB09	esmolol	372847006	Esmolol (substance)	2.5	g	P	NA
+C07AB12	nebivolol	395808005	Nebivolol (substance)	5	mg	O	NA
+C07AG01	labetalol	372750000	Labetalol (substance)	0.6	g	O	NA
+C07AG01	labetalol	372750000	Labetalol (substance)	0.6	g	P	NA
+C07AG02	carvedilol	386870007	Carvedilol (substance)	37.5	mg	O	NA
+C08CA01	amlodipine	386864001	Amlodipine (substance)	5	mg	O	NA
+C08CA02	felodipine	386863007	Felodipine (substance)	5	mg	O	NA
+C08CA03	isradipine	386862002	Isradipine (substance)	5	mg	O	NA
+C08CA03	isradipine	386862002	Isradipine (substance)	5	mg	P	NA
+C08CA04	nicardipine	372502001	Nicardipine (substance)	90	mg	O	NA
+C08CA04	nicardipine	372502001	Nicardipine (substance)	90	mg	P	NA
+C08CA05	nifedipine	387490003	Nifedipine (substance)	30	mg	O	NA
+C08CA05	nifedipine	387490003	Nifedipine (substance)	30	mg	P	NA
+C08CA06	nimodipine	387502003	Nimodipine (substance)	0.3	g	O	NA
+C08CA06	nimodipine	387502003	Nimodipine (substance)	50	mg	P	NA
+C08CA07	nisoldipine	386861009	Nisoldipine (substance)	20	mg	O	NA
+C08CA08	nitrendipine	444757009	Nitrendipine (substance)	20	mg	O	NA
+C08CA09	lacidipine	395764001	Lacidipine (substance)	4	mg	O	NA
+C08CA10	nilvadipine	713436005	Nilvadipine (substance)	8	mg	O	NA
+C08CA11	manidipine	765322004	Manidipine (substance)	10	mg	O	NA
+C08CA12	barnidipine	698052006	Barnidipine (substance)	10	mg	O	NA
+C08CA13	lercanidipine	395986007	Lercanidipine (substance)	10	mg	O	NA
+C08CA14	cilnidipine	1177123004	Cilnidipine (substance)	10	mg	O	NA
+C08CX01	mibefradil	421651006	Mibefradil (substance)	75	mg	O	NA
+C08DA01	verapamil	372754009	Verapamil (substance)	0.24	g	O	NA
+C08DA01	verapamil	372754009	Verapamil (substance)	0.24	g	P	NA
+C08DB01	diltiazem	372793000	Diltiazem (substance)	0.24	g	O	NA
+C08EA02	bepridil	372503006	Bepridil (substance)	0.3	g	O	NA
+C08EX01	lidoflazine	418865004	Lidoflazine (substance)	0.18	g	O	NA
+C09AA01	captopril	387160004	Captopril (substance)	50	mg	O	NA
+C09AA02	enalapril	372658000	Enalapril (substance)	10	mg	O	NA
+C09AA02	enalapril	372658000	Enalapril (substance)	10	mg	P	NA
+C09AA03	lisinopril	386873009	Lisinopril (substance)	10	mg	O	NA
+C09AA04	perindopril	372916001	Perindopril (substance)	4	mg	O	NA
+C09AA05	ramipril	386872004	Ramipril (substance)	2.5	mg	O	NA
+C09AA06	quinapril	386874003	Quinapril (substance)	15	mg	O	NA
+C09AA06	quinapril	386874003	Quinapril (substance)	15	mg	P	NA
+C09AA07	benazepril	372511001	Benazepril (substance)	7.5	mg	O	NA
+C09AA08	cilazapril	395947008	Cilazapril (substance)	2.5	mg	O	NA
+C09AA09	fosinopril	372510000	Fosinopril (substance)	15	mg	O	NA
+C09AA10	trandolapril	386871006	Trandolapril (substance)	2	mg	O	NA
+C09AA11	spirapril	713473008	Spirapril (substance)	6	mg	O	NA
+C09AA12	delapril	698093003	Delapril (substance)	30	mg	O	NA
+C09AA13	moexipril	373442003	Moexipril (substance)	15	mg	O	NA
+C09AA15	zofenopril	703340007	Zofenopril (substance)	30	mg	O	NA
+C09AA16	imidapril	395984005	Imidapril (substance)	10	mg	O	NA
+C09CA01	losartan	373567002	Losartan (substance)	50	mg	O	NA
+C09CA02	eprosartan	396044005	Eprosartan (substance)	0.6	g	O	NA
+C09CA03	valsartan	386876001	Valsartan (substance)	80	mg	O	NA
+C09CA04	irbesartan	386877005	Irbesartan (substance)	0.15	g	O	NA
+C09CA06	candesartan	372512008	Candesartan (substance)	8	mg	O	NA
+C09CA07	telmisartan	387069000	Telmisartan (substance)	40	mg	O	NA
+C09CA08	olmesartan medoxomil	412260006	Olmesartan medoxomil (substance)	20	mg	O	NA
+C09CA09	azilsartan medoxomil	449561004	Azilsartan medoxomil (substance)	40	mg	O	NA
+C09XA02	aliskiren	426725002	Aliskiren (substance)	0.15	g	O	NA
+C10AA01	simvastatin	387584000	Simvastatin (substance)	30	mg	O	NA
+C10AA02	lovastatin	96303004	Lovastatin (substance)	45	mg	O	NA
+C10AA03	pravastatin	373566006	Pravastatin (substance)	30	mg	O	NA
+C10AA04	fluvastatin	387585004	Fluvastatin (substance)	60	mg	O	NA
+C10AA05	atorvastatin	373444002	Atorvastatin (substance)	20	mg	O	NA
+C10AA06	cerivastatin	373443008	Cerivastatin (substance)	0.2	mg	O	NA
+C10AA07	rosuvastatin	700067006	Rosuvastatin (substance)	10	mg	O	NA
+C10AA08	pitavastatin	443586000	Pitavastatin (substance)	2	mg	O	NA
+C10AB01	clofibrate	387439004	Clofibrate (substance)	2	g	O	NA
+C10AB02	bezafibrate	396025003	Bezafibrate (substance)	0.6	g	O	NA
+C10AB04	gemfibrozil	387189002	Gemfibrozil (substance)	1.2	g	O	NA
+C10AB05	fenofibrate	386879008	Fenofibrate (substance)	0.2	g	O	micronised
+C10AB08	ciprofibrate	395957009	Ciprofibrate (substance)	0.1	g	O	NA
+C10AC01	colestyramine	387408001	Colestyramine (substance)	14	g	O	NA
+C10AC02	colestipol	372811005	Colestipol (substance)	20	g	O	NA
+C10AC04	colesevelam	442510005	Colesevelam (substance)	3.75	g	O	NA
+C10AD02	nicotinic acid	273943001	Nicotinic acid (substance)	2	g	O	NA
+C10AD05	nicotinyl alcohol (pyridylcarbinol)	419062009	Nicotinyl alcohol (substance)	0.9	g	O	NA
+C10AD06	acipimox	391711008	Acipimox (substance)	0.5	g	O	NA
+C10AX01	dextrothyroxine	59170000	Dextrothyroxine (substance)	4	mg	O	NA
+C10AX09	ezetimibe	409149001	Ezetimibe (substance)	10	mg	O	NA
+C10AX12	lomitapide	716228008	Lomitapide (substance)	40	mg	O	NA
+C10AX13	evolocumab	716068004	Evolocumab (substance)	10	mg	P	NA
+C10AX14	alirocumab	715186005	Alirocumab (substance)	5.4	mg	P	NA
+D01BA01	griseofulvin	372807004	Griseofulvin (substance)	0.5	g	O	NA
+D01BA02	terbinafine	373450007	Terbinafine (substance)	0.25	g	O	NA
+D02BB01	betacarotene	103068006	Betacarotene (substance)	0.1	g	O	NA
+D05BA01	trioxysalen	35464001	Trioxsalen (substance)	10	mg	O	NA
+D05BA02	methoxsalen	41062004	Methoxsalen (substance)	10	mg	O	NA
+D05BB01	etretinate	386937001	Etretinate (substance)	35	mg	O	NA
+D05BB02	acitretin	386938006	Acitretin (substance)	35	mg	O	NA
+D10BA01	isotretinoin	387208003	Isotretinoin (substance)	30	mg	O	NA
+D11AH04	alitretinoin	116086005	Alitretinoin (substance)	20	mg	O	NA
+D11AH05	dupilumab	733487000	Dupilumab (substance)	21.4	mg	P	NA
+D11AX02	gamolenic acid	13121007	Gamolenic acid (substance)	0.4	g	O	NA
+D11AX10	finasteride	386963006	Finasteride (substance)	1	mg	O	NA
+G01AA01	nystatin	387048002	Nystatin (substance)	0.1	MU	V	NA
+G01AA02	natamycin	372712006	Natamycin (substance)	25	mg	V	NA
+G01AA03	amphotericin B	77703004	Amphotericin B (substance)	0.2	g	V	NA
+G01AA04	candicidin	81816007	Candicidin (substance)	6	mg	V	NA
+G01AA10	clindamycin	372786004	Clindamycin (substance)	0.1	g	V	NA
+G01AB01	acetarsol	22236007	Acetarsol (substance)	0.5	g	V	NA
+G01AC01	diiodohydroxyquinoline	387355005	Diiodohydroxyquinoline (substance)	0.2	g	V	NA
+G01AC03	chlorquinaldol	255863008	Clorquinaldol (substance)	0.2	g	V	NA
+G01AC05	dequalinium	395964006	Dequalinium (substance)	20	mg	V	NA
+G01AD03	ascorbic acid	43706004	Ascorbic acid (substance)	0.25	g	V	NA
+G01AF01	metronidazole	372602008	Metronidazole (substance)	0.5	g	V	NA
+G01AF02	clotrimazole	387325003	Clotrimazole (substance)	0.1	g	V	NA
+G01AF04	miconazole	372738006	Miconazole (substance)	0.1	g	V	NA
+G01AF05	econazole	373471002	Econazole (substance)	0.1	g	V	NA
+G01AF07	isoconazole	418371001	Isoconazole (substance)	0.6	g	V	NA
+G01AF08	tioconazole	395909003	Tioconazole (substance)	0.3	g	V	Single dose treatment
+G01AF11	ketoconazole	387216007	Ketoconazole (substance)	0.4	g	V	NA
+G01AF12	fenticonazole	419234006	Fenticonazole (substance)	0.1	g	V	NA
+G01AF15	butoconazole	372878005	Butoconazole (substance)	0.1	g	V	NA
+G01AG02	terconazole	387140007	Terconazole (substance)	80	mg	V	NA
+G01AX01	clodantoin	25571003	Clodantoin (substance)	0.1	g	V	NA
+G01AX03	policresulen	703562008	Policresulen (substance)	90	mg	V	NA
+G01AX05	nifuratel	703418002	Nifuratel (substance)	0.6	g	O	NA
+G01AX05	nifuratel	703418002	Nifuratel (substance)	0.6	g	V	NA
+G01AX11	povidone-iodine	386989006	Povidone iodine (substance)	0.2	g	V	NA
+G02AB01	methylergometrine	126074008	Methylergometrine (substance)	0.2	mg	O	NA
+G02AB01	methylergometrine	126074008	Methylergometrine (substance)	0.2	mg	P	NA
+G02AB03	ergometrine	126071000	Ergometrine (substance)	0.2	mg	O	NA
+G02AB03	ergometrine	126071000	Ergometrine (substance)	0.2	mg	P	NA
+G02AD01	dinoprost	387228004	Dinoprost (substance)	25	mg	P	NA
+G02AD02	dinoprostone	387245009	Dinoprostone (substance)	0.5	mg	O	NA
+G02AD02	dinoprostone	387245009	Dinoprostone (substance)	0.5	mg	V	NA
+G02AD03	gemeprost	395729005	Gemeprost (substance)	1	mg	V	Single dose treatment
+G02AD04	carboprost	373455002	Carboprost (substance)	2.5	mg	P	Single dose treatment
+G02AD05	sulprostone	713461008	Sulprostone (substance)	0.5	mg	P	NA
+G02AD06	misoprostol	387242007	Misoprostol (substance)	0.2	mg	O	NA
+G02AD06	misoprostol	387242007	Misoprostol (substance)	0.2	mg	V	vaginal insert, refers to the content of one vaginal insert
+G02CA01	ritodrine	372893009	Ritodrine (substance)	40	mg	O	NA
+G02CA01	ritodrine	372893009	Ritodrine (substance)	40	mg	P	NA
+G02CA02	buphenine	111140007	Nylidrin (substance)	30	mg	P	NA
+G02CB01	bromocriptine	387039007	Bromocriptine (substance)	5	mg	O	NA
+G02CB01	bromocriptine	387039007	Bromocriptine (substance)	5	mg	P	NA
+G02CB02	lisuride	395770007	Lisuride (substance)	0.6	mg	O	NA
+G02CB03	cabergoline	386979007	Cabergoline (substance)	0.5	mg	O	NA
+G02CB04	quinagolide	395850005	Quinagolide (substance)	75	mcg	O	NA
+G02CX01	atosiban	391792002	Atosiban (substance)	165	mg	P	NA
+G03AC01	norethisterone	126102009	Norethisterone (substance)	2.5	mg	P	NA
+G03AC06	medroxyprogesterone	126113007	Medroxyprogesterone (substance)	1.67	mg	P	NA
+G03AC08	etonogestrel	396050000	Etonogestrel (substance)	68	mcg	s.c. implant	NA
+G03AD01	levonorgestrel	126109000	Levonorgestrel (substance)	1.5	mg	O	NA
+G03AD02	ulipristal	703249005	Ulipristal (substance)	30	mg	O	NA
+G03BA01	fluoxymesterone	126125005	Fluoxymesterone (substance)	5	mg	O	NA
+G03BA02	methyltestosterone	126161000	Methyltestosterone (substance)	25	mg	O	NA
+G03BA03	testosterone	43688007	Testosterone (substance)	0.12	g	O	NA
+G03BA03	testosterone	43688007	Testosterone (substance)	18	mg	P	NA
+G03BA03	testosterone	43688007	Testosterone (substance)	0.12	g	R	NA
+G03BA03	testosterone	43688007	Testosterone (substance)	60	mg	SL	NA
+G03BA03	testosterone	43688007	Testosterone (substance)	50	mg	TD	gel
+G03BA03	testosterone	43688007	Testosterone (substance)	3	mg	TD	NA
+G03BB01	mesterolone	96346001	Mesterolone (substance)	50	mg	O	NA
+G03CA01	ethinylestradiol	126097006	Ethinylestradiol (substance)	25	mcg	O	NA
+G03CA03	estradiol	126172005	Estradiol (substance)	0.3	mg	N	NA
+G03CA03	estradiol	126172005	Estradiol (substance)	2	mg	O	NA
+G03CA03	estradiol	126172005	Estradiol (substance)	1	mg	P	depot short duration
+G03CA03	estradiol	126172005	Estradiol (substance)	0.3	mg	P	depot long duration
+G03CA03	estradiol	126172005	Estradiol (substance)	5	mg	R	NA
+G03CA03	estradiol	126172005	Estradiol (substance)	50	mcg	TD	patch, refer to amount delivered per 24 hours
+G03CA03	estradiol	126172005	Estradiol (substance)	1	mg	TD	gel
+G03CA03	estradiol	126172005	Estradiol (substance)	1.53	mg	TD	spray
+G03CA03	estradiol	126172005	Estradiol (substance)	25	mcg	V	NA
+G03CA03	estradiol	126172005	Estradiol (substance)	7.5	mcg	V	vaginal ring,  refers to amount delivered per 24 hours
+G03CA04	estriol	73723004	Estriol (substance)	2	mg	O	NA
+G03CA04	estriol	73723004	Estriol (substance)	2	mg	P	NA
+G03CA04	estriol	73723004	Estriol (substance)	0.2	mg	V	NA
+G03CA06	chlorotrianisene	420464005	Chlorotrianisene (substance)	24	mg	O	NA
+G03CA07	estrone	51775003	Estrone (substance)	1	mg	O	NA
+G03CA57	conjugated estrogens	126098001	Conjugated estrogen (substance)	0.625	mg	O	NA
+G03CA57	conjugated estrogens	126098001	Conjugated estrogen (substance)	0.625	mg	V	NA
+G03CB01	dienestrol	126169003	Dienestrol (substance)	2.5	mg	O	NA
+G03CB01	dienestrol	126169003	Dienestrol (substance)	0.2	mg	V	NA
+G03CB02	diethylstilbestrol	396026002	Diethylstilbestrol (substance)	0.2	mg	O	NA
+G03CB02	diethylstilbestrol	396026002	Diethylstilbestrol (substance)	1	mg	V	NA
+G03CB03	methallenestril	126174006	Methallenestril (substance)	9	mg	O	NA
+G03CX01	tibolone	395903002	Tibolone (substance)	2.5	mg	O	NA
+G03DA01	gestonorone	395980001	Gestonorone (substance)	30	mg	P	NA
+G03DA02	medroxyprogesterone	126113007	Medroxyprogesterone (substance)	5	mg	O	NA
+G03DA02	medroxyprogesterone	126113007	Medroxyprogesterone (substance)	7	mg	P	NA
+G03DA03	hydroxyprogesterone	126110005	Hydroxyprogesterone (substance)	10	mg	P	NA
+G03DA04	progesterone	16683002	Progesterone (substance)	0.3	g	O	NA
+G03DA04	progesterone	16683002	Progesterone (substance)	5	mg	P	NA
+G03DA04	progesterone	16683002	Progesterone (substance)	0.2	g	R	NA
+G03DA04	progesterone	16683002	Progesterone (substance)	90	mg	V	NA
+G03DB01	dydrogesterone	126093005	Dydrogesterone (substance)	10	mg	O	NA
+G03DB02	megestrol	126091007	Megestrol (substance)	5	mg	O	NA
+G03DB08	dienogest	703097002	Dienogest (substance)	2	mg	O	NA
+G03DC01	allylestrenol	391736002	Allylestrenol (substance)	10	mg	O	NA
+G03DC02	norethisterone	126102009	Norethisterone (substance)	5	mg	O	NA
+G03DC03	lynestrenol	419504002	Lynestrenol (substance)	5	mg	O	NA
+G03DC04	ethisterone	126094004	Ethisterone (substance)	5	mg	O	NA
+G03GA01	chorionic gonadotrophin	59433001	Human chorionic gonadotropin (substance)	250	U	P	NA
+G03GA02	human menopausal gonadotrophin	8203003	Human menopausal gonadotropin (substance)	75	U	P	NA
+G03GA04	urofollitropin	395920003	Urofollitropin (substance)	75	U	P	NA
+G03GA05	follitropin alfa	395862009	Follitropin alfa (substance)	75	U	P	NA
+G03GA06	follitropin beta	103028007	Follitropin beta (substance)	75	U	P	NA
+G03GA07	lutropin alfa	415248001	Lutropin alfa (substance)	75	U	P	NA
+G03GA08	choriogonadotropin alfa	129494006	Choriogonadotropin alfa (substance)	0.25	mg	P	NA
+G03GA09	corifollitropin alfa	703830001	Corifollitropin alfa (substance)	0.15	mg	P	NA
+G03GA10	follitropin delta	725743001	Follitropin delta (substance)	12	mcg	P	NA
+G03GB01	cyclofenil	418997003	Cyclofenil (substance)	0.14	g	O	NA
+G03GB02	clomifene	387166005	Clomifene (substance)	9	mg	O	NA
+G03HA01	cyproterone	126119006	Cyproterone (substance)	0.1	g	O	NA
+G03HA01	cyproterone	126119006	Cyproterone (substance)	0.1	g	P	NA
+G03XA01	danazol	126124009	Danazol (substance)	0.6	g	O	NA
+G03XA02	gestrinone	387589005	Gestrinone (substance)	0.7	mg	O	NA
+G03XB01	mifepristone	395796009	Mifepristone (substance)	0.2	g	O	NA
+G03XB02	ulipristal	703249005	Ulipristal (substance)	5	mg	O	NA
+G03XC01	raloxifene	109029006	Raloxifene (substance)	60	mg	O	NA
+G03XC02	bazedoxifene	440186005	Bazedoxifene (substance)	20	mg	O	NA
+G03XX01	prasterone	78316004	Dehydroepiandrosterone (substance)	6.5	mg	V	NA
+G04BA01	ammonium chloride	51366003	Ammonium chloride (substance)	8.5	g	O	NA
+G04BD01	emepronium	421158004	Emepronium (substance)	0.5	g	O	NA
+G04BD01	emepronium	421158004	Emepronium (substance)	75	mg	P	NA
+G04BD02	flavoxate	372768002	Flavoxate (substance)	0.8	g	O	NA
+G04BD04	oxybutynin	372717000	Oxybutynin (substance)	15	mg	O	NA
+G04BD04	oxybutynin	372717000	Oxybutynin (substance)	3.9	mg	TD	NA
+G04BD05	terodiline	417479000	Terodiline (substance)	50	mg	O	NA
+G04BD06	propiverine	395997007	Propiverine (substance)	30	mg	O	NA
+G04BD07	tolterodine	372570008	Tolterodine (substance)	4	mg	O	NA
+G04BD08	solifenacin	407030007	Solifenacin (substance)	5	mg	O	NA
+G04BD09	trospium	412604005	Trospium (substance)	40	mg	O	NA
+G04BD10	darifenacin	416140008	Darifenacin (substance)	7.5	mg	O	NA
+G04BD11	fesoterodine	432255001	Fesoterodine (substance)	4	mg	O	NA
+G04BD12	mirabegron	703803006	Mirabegron (substance)	50	mg	O	NA
+G04BE01	alprostadil	48988008	Alprostadil (substance)	20	mcg	P	NA
+G04BE01	alprostadil	48988008	Alprostadil (substance)	0.25	mg	urethral	NA
+G04BE03	sildenafil	372572000	Sildenafil (substance)	50	mg	O	NA
+G04BE04	yohimbine	73407000	Yohimbine (substance)	15	mg	O	NA
+G04BE07	apomorphine	387375001	Apomorphine (substance)	2	mg	SL	NA
+G04BE08	tadalafil	407111005	Tadalafil (substance)	10	mg	O	NA
+G04BE09	vardenafil	404858007	Vardenafil (substance)	10	mg	O	NA
+G04BE10	avanafil	703956007	Avanafil (substance)	0.1	g	O	NA
+G04BX01	magnesium hydroxide	387337001	Magnesium hydroxide (substance)	0.5	g	O	NA
+G04BX03	acetohydroxamic acid	387426003	Acetohydroxamic acid (substance)	0.75	g	O	NA
+G04BX06	phenazopyridine	15785009	Phenazopyridine (substance)	0.6	g	O	NA
+G04BX12	phenyl salicylate	255898006	Phenyl salicylate (substance)	2	g	O	NA
+G04BX14	dapoxetine	702794006	Dapoxetine (substance)	30	mg	O	NA
+G04BX15	pentosan polysulfate sodium	109117004	Pentosan polysulfate sodium (substance)	0.3	g	O	NA
+G04BX16	tiopronin	109106000	Tiopronin (substance)	0.8	g	O	NA
+G04CA01	alfuzosin	395954002	Alfuzosin (substance)	7.5	mg	O	NA
+G04CA02	tamsulosin	372509005	Tamsulosin (substance)	0.4	mg	O	NA
+G04CA03	terazosin	387068008	Terazosin (substance)	5	mg	O	NA
+G04CA04	silodosin	442042006	Silodosin (substance)	8	mg	O	NA
+G04CB01	finasteride	386963006	Finasteride (substance)	5	mg	O	NA
+G04CB02	dutasteride	385572003	Dutasteride (substance)	0.5	mg	O	NA
+H01AA01	corticotropin	40789008	Adrenocorticotropic hormone (substance)	25	U	P	NA
+H01AA02	tetracosactide	96363002	Tetracosactide (substance)	0.25	mg	P	NA
+H01AB01	thyrotropin alfa	412520006	Thyrotropin alfa (substance)	0.9	mg	P	NA
+H01AC01	somatropin	395883003	Somatropin (substance)	2	U	P	NA
+H01AC03	mecasermin	418157000	Mecasermin (substance)	2	mg	P	NA
+H01AX01	pegvisomant	409201000	Pegvisomant (substance)	10	mg	P	NA
+H01BA02	desmopressin	126189002	Desmopressin (substance)	25	mcg	N	NA
+H01BA02	desmopressin	126189002	Desmopressin (substance)	0.4	mg	O	NA
+H01BA02	desmopressin	126189002	Desmopressin (substance)	4	mcg	P	NA
+H01BA02	desmopressin	126189002	Desmopressin (substance)	0.24	mg	SL	base
+H01BA03	lypressin	418230009	Lypressin (substance)	20	U	N	NA
+H01BA03	lypressin	418230009	Lypressin (substance)	20	U	P	NA
+H01BA04	terlipressin	395899009	Terlipressin (substance)	12	mg	P	NA
+H01BA05	ornipressin	703839000	Ornipressin (substance)	5	U	P	NA
+H01BB02	oxytocin	112115002	Oxytocin (substance)	15	U	N	NA
+H01BB02	oxytocin	112115002	Oxytocin (substance)	200	U	O	NA
+H01BB02	oxytocin	112115002	Oxytocin (substance)	15	U	P	NA
+H01BB03	carbetocin	425003007	Carbetocin (substance)	0.1	mg	P	NA
+H01CA02	nafarelin	109046009	Nafarelin (substance)	0.4	mg	N	NA
+H01CB01	somatostatin	49722008	Somatostatin (substance)	6	mg	P	NA
+H01CB02	octreotide	109053000	Octreotide (substance)	0.7	mg	P	NA
+H01CB03	lanreotide	395765000	Lanreotide (substance)	3	mg	P	NA
+H01CB05	pasireotide	704266003	Pasireotide (substance)	1.2	mg	P	NA
+H01CC01	ganirelix	395728002	Ganirelix (substance)	0.25	mg	P	NA
+H01CC02	cetrorelix	395906005	Cetrorelix (substance)	0.25	mg	P	NA
+H02AA02	fludrocortisone	116586002	Fludrocortisone (substance)	0.1	mg	O	NA
+H02AA03	desoxycortone	1336006	Deoxycortone (substance)	5	mg	O	NA
+H02AA03	desoxycortone	1336006	Deoxycortone (substance)	5	mg	P	NA
+H02AB01	betamethasone	116571008	Betamethasone (substance)	1.5	mg	O	NA
+H02AB01	betamethasone	116571008	Betamethasone (substance)	1.5	mg	P	NA
+H02AB01	betamethasone	116571008	Betamethasone (substance)	0.4	mg	P	depot
+H02AB02	dexamethasone	372584003	Dexamethasone (substance)	1.5	mg	O	NA
+H02AB02	dexamethasone	372584003	Dexamethasone (substance)	1.5	mg	P	NA
+H02AB03	fluocortolone	396061008	Fluocortolone (substance)	10	mg	O	NA
+H02AB04	methylprednisolone	116593003	Methylprednisolone (substance)	7.5	mg	O	NA
+H02AB04	methylprednisolone	116593003	Methylprednisolone (substance)	20	mg	P	NA
+H02AB05	paramethasone	116604005	Paramethasone (substance)	4	mg	O	NA
+H02AB05	paramethasone	116604005	Paramethasone (substance)	4	mg	P	NA
+H02AB06	prednisolone	116601002	Prednisolone (substance)	10	mg	O	NA
+H02AB06	prednisolone	116601002	Prednisolone (substance)	10	mg	P	NA
+H02AB07	prednisone	116602009	Prednisone (substance)	10	mg	O	NA
+H02AB08	triamcinolone	116594009	Triamcinolone (substance)	7.5	mg	O	NA
+H02AB08	triamcinolone	116594009	Triamcinolone (substance)	7.5	mg	P	NA
+H02AB09	hydrocortisone	396458002	Hydrocortisone (substance)	30	mg	O	NA
+H02AB09	hydrocortisone	396458002	Hydrocortisone (substance)	30	mg	P	NA
+H02AB10	cortisone	32498003	Cortisone (substance)	37.5	mg	O	NA
+H02AB10	cortisone	32498003	Cortisone (substance)	37.5	mg	P	NA
+H02AB12	rimexolone	387046003	Rimexolone (substance)	20	mg	P	intraarticular
+H02AB13	deflazacort	396012006	Deflazacort (substance)	15	mg	O	NA
+H02CA01	trilostane	387134000	Trilostane (substance)	0.36	g	O	NA
+H03AA01	levothyroxine sodium	126202002	Levothyroxine sodium (substance)	0.15	mg	O	NA
+H03AA01	levothyroxine sodium	126202002	Levothyroxine sodium (substance)	0.15	mg	P	NA
+H03AA02	liothyronine sodium	126204001	Liothyronine sodium (substance)	60	mcg	O	NA
+H03AA02	liothyronine sodium	126204001	Liothyronine sodium (substance)	60	mcg	P	NA
+H03BA01	methylthiouracil	387356006	Methylthiouracil (substance)	0.1	g	O	NA
+H03BA02	propylthiouracil	387203007	Propylthiouracil (substance)	0.1	g	O	NA
+H03BB01	carbimazole	395831005	Carbimazole (substance)	15	mg	O	NA
+H03BB02	thiamazole	428162000	Thiazole (substance)	10	mg	O	NA
+H04AA01	glucagon	66603002	Glucagon (substance)	3	mg	N	NA
+H04AA01	glucagon	66603002	Glucagon (substance)	1	mg	P	NA
+H05AA02	teriparatide	425438001	Teriparatide (substance)	20	mcg	P	NA
+H05AA03	parathyroid hormone	4076007	Intact parathyroid hormone (substance)	0.1	mg	P	NA
+H05BA01	calcitonin (salmon synthetic)	713394005	Synthetic salmon calcitonin (substance)	200	U	N	NA
+H05BA01	calcitonin (salmon synthetic)	713394005	Synthetic salmon calcitonin (substance)	100	U	P	NA
+H05BA02	calcitonin (pork natural)	415137000	Porcine calcitonin (substance)	100	U	P	NA
+H05BA03	calcitonin (human synthetic)	127383000	Human calcitonin (substance)	100	U	P	NA
+H05BX01	cinacalcet	409392004	Cinacalcet (substance)	60	mg	O	NA
+H05BX02	paricalcitol	108946001	Paricalcitol (substance)	2	mcg	O	NA
+H05BX02	paricalcitol	108946001	Paricalcitol (substance)	2	mcg	P	NA
+H05BX04	etelcalcetide	723539000	Etelcalcetide (substance)	2.1	mg	P	NA
+H05BX05	calcifediol	259337002	Calcifediol (substance)	30	mcg	O	NA
+J01AA01	demeclocycline	372779007	Demeclocycline (substance)	0.6	g	O	NA
+J01AA02	doxycycline	372478003	Doxycycline (substance)	0.1	g	O	NA
+J01AA02	doxycycline	372478003	Doxycycline (substance)	0.1	g	P	NA
+J01AA03	chlortetracycline	373509001	Chlortetracycline (substance)	1	g	O	NA
+J01AA04	lymecycline	387548007	Lymecycline (substance)	0.6	g	O	NA
+J01AA04	lymecycline	387548007	Lymecycline (substance)	0.6	g	P	NA
+J01AA05	metacycline	373527003	Metacycline (substance)	0.6	g	O	NA
+J01AA06	oxytetracycline	372675006	Oxytetracycline (substance)	1	g	O	NA
+J01AA06	oxytetracycline	372675006	Oxytetracycline (substance)	1	g	P	NA
+J01AA07	tetracycline	372809001	Tetracycline (substance)	1	g	O	NA
+J01AA07	tetracycline	372809001	Tetracycline (substance)	1	g	P	NA
+J01AA08	minocycline	372653009	Minocycline (substance)	0.2	g	O	NA
+J01AA08	minocycline	372653009	Minocycline (substance)	0.2	g	P	NA
+J01AA09	rolitetracycline	96076003	Rolitetracycline (substance)	0.35	g	P	NA
+J01AA11	clomocycline	419950007	Clomocycline (substance)	1	g	O	NA
+J01AA12	tigecycline	418313005	Tigecycline (substance)	0.1	g	P	NA
+J01AA14	sarecycline	781643008	Sarecycline (substance)	0.1	g	O	NA
+J01AA15	omadacycline	781644002	Omadacycline (substance)	0.3	g	O	NA
+J01AA15	omadacycline	781644002	Omadacycline (substance)	0.1	g	P	NA
+J01BA01	chloramphenicol	372777009	Chloramphenicol (substance)	3	g	O	NA
+J01BA01	chloramphenicol	372777009	Chloramphenicol (substance)	3	g	P	NA
+J01BA02	thiamphenicol	363552000	Thiamphenicol (substance)	1.5	g	O	NA
+J01BA02	thiamphenicol	363552000	Thiamphenicol (substance)	1.5	g	P	NA
+J01CA01	ampicillin	387170002	Ampicillin (substance)	2	g	O	NA
+J01CA01	ampicillin	387170002	Ampicillin (substance)	6	g	P	NA
+J01CA01	ampicillin	387170002	Ampicillin (substance)	2	g	R	NA
+J01CA02	pivampicillin	387545005	Pivampicillin (substance)	1.05	g	O	NA
+J01CA03	carbenicillin	372713001	Carbenicillin (substance)	12	g	P	NA
+J01CA04	amoxicillin	372687004	Amoxicillin (substance)	1.5	g	O	NA
+J01CA04	amoxicillin	372687004	Amoxicillin (substance)	3	g	P	NA
+J01CA05	carindacillin	63188000	Carbenicillin indanyl sodium (substance)	4	g	O	NA
+J01CA06	bacampicillin	372865005	Bacampicillin (substance)	1.2	g	O	NA
+J01CA07	epicillin	34983009	Epicillin (substance)	2	g	O	NA
+J01CA07	epicillin	34983009	Epicillin (substance)	2	g	P	NA
+J01CA08	pivmecillinam	387542008	Pivmecillinam (substance)	0.6	g	O	NA
+J01CA09	azlocillin	387308000	Azlocillin (substance)	12	g	P	NA
+J01CA10	mezlocillin	387446008	Mezlocillin (substance)	6	g	P	NA
+J01CA11	mecillinam	387541001	Mecillinam (substance)	1.2	g	P	NA
+J01CA12	piperacillin	372836004	Piperacillin (substance)	14	g	P	NA
+J01CA13	ticarcillin	372577006	Ticarcillin (substance)	15	g	P	NA
+J01CA15	talampicillin	387546006	Talampicillin (substance)	2	g	O	NA
+J01CA17	temocillin	387543003	Temocillin (substance)	4	g	P	NA
+J01CA18	hetacillin	37691005	Hetacillin (substance)	2	g	O	NA
+J01CA19	aspoxicillin	372687004	Amoxicillin (substance)	4	g	P	NA
+J01CE01	benzylpenicillin	323389000	Benzylpenicillin (substance)	3.6	g	P	NA
+J01CE02	phenoxymethylpenicillin	372725003	Phenoxymethylpenicillin (substance)	2	g	O	NA
+J01CE04	azidocillin	387308000	Azlocillin (substance)	1.5	g	O	NA
+J01CE05	pheneticillin	387084009	Pheneticillin (substance)	1	g	O	NA
+J01CE07	clometocillin	713466003	Clometocillin (substance)	1	g	O	NA
+J01CE08	benzathine benzylpenicillin	75247008	Benzathine benzylpenicillin (substance)	3.6	g	P	Expressed as benzylpenicillin
+J01CE09	procaine benzylpenicillin	387246005	Procaine benzylpenicillin (substance)	0.6	g	P	NA
+J01CF01	dicloxacillin	372873001	Dicloxacillin (substance)	2	g	O	NA
+J01CF01	dicloxacillin	372873001	Dicloxacillin (substance)	2	g	P	NA
+J01CF02	cloxacillin	373276005	Cloxacillin (substance)	2	g	O	NA
+J01CF02	cloxacillin	373276005	Cloxacillin (substance)	2	g	P	NA
+J01CF03	meticillin	373515001	Meticillin (substance)	4	g	P	NA
+J01CF04	oxacillin	372868007	Oxacillin (substance)	2	g	O	NA
+J01CF04	oxacillin	372868007	Oxacillin (substance)	2	g	P	NA
+J01CF05	flucloxacillin	387544009	Flucloxacillin (substance)	2	g	O	NA
+J01CF05	flucloxacillin	387544009	Flucloxacillin (substance)	2	g	P	NA
+J01CF06	nafcillin	372898000	Nafcillin (substance)	3	g	P	NA
+J01CG01	sulbactam	96008003	Sulbactam (substance)	1	g	P	NA
+J01CR04	sultamicillin	710202000	Sultamicillin (substance)	1.5	g	O	NA
+J01DB01	cefalexin	387304003	Cefalexin (substance)	2	g	O	NA
+J01DB02	cefaloridine	28588009	Cefaloridine (substance)	3	g	P	NA
+J01DB03	cefalotin	387470007	Cefazolin (substance)	4	g	P	NA
+J01DB04	cefazolin	387470007	Cefazolin (substance)	3	g	P	NA
+J01DB05	cefadroxil	372651006	Cefadroxil (substance)	2	g	O	NA
+J01DB07	cefatrizine	96056009	Cefatrizine (substance)	1	g	O	NA
+J01DB08	cefapirin	87303007	Cefapirin (substance)	4	g	P	NA
+J01DB09	cefradine	58018009	Cevadine (substance)	2	g	O	NA
+J01DB09	cefradine	58018009	Cevadine (substance)	2	g	P	NA
+J01DC01	cefoxitin	372780005	Cefoxitin (substance)	6	g	P	NA
+J01DC02	cefuroxime	372833007	Cefuroxime (substance)	0.5	g	O	NA
+J01DC02	cefuroxime	372833007	Cefuroxime (substance)	3	g	P	NA
+J01DC03	cefamandole	372801003	Cefamandole (substance)	6	g	P	NA
+J01DC04	cefaclor	387270009	Cefaclor (substance)	1	g	O	NA
+J01DC05	cefotetan	13585009	Cefotetan (substance)	4	g	P	NA
+J01DC06	cefonicid	58343005	Cefonicid (substance)	1	g	P	NA
+J01DC07	cefotiam	421700007	Cefotiam (substance)	1.2	g	O	NA
+J01DC07	cefotiam	421700007	Cefotiam (substance)	4	g	P	NA
+J01DC08	loracarbef	96061006	Loracarbef (substance)	0.6	g	O	NA
+J01DC09	cefmetazole	96059002	Cefmetazole (substance)	4	g	P	NA
+J01DC10	cefprozil	387538005	Cefprozil (substance)	1	g	O	NA
+J01DC11	ceforanide	1668008	Ceforanide (substance)	4	g	P	NA
+J01DC12	cefminox	698875003	Cefminox (substance)	4	g	P	NA
+J01DC13	cefbuperazone	372743004	Cefoperazone (substance)	2	g	P	NA
+J01DD01	cefotaxime	372704003	Cefotaxime (substance)	4	g	P	NA
+J01DD02	ceftazidime	387200005	Ceftazidime (substance)	4	g	P	NA
+J01DD03	cefsulodin	387537000	Cefsulodin (substance)	4	g	P	NA
+J01DD04	ceftriaxone	372670001	Ceftriaxone (substance)	2	g	P	NA
+J01DD06	latamoxef	387099009	Latamoxef (substance)	4	g	P	NA
+J01DD07	ceftizoxime	372770006	Ceftizoxime (substance)	4	g	P	NA
+J01DD08	cefixime	387536009	Cefixime (substance)	0.4	g	O	NA
+J01DD09	cefodizime	387539002	Cefodizime (substance)	2	g	P	NA
+J01DD10	cefetamet	443045001	Cefetamet (substance)	1	g	O	NA
+J01DD12	cefoperazone	372743004	Cefoperazone (substance)	4	g	P	NA
+J01DD13	cefpodoxime	387534007	Cefpodoxime (substance)	0.4	g	O	NA
+J01DD14	ceftibuten	387535008	Ceftibuten (substance)	0.4	g	O	NA
+J01DD15	cefdinir	108677001	Cefdinir (substance)	0.6	g	O	NA
+J01DD16	cefditoren	708598002	Cefditoren (substance)	0.4	g	O	NA
+J01DE01	cefepime	96048006	Cefepime (substance)	4	g	P	NA
+J01DE02	cefpirome	387533001	Cefpirome (substance)	4	g	P	NA
+J01DF01	aztreonam	387386004	Aztreonam (substance)	0.225	g	Inhal.solution	NA
+J01DF01	aztreonam	387386004	Aztreonam (substance)	4	g	P	NA
+J01DH02	meropenem	387540000	Meropenem (substance)	3	g	P	NA
+J01DH03	ertapenem	396346003	Ertapenem (substance)	1	g	P	NA
+J01DH04	doripenem	428352004	Doripenem (substance)	1.5	g	P	NA
+J01DH05	biapenem	725572002	Biapenem (substance)	1.2	g	P	NA
+J01DI01	ceftobiprole medocaril	734513003	Ceftobiprole medocaril (substance)	1.5	g	P	NA
+J01DI02	ceftaroline fosamil	702415007	Ceftaroline fosamil (substance)	1.2	g	P	NA
+J01DI03	faropenem	1162766006	Faropenem (substance)	0.75	g	O	NA
+J01EA01	trimethoprim	387179001	Trimethoprim (substance)	0.4	g	O	NA
+J01EA01	trimethoprim	387179001	Trimethoprim (substance)	0.4	g	P	NA
+J01EB02	sulfamethizole	387389006	Sulfamethizole (substance)	4	g	O	NA
+J01EB03	sulfadimidine	40036000	Sulfadimidine (substance)	4	g	O	NA
+J01EB04	sulfapyridine	27082000	Sulfapyridine (substance)	1	g	O	NA
+J01EB05	sulfafurazole	372858002	Sulfafurazole (substance)	4	g	O	NA
+J01EB05	sulfafurazole	372858002	Sulfafurazole (substance)	4	g	P	NA
+J01EB08	sulfathiourea	78959000	Sulfathiourea (substance)	6	g	O	NA
+J01EC01	sulfamethoxazole	363528007	Sulfamethoxazole (substance)	2	g	O	NA
+J01EC02	sulfadiazine	74523009	Sulfadiazine (substance)	0.6	g	O	NA
+J01EC03	sulfamoxole	50848005	Sulfamoxole (substance)	1	g	O	NA
+J01EC03	sulfamoxole	50848005	Sulfamoxole (substance)	1	g	P	NA
+J01ED01	sulfadimethoxine	387279005	Sulfadimethoxine (substance)	0.5	g	O	NA
+J01ED02	sulfalene	395890008	Sulfalene (substance)	0.1	g	O	NA
+J01ED04	sulfametoxydiazine	16106007	Sulfametoxydiazine (substance)	0.5	g	O	NA
+J01ED05	sulfamethoxypyridazine	420382009	Sulfamethoxypyridazine (substance)	0.5	g	O	NA
+J01ED07	sulfamerazine	5767002	Sulfamerazine (substance)	3	g	O	NA
+J01ED08	sulfaphenazole	51569009	Sulfaphenazole (substance)	1	g	O	NA
+J01FA01	erythromycin	372694001	Erythromycin (substance)	1	g	O	NA
+J01FA01	erythromycin	372694001	Erythromycin (substance)	2	g	O	erythromycin ethylsuccinate tablets
+J01FA01	erythromycin	372694001	Erythromycin (substance)	1	g	P	NA
+J01FA02	spiramycin	387163002	Spiramycin (substance)	3	g	O	NA
+J01FA03	midecamycin	703378009	Midecamycin (substance)	1.2	g	O	NA
+J01FA03	midecamycin	703378009	Midecamycin (substance)	1	g	P	NA
+J01FA05	oleandomycin	41332001	Oleandomycin (substance)	1	g	O	NA
+J01FA06	roxithromycin	96037004	Roxithromycin (substance)	0.3	g	O	NA
+J01FA07	josamycin	713477009	Josamycin (substance)	2	g	O	NA
+J01FA08	troleandomycin	64130008	Troleandomycin (substance)	1	g	O	NA
+J01FA09	clarithromycin	387487009	Clarithromycin (substance)	0.5	g	O	NA
+J01FA09	clarithromycin	387487009	Clarithromycin (substance)	1	g	P	NA
+J01FA10	azithromycin	387531004	Azithromycin (substance)	0.3	g	O	NA
+J01FA10	azithromycin	387531004	Azithromycin (substance)	0.5	g	P	NA
+J01FA11	miocamycin	703378009	Midecamycin (substance)	1.2	g	O	NA
+J01FA13	dirithromycin	96035007	Dirithromycin (substance)	0.5	g	O	NA
+J01FA15	telithromycin	410908003	Telithromycin (substance)	0.8	g	O	NA
+J01FF01	clindamycin	372786004	Clindamycin (substance)	1.2	g	O	NA
+J01FF01	clindamycin	372786004	Clindamycin (substance)	1.8	g	P	NA
+J01FF02	lincomycin	372677003	Lincomycin (substance)	1.8	g	O	NA
+J01FF02	lincomycin	372677003	Lincomycin (substance)	1.8	g	P	NA
+J01GA01	streptomycin	387223008	Streptomycin (substance)	1	g	P	NA
+J01GA02	streptoduocin	16915004	Streptozocin (substance)	1	g	P	NA
+J01GB01	tobramycin	373548001	Tobramycin (substance)	0.112	g	Inhal.powder	NA
+J01GB01	tobramycin	373548001	Tobramycin (substance)	0.3	g	Inhal.solution	NA
+J01GB01	tobramycin	373548001	Tobramycin (substance)	0.24	g	P	NA
+J01GB03	gentamicin	387321007	Gentamicin (substance)	0.24	g	P	NA
+J01GB04	kanamycin	387396008	Kanamycin (substance)	1	g	P	NA
+J01GB05	neomycin	373528008	Neomycin (substance)	1	g	O	NA
+J01GB06	amikacin	387266001	Amikacin (substance)	1	g	P	NA
+J01GB07	netilmicin	387110005	Netilmicin (substance)	0.35	g	O	NA
+J01GB07	netilmicin	387110005	Netilmicin (substance)	0.35	g	P	NA
+J01GB08	sisomicin	96031003	Sisomicin (substance)	0.24	g	P	NA
+J01GB11	isepamicin	725577008	Isepamicin (substance)	0.4	g	P	NA
+J01GB12	arbekacin	725569009	Arbekacin (substance)	0.2	g	P	NA
+J01MA01	ofloxacin	387551000	Ofloxacin (substance)	0.4	g	O	NA
+J01MA01	ofloxacin	387551000	Ofloxacin (substance)	0.4	g	P	NA
+J01MA02	ciprofloxacin	372840008	Ciprofloxacin (substance)	1	g	O	NA
+J01MA02	ciprofloxacin	372840008	Ciprofloxacin (substance)	0.8	g	P	NA
+J01MA03	pefloxacin	96089009	Pefloxacin (substance)	0.8	g	O	NA
+J01MA03	pefloxacin	96089009	Pefloxacin (substance)	0.8	g	P	NA
+J01MA04	enoxacin	387550004	Enoxacin (substance)	0.8	g	O	NA
+J01MA05	temafloxacin	387555009	Temafloxacin (substance)	0.8	g	O	NA
+J01MA06	norfloxacin	387271008	Norfloxacin (substance)	0.8	g	O	NA
+J01MA07	lomefloxacin	387553002	Lomefloxacin (substance)	0.4	g	O	NA
+J01MA08	fleroxacin	96085003	Fleroxacin (substance)	0.4	g	O	NA
+J01MA08	fleroxacin	96085003	Fleroxacin (substance)	0.4	g	P	NA
+J01MA09	sparfloxacin	387554008	Sparfloxacin (substance)	0.2	g	O	NA
+J01MA10	rufloxacin	717102009	Rufloxacin (substance)	0.2	g	O	NA
+J01MA11	grepafloxacin	386892006	Grepafloxacin (substance)	0.4	g	O	NA
+J01MA12	levofloxacin	387552007	Levofloxacin (substance)	0.24	g	Inhal.solution	NA
+J01MA12	levofloxacin	387552007	Levofloxacin (substance)	0.5	g	O	NA
+J01MA12	levofloxacin	387552007	Levofloxacin (substance)	0.5	g	P	NA
+J01MA13	trovafloxacin	96092008	Trovafloxacin (substance)	0.2	g	O	NA
+J01MA13	trovafloxacin	96092008	Trovafloxacin (substance)	0.2	g	P	NA
+J01MA14	moxifloxacin	412439003	Moxifloxacin (substance)	0.4	g	O	NA
+J01MA14	moxifloxacin	412439003	Moxifloxacin (substance)	0.4	g	P	NA
+J01MA15	gemifloxacin	407086007	Gemifloxacin (substance)	0.32	g	O	NA
+J01MA16	gatifloxacin	116349004	Gatifloxacin (substance)	0.4	g	O	NA
+J01MA16	gatifloxacin	116349004	Gatifloxacin (substance)	0.4	g	P	NA
+J01MA17	prulifloxacin	703590007	Prulifloxacin (substance)	0.6	g	O	NA
+J01MA21	sitafloxacin	96082000	Sarafloxacin (substance)	0.1	g	O	NA
+J01MA23	delafloxacin	735011001	Delafloxacin (substance)	0.9	g	O	NA
+J01MA23	delafloxacin	735011001	Delafloxacin (substance)	0.6	g	P	NA
+J01MB01	rosoxacin	387556005	Rosoxacin (substance)	0.3	g	O	NA
+J01MB02	nalidixic acid	387261006	Nalidixic acid (substance)	4	g	O	NA
+J01MB03	piromidic acid	96079005	Pipemidic acid (substance)	2	g	O	NA
+J01MB04	pipemidic acid	96079005	Pipemidic acid (substance)	0.8	g	O	NA
+J01MB05	oxolinic acid	66653008	Oxolinic acid (substance)	1	g	O	NA
+J01MB06	cinoxacin	387549004	Cinoxacin (substance)	1	g	O	NA
+J01MB07	flumequine	765389005	Flumequine (substance)	1.2	g	O	NA
+J01XA01	vancomycin	372735009	Vancomycin (substance)	2	g	P	NA
+J01XA02	teicoplanin	387529008	Teicoplanin (substance)	0.4	g	P	NA
+J01XA04	dalbavancin	703917001	Dalbavancin (substance)	1.5	g	P	course dose
+J01XB01	colistin	387412007	Colistin (substance)	3	MU	Inhal.powder	NA
+J01XB01	colistin	387412007	Colistin (substance)	3	MU	Inhal.solution	NA
+J01XB01	colistin	387412007	Colistin (substance)	9	MU	P	NA
+J01XB02	polymyxin B	372824005	Polymyxin B (substance)	0.15	g	P	NA
+J01XC01	fusidic acid	387530003	Fusidic acid (substance)	1.5	g	O	NA
+J01XC01	fusidic acid	387530003	Fusidic acid (substance)	1.5	g	P	NA
+J01XD01	metronidazole	372602008	Metronidazole (substance)	1.5	g	P	NA
+J01XD02	tinidazole	395907001	Tinidazole (substance)	1.5	g	P	NA
+J01XD03	ornidazole	442924004	Ornidazole (substance)	1	g	P	NA
+J01XE01	nitrofurantoin	373543005	Nitrofurantoin (substance)	0.2	g	O	NA
+J01XE02	nifurtoinol	713437001	Nifurtoinol (substance)	0.16	g	O	NA
+J01XX01	fosfomycin	372534005	Fosfomycin (substance)	3	g	O	NA
+J01XX01	fosfomycin	372534005	Fosfomycin (substance)	8	g	P	NA
+J01XX04	spectinomycin	372882007	Spectinomycin (substance)	3	g	P	NA
+J01XX05	methenamine	372773008	Methenamine (substance)	2	g	O	hippurate
+J01XX05	methenamine	372773008	Methenamine (substance)	3	g	O	mandelate
+J01XX06	mandelic acid	395778000	Mandelic acid (substance)	12	g	O	NA
+J01XX07	nitroxoline	703481003	Nitroxoline (substance)	1	g	O	NA
+J01XX08	linezolid	387056004	Linezolid (substance)	1.2	g	O	NA
+J01XX08	linezolid	387056004	Linezolid (substance)	1.2	g	P	NA
+J01XX09	daptomycin	406439009	Daptomycin (substance)	0.28	g	P	NA
+J01XX11	tedizolid	703912007	Tedizolid (substance)	0.2	g	O	NA
+J01XX11	tedizolid	703912007	Tedizolid (substance)	0.2	g	P	NA
+J02AA01	amphotericin B	77703004	Amphotericin B (substance)	35	mg	P	NA
+J02AB01	miconazole	372738006	Miconazole (substance)	1	g	P	NA
+J02AB02	ketoconazole	387216007	Ketoconazole (substance)	0.2	g	O	NA
+J02AC01	fluconazole	387174006	Fluconazole (substance)	0.2	g	O	NA
+J02AC01	fluconazole	387174006	Fluconazole (substance)	0.2	g	P	NA
+J02AC02	itraconazole	387532006	Itraconazole (substance)	0.2	g	O	NA
+J02AC02	itraconazole	387532006	Itraconazole (substance)	0.2	g	P	NA
+J02AC03	voriconazole	385469007	Voriconazole (substance)	0.4	g	O	NA
+J02AC03	voriconazole	385469007	Voriconazole (substance)	0.4	g	P	NA
+J02AC04	posaconazole	421747003	Posaconazole (substance)	0.3	g	O	NA
+J02AC04	posaconazole	421747003	Posaconazole (substance)	0.3	g	P	NA
+J02AC05	isavuconazole	765386003	Isavuconazole (substance)	0.2	g	O	NA
+J02AC05	isavuconazole	765386003	Isavuconazole (substance)	0.2	g	P	NA
+J02AX01	flucytosine	387155003	Flucytosine (substance)	10	g	O	NA
+J02AX01	flucytosine	387155003	Flucytosine (substance)	10	g	P	NA
+J02AX04	caspofungin	413770001	Caspofungin (substance)	50	mg	P	NA
+J02AX05	micafungin	416127003	Micafungin (substance)	0.1	g	P	NA
+J02AX06	anidulafungin	422157006	Anidulafungin (substance)	0.1	g	P	NA
+J04AA01	4-aminosalicylic acid	255666002	Para-aminosalicylic acid (substance)	12	g	O	NA
+J04AA02	sodium aminosalicylate	20231007	Aminosalicylate sodium (substance)	14	g	O	NA
+J04AA02	sodium aminosalicylate	20231007	Aminosalicylate sodium (substance)	14	g	P	NA
+J04AA03	calcium aminosalicylate	65222005	Calcium aminosalicylate (substance)	15	g	O	NA
+J04AB01	cycloserine	387282000	Cycloserine (substance)	0.75	g	O	NA
+J04AB02	rifampicin	387159009	Rifampicin (substance)	0.6	g	O	NA
+J04AB02	rifampicin	387159009	Rifampicin (substance)	0.6	g	P	NA
+J04AB03	rifamycin	768973004	Rifamycin (substance)	0.6	g	P	NA
+J04AB04	rifabutin	386893001	Rifabutin (substance)	0.15	g	O	NA
+J04AB05	rifapentine	108686006	Rifapentine (substance)	0.11	g	O	NA
+J04AB30	capreomycin	387081001	Capreomycin (substance)	1	g	P	NA
+J04AC01	isoniazid	387472004	Isoniazid (substance)	0.3	g	O	NA
+J04AC01	isoniazid	387472004	Isoniazid (substance)	0.3	g	P	NA
+J04AD01	protionamide	703589003	Protionamide (substance)	0.75	g	O	NA
+J04AD03	ethionamide	32800009	Ethionamide (substance)	0.75	g	O	NA
+J04AK01	pyrazinamide	387076005	Pyrazinamide (substance)	1.5	g	O	NA
+J04AK02	ethambutol	387129004	Ethambutol (substance)	1.2	g	O	NA
+J04AK02	ethambutol	387129004	Ethambutol (substance)	1.2	g	P	NA
+J04AK05	bedaquiline	714086004	Bedaquiline (substance)	86	mg	O	NA
+J04AK06	delamanid	714097004	Delamanid (substance)	0.2	g	O	NA
+J04BA01	clofazimine	387410004	Clofazimine (substance)	0.1	g	O	NA
+J04BA02	dapsone	387096002	Dapsone (substance)	50	mg	O	NA
+J05AB01	aciclovir	372729009	Aciclovir (substance)	4	g	O	NA
+J05AB01	aciclovir	372729009	Aciclovir (substance)	4	g	P	NA
+J05AB03	vidarabine	373759007	Vidarabine (substance)	0.7	g	P	NA
+J05AB06	ganciclovir	372848001	Ganciclovir (substance)	3	g	O	NA
+J05AB06	ganciclovir	372848001	Ganciclovir (substance)	0.5	g	P	NA
+J05AB09	famciclovir	387557001	Famciclovir (substance)	0.75	g	O	NA
+J05AB11	valaciclovir	96098007	Valaciclovir (substance)	3	g	O	NA
+J05AB12	cidofovir	386894007	Cidofovir (substance)	25	mg	P	NA
+J05AB14	valganciclovir	129476000	Valganciclovir (substance)	0.9	g	O	NA
+J05AB15	brivudine	698049003	Brivudine (substance)	0.125	g	O	NA
+J05AC02	rimantadine	372532009	Rimantadine (substance)	0.2	g	O	NA
+J05AD01	foscarnet	372902006	Foscarnet (substance)	6.5	g	P	NA
+J05AE01	saquinavir	372530001	Saquinavir (substance)	1.8	g	O	NA
+J05AE02	indinavir	372529006	Indinavir (substance)	2.4	g	O	NA
+J05AE03	ritonavir	386896009	Ritonavir (substance)	1.2	g	O	NA
+J05AE04	nelfinavir	373445001	Nelfinavir (substance)	2.25	g	O	NA
+J05AE05	amprenavir	387006009	Amprenavir (substance)	1.2	g	O	NA
+J05AE07	fosamprenavir	407017006	Fosamprenavir (substance)	1.4	g	O	NA
+J05AE08	atazanavir	413592000	Atazanavir (substance)	0.3	g	O	NA
+J05AE09	tipranavir	419409009	Tipranavir (substance)	1	g	O	NA
+J05AE10	darunavir	423888002	Darunavir (substance)	1.2	g	O	NA
+J05AF01	zidovudine	387151007	Zidovudine (substance)	0.6	g	O	NA
+J05AF01	zidovudine	387151007	Zidovudine (substance)	0.6	g	P	NA
+J05AF02	didanosine	387105006	Didanosine (substance)	0.4	g	O	NA
+J05AF03	zalcitabine	387187000	Zalcitabine (substance)	2.25	mg	O	NA
+J05AF04	stavudine	386895008	Stavudine (substance)	80	mg	O	NA
+J05AF05	lamivudine	386897000	Lamivudine (substance)	0.3	g	O	NA
+J05AF06	abacavir	387005008	Abacavir (substance)	0.6	g	O	NA
+J05AF07	tenofovir disoproxil	421203005	Tenofovir disoproxil (substance)	0.245	g	O	NA
+J05AF08	adefovir dipivoxil	409114008	Adefovir dipivoxil (substance)	10	mg	O	NA
+J05AF09	emtricitabine	404856006	Emtricitabine (substance)	0.2	g	O	NA
+J05AF10	entecavir	416644000	Entecavir (substance)	0.5	mg	O	NA
+J05AF11	telbivudine	425347005	Telbivudine (substance)	0.6	g	O	NA
+J05AF13	tenofovir alafenamide	715220007	Tenofovir alafenamide (substance)	25	mg	O	NA
+J05AG01	nevirapine	386898005	Nevirapine (substance)	0.4	g	O	NA
+J05AG02	delavirdine	108710001	Delavirdine (substance)	1.2	g	O	NA
+J05AG03	efavirenz	387001004	Efavirenz (substance)	0.6	g	O	NA
+J05AG04	etravirine	432121008	Etravirine (substance)	0.4	g	O	NA
+J05AG05	rilpivirine	703123005	Rilpivirine (substance)	25	mg	O	NA
+J05AG06	doravirine	781493004	Doravirine (substance)	0.1	g	O	NA
+J05AH01	zanamivir	387010007	Zanamivir (substance)	20	mg	Inhal.powder	NA
+J05AH02	oseltamivir	412261005	Oseltamivir (substance)	0.15	g	O	NA
+J05AH03	peramivir	716121006	Peramivir (substance)	0.6	g	P	NA
+J05AJ01	raltegravir	429707008	Raltegravir (substance)	0.8	g	O	NA
+J05AJ03	dolutegravir	713464000	Dolutegravir (substance)	50	mg	O	NA
+J05AP01	ribavirin	387188005	Ribavirin (substance)	6	g	Inhal.solution	NA
+J05AP01	ribavirin	387188005	Ribavirin (substance)	1	g	O	NA
+J05AP02	telaprevir	698806003	Telaprevir (substance)	2.25	g	O	NA
+J05AP03	boceprevir	698183007	Boceprevir (substance)	2.4	g	O	NA
+J05AP05	simeprevir	708823009	Simeprevir (substance)	0.15	g	O	NA
+J05AP06	asunaprevir	715390003	Asunaprevir (substance)	0.2	g	O	NA
+J05AP07	daclatasvir	712519008	Daclatasvir (substance)	60	mg	O	NA
+J05AP08	sofosbuvir	710806008	Sofosbuvir (substance)	0.4	g	O	NA
+J05AP09	dasabuvir	714104000	Dasabuvir (substance)	0.5	g	O	NA
+J05AP10	elbasvir	716042006	Elbasvir (substance)	50	mg	O	NA
+J05AP11	grazoprevir	716041004	Grazoprevir (substance)	0.1	g	O	NA
+J05AX01	moroxydine	703380003	Moroxydine (substance)	0.3	g	O	NA
+J05AX05	inosine pranobex	395749001	Inosine pranobex (substance)	3	g	O	NA
+J05AX07	enfuvirtide	409127007	Enfuvirtide (substance)	0.18	g	P	NA
+J05AX09	maraviroc	429603001	Maraviroc (substance)	0.6	g	O	NA
+J05AX18	letermovir	763033005	Letermovir (substance)	0.48	g	O	NA
+J05AX18	letermovir	763033005	Letermovir (substance)	0.48	g	P	NA
+J05AX19	tilorone	30236005	Tilorone (substance)	0.125	g	O	NA
+J05AX25	baloxavir marboxil	782500006	Baloxavir marboxil (substance)	40	mg	O	NA
+J05AX27	favipiravir	1163580005	Favipiravir (substance)	1.6	g	O	NA
+L02AA01	diethylstilbestrol	396026002	Diethylstilbestrol (substance)	3	mg	O	NA
+L02AA02	polyestradiol phosphate	126084009	Polyestradiol phosphate (substance)	6	mg	P	NA
+L02AA03	ethinylestradiol	126097006	Ethinylestradiol (substance)	1.5	mg	O	NA
+L02AA04	fosfestrol	395979004	Fosfestrol (substance)	0.25	g	O	NA
+L02AA04	fosfestrol	395979004	Fosfestrol (substance)	0.25	g	P	NA
+L02AB01	megestrol	126091007	Megestrol (substance)	0.16	g	O	NA
+L02AB02	medroxyprogesterone	126113007	Medroxyprogesterone (substance)	1	g	O	NA
+L02AB02	medroxyprogesterone	126113007	Medroxyprogesterone (substance)	1	g	P	NA
+L02AB03	gestonorone	395980001	Gestonorone (substance)	40	mg	P	NA
+L02AE01	buserelin	395744006	Buserelin (substance)	0.11	mg	implant	NA
+L02AE01	buserelin	395744006	Buserelin (substance)	1.2	mg	N	NA
+L02AE01	buserelin	395744006	Buserelin (substance)	1.5	mg	P	NA
+L02AE02	leuprorelin	397198002	Leuprorelin (substance)	60	mcg	implant	NA
+L02AE02	leuprorelin	397198002	Leuprorelin (substance)	1	mg	P	NA
+L02AE02	leuprorelin	397198002	Leuprorelin (substance)	0.134	mg	P	depot inj
+L02AE03	goserelin	108771008	Goserelin (substance)	0.129	mg	implant	NA
+L02AE04	triptorelin	395915003	Triptorelin (substance)	0.134	mg	P	depot inj
+L02AE04	triptorelin	395915003	Triptorelin (substance)	0.1	mg	P	NA
+L02AE05	histrelin	109049002	Histrelin (substance)	0.137	mg	implant	NA
+L02BA02	toremifene	387588002	Toremifene (substance)	60	mg	O	NA
+L02BA03	fulvestrant	385519002	Fulvestrant (substance)	8.3	mg	P	NA
+L02BB01	flutamide	387587007	Flutamide (substance)	0.75	g	O	NA
+L02BB02	nilutamide	96372005	Nilutamide (substance)	0.3	g	O	NA
+L02BB03	bicalutamide	386908000	Bicalutamide (substance)	50	mg	O	NA
+L02BB04	enzalutamide	703125003	Enzalutamide (substance)	0.16	g	O	NA
+L02BB05	apalutamide	766972001	Apalutamide (substance)	0.24	g	O	NA
+L02BG01	aminoglutethimide	387257000	Aminoglutethimide (substance)	1	g	O	NA
+L02BG02	formestane	414288004	Formestane (substance)	18	mg	P	NA
+L02BG03	anastrozole	386910003	Anastrozole (substance)	1	mg	O	NA
+L02BG04	letrozole	386911004	Letrozole (substance)	2.5	mg	O	NA
+L02BG06	exemestane	387017005	Exemestane (substance)	25	mg	O	NA
+L02BX01	abarelix	407128008	Abarelix (substance)	3.6	mg	P	NA
+L02BX02	degarelix	441864003	Degarelix (substance)	2.7	mg	P	NA
+L02BX03	abiraterone	699678007	Abiraterone (substance)	1	g	O	NA
+L03AA02	filgrastim	386948008	Filgrastim (substance)	0.35	mg	P	NA
+L03AA03	molgramostim	395801004	Molgramostim (substance)	0.35	mg	P	NA
+L03AA09	sargramostim	108967001	Sargramostim (substance)	0.45	mg	P	NA
+L03AA10	lenograstim	395767008	Lenograstim (substance)	0.35	mg	P	NA
+L03AA12	ancestim	703829006	Ancestim (substance)	1.4	mg	P	NA
+L03AA13	pegfilgrastim	385544005	Pegfilgrastim (substance)	0.3	mg	P	NA
+L03AA14	lipegfilgrastim	710282003	Lipegfilgrastim (substance)	0.3	mg	P	NA
+L03AB01	interferon alfa natural	45754009	Interferon alfa (substance)	2	MU	P	NA
+L03AB02	interferon beta natural	420710006	Interferon beta (substance)	33.33	TU	P	NA
+L03AB03	interferon gamma	420303002	Interferon gamma (substance)	40	mcg	P	NA
+L03AB04	interferon alfa-2a	386914007	Interferon alfa-2a (substance)	2	MU	P	NA
+L03AB05	interferon alfa-2b	386915008	Interferon alfa-2b (substance)	2	MU	P	NA
+L03AB06	interferon alfa-n1	419598008	Interferon alfa-n1 (substance)	5	MU	P	NA
+L03AB07	interferon beta-1a	386902004	Interferon beta-1a (substance)	4.3	mcg	P	NA
+L03AB08	interferon beta-1b	386903009	Interferon beta-1b (substance)	4	MU	P	NA
+L03AB09	interferon alfacon-1	108745009	Interferon alfacon-1 (substance)	4	mcg	P	NA
+L03AB10	peginterferon alfa-2b	395823000	Peginterferon alfa-2b (substance)	7.5	mcg	P	NA
+L03AB11	peginterferon alfa-2a	421559001	Peginterferon alfa-2a (substance)	26	mcg	P	NA
+L03AB13	peginterferon beta-1a	706897007	Peginterferon beta-1a (substance)	8.9	mcg	P	NA
+L03AC01	aldesleukin	386917000	Aldesleukin (substance)	0.2	mg	P	NA
+L03AC02	oprelvekin	108968006	Oprelvekin (substance)	3.5	mg	P	NA
+L03AX05	pidotimod	713433002	Pidotimod (substance)	1.6	g	O	NA
+L03AX11	tasonermin	421147008	Tasonermin (substance)	3.5	mg	P	NA
+L03AX13	glatiramer acetate	108755008	Glatiramer acetate (substance)	20	mg	P	NA
+L03AX14	histamine dihydrochloride	1217222003	Histamine dihydrochloride (substance)	0.5	mg	P	NA
+L03AX15	mifamurtide	710284002	Mifamurtide (substance)	0.7	mg	P	NA
+L03AX16	plerixafor	442264009	Plerixafor (substance)	16.8	mg	P	NA
+L04AA02	muromonab-CD3	109137000	Muromonab-CD3 (substance)	5	mg	P	NA
+L04AA04	antithymocyte immunoglobulin (rabbit)	768651008	Antithymocyte immunoglobulin (substance)	0.1	g	P	NA
+L04AA06	mycophenolic acid	409330005	Mycophenolic acid (substance)	2	g	O	as mycophenolate mofetil
+L04AA06	mycophenolic acid	409330005	Mycophenolic acid (substance)	2	g	P	as mycophenolate mofetil
+L04AA10	sirolimus	387014003	Sirolimus (substance)	3	mg	O	NA
+L04AA13	leflunomide	386981009	Leflunomide (substance)	20	mg	O	NA
+L04AA18	everolimus	428698007	Everolimus (substance)	1.5	mg	O	NA
+L04AA21	efalizumab	407005009	Efalizumab (substance)	10	mg	P	NA
+L04AA23	natalizumab	414805007	Natalizumab (substance)	10	mg	P	NA
+L04AA24	abatacept	421777009	Abatacept (substance)	27	mg	P	NA
+L04AA25	eculizumab	427429004	Eculizumab (substance)	64	mg	P	NA
+L04AA26	belimumab	449043000	Belimumab (substance)	25	mg	P	NA
+L04AA27	fingolimod	449000008	Fingolimod (substance)	0.5	mg	O	NA
+L04AA28	belatacept	713475001	Belatacept (substance)	12.5	mg	P	NA
+L04AA29	tofacitinib	704313003	Tofacitinib (substance)	10	mg	O	NA
+L04AA31	teriflunomide	703785006	Teriflunomide (substance)	14	mg	O	NA
+L04AA32	apremilast	703350008	Apremilast (substance)	60	mg	O	NA
+L04AA33	vedolizumab	704256006	Vedolizumab (substance)	5.4	mg	P	NA
+L04AA34	alemtuzumab	129472003	Alemtuzumab (substance)	0.13	mg	P	NA
+L04AA36	ocrelizumab	733464008	Ocrelizumab (substance)	3.29	mg	P	NA
+L04AA37	baricitinib	726518002	Baricitinib (substance)	4	mg	O	NA
+L04AA40	cladribine	386916009	Cladribine (substance)	0.34	mg	O	NA
+L04AB01	etanercept	387045004	Etanercept (substance)	7	mg	P	NA
+L04AB02	infliximab	386891004	Infliximab (substance)	3.75	mg	P	NA
+L04AB04	adalimumab	407317001	Adalimumab (substance)	2.9	mg	P	NA
+L04AB05	certolizumab pegol	430306004	Certolizumab pegol (substance)	14	mg	P	NA
+L04AB06	golimumab	442435002	Golimumab (substance)	1.66	mg	P	NA
+L04AC01	daclizumab	386977009	Daclizumab (substance)	5	mg	P	NA
+L04AC02	basiliximab	386978004	Basiliximab (substance)	40	mg	P	course dose
+L04AC03	anakinra	385549000	Anakinra (substance)	0.1	g	P	NA
+L04AC04	rilonacept	430868007	Rilonacept (substance)	23	mg	P	NA
+L04AC05	ustekinumab	443465002	Ustekinumab (substance)	0.54	mg	P	NA
+L04AC07	tocilizumab	444648007	Tocilizumab (substance)	20	mg	P	NA
+L04AC08	canakinumab	698091001	Canakinumab (substance)	2.7	mg	P	NA
+L04AC10	secukinumab	708822004	Secukinumab (substance)	10	mg	P	NA
+L04AC11	siltuximab	704262001	Siltuximab (substance)	37	mg	P	NA
+L04AC12	brodalumab	726519005	Brodalumab (substance)	15	mg	P	NA
+L04AC13	ixekizumab	724037000	Ixekizumab (substance)	2.9	mg	P	NA
+L04AC14	sarilumab	735231009	Sarilumab (substance)	14.3	mg	P	NA
+L04AC16	guselkumab	736494008	Guselkumab (substance)	1.79	mg	P	NA
+L04AC17	tildrakizumab	771591006	Tildrakizumab (substance)	1.11	mg	P	NA
+L04AC18	risankizumab	787732000	Risankizumab (substance)	1.67	mg	P	NA
+L04AD01	ciclosporin	387467008	Ciclosporin (substance)	0.25	g	O	NA
+L04AD01	ciclosporin	387467008	Ciclosporin (substance)	0.25	g	P	NA
+L04AD02	tacrolimus	386975001	Tacrolimus (substance)	5	mg	O	NA
+L04AD02	tacrolimus	386975001	Tacrolimus (substance)	5	mg	P	NA
+L04AX01	azathioprine	372574004	Azathioprine (substance)	0.15	g	O	NA
+L04AX01	azathioprine	372574004	Azathioprine (substance)	0.15	g	P	NA
+L04AX02	thalidomide	78702007	Thalidomide (substance)	0.1	g	O	NA
+L04AX03	methotrexate	387381009	Methotrexate (substance)	2.5	mg	O	NA
+L04AX03	methotrexate	387381009	Methotrexate (substance)	2.5	mg	P	NA
+L04AX04	lenalidomide	421471009	Lenalidomide (substance)	10	mg	O	NA
+L04AX05	pirfenidone	439581000	Pirfenidone (substance)	2.4	g	O	NA
+L04AX06	pomalidomide	703789000	Pomalidomide (substance)	3	mg	O	NA
+L04AX07	dimethyl fumarate	724035008	Dimethyl fumarate (substance)	0.48	g	O	NA
+M01AA01	phenylbutazone	273951003	Phenylbutazone (substance)	0.3	g	O	NA
+M01AA01	phenylbutazone	273951003	Phenylbutazone (substance)	0.3	g	P	NA
+M01AA01	phenylbutazone	273951003	Phenylbutazone (substance)	0.3	g	R	NA
+M01AA03	oxyphenbutazone	387269008	Oxyphenbutazone (substance)	0.3	g	O	NA
+M01AA03	oxyphenbutazone	387269008	Oxyphenbutazone (substance)	0.3	g	R	NA
+M01AB01	indometacin	373513008	Indometacin (substance)	0.1	g	O	NA
+M01AB01	indometacin	373513008	Indometacin (substance)	0.1	g	P	NA
+M01AB01	indometacin	373513008	Indometacin (substance)	0.1	g	R	NA
+M01AB02	sulindac	387513000	Sulindac (substance)	0.4	g	O	NA
+M01AB02	sulindac	387513000	Sulindac (substance)	0.4	g	P	NA
+M01AB02	sulindac	387513000	Sulindac (substance)	0.4	g	R	NA
+M01AB03	tolmetin	372748008	Tolmetin (substance)	0.7	g	O	NA
+M01AB03	tolmetin	372748008	Tolmetin (substance)	0.7	g	R	NA
+M01AB04	zomepirac	96176000	Zomepirac (substance)	0.3	g	O	NA
+M01AB05	diclofenac	7034005	Diclofenac (substance)	0.1	g	O	NA
+M01AB05	diclofenac	7034005	Diclofenac (substance)	0.1	g	P	NA
+M01AB05	diclofenac	7034005	Diclofenac (substance)	0.1	g	R	NA
+M01AB06	alclofenac	391703003	Aceclofenac (substance)	1.25	g	O	NA
+M01AB06	alclofenac	391703003	Aceclofenac (substance)	1.25	g	R	NA
+M01AB08	etodolac	386860005	Etodolac (substance)	0.4	g	O	NA
+M01AB11	acemetacin	391704009	Acemetacin (substance)	0.12	g	O	NA
+M01AB15	ketorolac	372501008	Ketorolac (substance)	30	mg	O	NA
+M01AB15	ketorolac	372501008	Ketorolac (substance)	30	mg	P	NA
+M01AB16	aceclofenac	391703003	Aceclofenac (substance)	0.2	g	O	NA
+M01AC01	piroxicam	387153005	Piroxicam (substance)	20	mg	O	NA
+M01AC01	piroxicam	387153005	Piroxicam (substance)	20	mg	P	NA
+M01AC01	piroxicam	387153005	Piroxicam (substance)	20	mg	R	NA
+M01AC02	tenoxicam	395898001	Tenoxicam (substance)	20	mg	O	NA
+M01AC02	tenoxicam	395898001	Tenoxicam (substance)	20	mg	P	NA
+M01AC02	tenoxicam	395898001	Tenoxicam (substance)	20	mg	R	NA
+M01AC05	lornoxicam	412013008	Lornoxicam (substance)	12	mg	O	NA
+M01AC05	lornoxicam	412013008	Lornoxicam (substance)	12	mg	P	NA
+M01AC05	lornoxicam	412013008	Lornoxicam (substance)	12	mg	R	NA
+M01AC06	meloxicam	387055000	Meloxicam (substance)	15	mg	O	NA
+M01AC06	meloxicam	387055000	Meloxicam (substance)	15	mg	P	NA
+M01AC06	meloxicam	387055000	Meloxicam (substance)	15	mg	R	NA
+M01AE01	ibuprofen	387207008	Ibuprofen (substance)	1.2	g	O	NA
+M01AE01	ibuprofen	387207008	Ibuprofen (substance)	1.2	g	P	NA
+M01AE01	ibuprofen	387207008	Ibuprofen (substance)	1.2	g	R	NA
+M01AE02	naproxen	372588000	Naproxen (substance)	0.5	g	O	NA
+M01AE02	naproxen	372588000	Naproxen (substance)	0.5	g	R	NA
+M01AE03	ketoprofen	386832008	Ketoprofen (substance)	0.15	g	O	NA
+M01AE03	ketoprofen	386832008	Ketoprofen (substance)	0.15	g	P	NA
+M01AE03	ketoprofen	386832008	Ketoprofen (substance)	0.15	g	R	NA
+M01AE04	fenoprofen	373525006	Fenoprofen (substance)	1.2	g	O	NA
+M01AE05	fenbufen	396052008	Fenbufen (substance)	0.6	g	O	NA
+M01AE07	suprofen	108849007	Suprofen (substance)	0.4	g	O	NA
+M01AE09	flurbiprofen	373506008	Flurbiprofen (substance)	0.2	g	O	NA
+M01AE09	flurbiprofen	373506008	Flurbiprofen (substance)	0.2	g	R	NA
+M01AE11	tiaprofenic acid	395902007	Tiaprofenic acid (substance)	0.6	g	O	NA
+M01AE11	tiaprofenic acid	395902007	Tiaprofenic acid (substance)	0.6	g	R	NA
+M01AE12	oxaprozin	108518005	Oxaprozin (substance)	0.9	g	O	NA
+M01AE14	dexibuprofen	418868002	Dexibuprofen (substance)	0.8	g	O	NA
+M01AE17	dexketoprofen	396018005	Dexketoprofen (substance)	75	mg	O	NA
+M01AE17	dexketoprofen	396018005	Dexketoprofen (substance)	75	mg	P	NA
+M01AG01	mefenamic acid	387185008	Mefenamic acid (substance)	1	g	O	NA
+M01AG02	tolfenamic acid	395910008	Tolfenamic acid (substance)	0.3	g	O	NA
+M01AG02	tolfenamic acid	395910008	Tolfenamic acid (substance)	0.3	g	R	NA
+M01AG03	flufenamic acid	1156232002	Flufenamic acid (substance)	0.5	g	O	NA
+M01AH01	celecoxib	116081000	Celecoxib (substance)	0.2	g	O	NA
+M01AH02	rofecoxib	387008005	Rofecoxib (substance)	25	mg	O	NA
+M01AH03	valdecoxib	385584001	Valdecoxib (substance)	10	mg	O	NA
+M01AH04	parecoxib	409135005	Parecoxib (substance)	40	mg	P	NA
+M01AH05	etoricoxib	409134009	Etoricoxib (substance)	60	mg	O	NA
+M01AH06	lumiracoxib	424967004	Lumiracoxib (substance)	0.1	g	O	NA
+M01AX01	nabumetone	386859000	Nabumetone (substance)	1	g	O	NA
+M01AX04	azapropazone	391798003	Azapropazone (substance)	0.75	g	O	NA
+M01AX05	glucosamine	70237008	Glucosamine (substance)	1.5	g	O	Refers to glucosamine sulfate
+M01AX07	benzydamine	421319000	Benzydamine (substance)	0.15	g	O	NA
+M01AX07	benzydamine	421319000	Benzydamine (substance)	0.15	g	R	NA
+M01AX17	nimesulide	703479000	Nimesulide (substance)	0.2	g	O	NA
+M01CB01	sodium aurothiomalate	387380005	Sodium aurothiomalate (substance)	2.4	mg	P	NA
+M01CB02	sodium aurotiosulfate	85494006	Sodium aurotiosulfate (substance)	14	mg	P	NA
+M01CB03	auranofin	387100001	Auranofin (substance)	6	mg	O	NA
+M01CB04	aurothioglucose	21880003	Aurothioglucose (substance)	2.4	mg	P	NA
+M01CC01	penicillamine	387235007	Penicillamine (substance)	0.5	g	O	NA
+M03BA02	carisoprodol	387133006	Carisoprodol (substance)	1.4	g	O	NA
+M03BA03	methocarbamol	387486000	Methocarbamol (substance)	3	g	O	NA
+M03BA03	methocarbamol	387486000	Methocarbamol (substance)	3	g	P	NA
+M03BA04	styramate	16125005	Styramate (substance)	0.5	g	O	NA
+M03BB02	chlormezanone	387400008	Chlormezanone (substance)	0.6	g	O	NA
+M03BB03	chlorzoxazone	44908000	Chlorzoxazone (substance)	1.5	g	O	NA
+M03BC01	orphenadrine (citrate)	387167001	Orphenadrine citrate (substance)	0.12	g	O	NA
+M03BC01	orphenadrine (citrate)	387167001	Orphenadrine citrate (substance)	0.12	g	P	NA
+M03BX01	baclofen	387342009	Baclofen (substance)	50	mg	O	NA
+M03BX01	baclofen	387342009	Baclofen (substance)	0.55	mg	P	NA
+M03BX02	tizanidine	373440006	Tizanidine (substance)	12	mg	O	NA
+M03BX03	pridinol	703591006	Pyritinol (substance)	6	mg	O	NA
+M03BX04	tolperisone	703717006	Tolperisone (substance)	0.2	g	O	NA
+M03BX30	fenyramidol	83872005	Phenyramidol (substance)	2	g	O	NA
+M03CA01	dantrolene	372819007	Dantrolene (substance)	0.1	g	O	NA
+M04AA01	allopurinol	387135004	Allopurinol (substance)	0.4	g	O	NA
+M04AA01	allopurinol	387135004	Allopurinol (substance)	0.4	g	P	NA
+M04AA03	febuxostat	441743008	Febuxostat (substance)	80	mg	O	NA
+M04AB01	probenecid	387365004	Probenecid (substance)	1	g	O	NA
+M04AB02	sulfinpyrazone	387108008	Sulfinpyrazone (substance)	0.3	g	O	NA
+M04AB03	benzbromarone	698025001	Benzbromarone (substance)	0.1	g	O	NA
+M04AB05	lesinurad	715259003	Lesinurad (substance)	0.2	g	O	NA
+M04AC01	colchicine	387413002	Colchicine (substance)	1	mg	O	NA
+M04AC01	colchicine	387413002	Colchicine (substance)	1	mg	P	NA
+M04AC02	cinchophen	61709008	Cinchophen (substance)	1	g	O	NA
+M04AX02	pegloticase	449280003	Pegloticase (substance)	0.57	mg	P	NA
+M05BA01	etidronic acid	420702005	Etidronic acid (substance)	0.4	g	O	NA
+M05BA01	etidronic acid	420702005	Etidronic acid (substance)	1.5	g	P	course dose
+M05BA02	clodronic acid	387579006	Clodronic acid (substance)	1.6	g	O	NA
+M05BA02	clodronic acid	387579006	Clodronic acid (substance)	1.5	g	P	course dose
+M05BA03	pamidronic acid	420442001	Pamidronic acid (substance)	60	mg	P	course dose
+M05BA04	alendronic acid	391730008	Alendronic acid (substance)	10	mg	O	NA
+M05BA05	tiludronic acid	395905009	Tiludronic acid (substance)	0.4	g	O	NA
+M05BA06	ibandronic acid	420936009	Ibandronic acid (substance)	5	mg	O	NA
+M05BA06	ibandronic acid	420936009	Ibandronic acid (substance)	6	mg	P	course dose
+M05BA07	risedronic acid	768539002	Risedronic acid (substance)	5	mg	O	NA
+M05BA08	zoledronic acid	395926009	Zoledronic acid (substance)	4	mg	P	NA
+M05BX03	strontium ranelate	432727001	Strontium ranelate (substance)	2	g	O	NA
+M05BX04	denosumab	446321003	Denosumab (substance)	0.33	mg	P	NA
+M09AA01	hydroquinine	765387007	Hydroquinidine (substance)	0.2	g	O	NA
+M09AB02	collagenase clostridium histolyticum	56355009	Clostridium histolyticum collagenase (substance)	0.9	mg	P	NA
+M09AX01	hyaluronic acid	38218009	Hyaluronic acid (substance)	3.6	mg	P	intraarticular
+M09AX03	ataluren	718843009	Ataluren (substance)	2.8	g	O	NA
+M09AX07	nusinersen	723985005	Nusinersen (substance)	0.1	mg	P	NA
+N02AA01	morphine	373529000	Morphine (substance)	0.1	g	O	NA
+N02AA01	morphine	373529000	Morphine (substance)	30	mg	P	NA
+N02AA01	morphine	373529000	Morphine (substance)	30	mg	R	NA
+N02AA03	hydromorphone	44508008	Hydromorphone (substance)	20	mg	O	NA
+N02AA03	hydromorphone	44508008	Hydromorphone (substance)	4	mg	P	NA
+N02AA03	hydromorphone	44508008	Hydromorphone (substance)	4	mg	R	NA
+N02AA04	nicomorphine	96181009	Nicomorphine (substance)	30	mg	O	NA
+N02AA04	nicomorphine	96181009	Nicomorphine (substance)	30	mg	P	NA
+N02AA04	nicomorphine	96181009	Nicomorphine (substance)	30	mg	R	NA
+N02AA05	oxycodone	55452001	Oxycodone (substance)	75	mg	O	NA
+N02AA05	oxycodone	55452001	Oxycodone (substance)	30	mg	P	NA
+N02AA08	dihydrocodeine	387322000	Dihydrocodeine (substance)	0.15	g	O	NA
+N02AB01	ketobemidone	96190002	Ketobemidone (substance)	50	mg	O	NA
+N02AB01	ketobemidone	96190002	Ketobemidone (substance)	50	mg	P	NA
+N02AB02	pethidine	387298007	Pethidine (substance)	0.4	g	O	NA
+N02AB02	pethidine	387298007	Pethidine (substance)	0.4	g	P	NA
+N02AB02	pethidine	387298007	Pethidine (substance)	0.4	g	R	NA
+N02AB03	fentanyl	373492002	Fentanyl (substance)	0.6	mg	N	NA
+N02AB03	fentanyl	373492002	Fentanyl (substance)	0.6	mg	SL	NA
+N02AB03	fentanyl	373492002	Fentanyl (substance)	1.2	mg	TD	NA
+N02AC01	dextromoramide	387561007	Dextromoramide (substance)	20	mg	O	NA
+N02AC01	dextromoramide	387561007	Dextromoramide (substance)	20	mg	P	NA
+N02AC01	dextromoramide	387561007	Dextromoramide (substance)	40	mg	R	NA
+N02AC03	piritramide	707837002	Piritramide (substance)	45	mg	P	NA
+N02AC04	dextropropoxyphene	387042001	Dextropropoxyphene (substance)	0.2	g	O	chloride
+N02AC04	dextropropoxyphene	387042001	Dextropropoxyphene (substance)	0.3	g	O	napsylate
+N02AD01	pentazocine	387213004	Pentazocine (substance)	0.2	g	O	NA
+N02AD01	pentazocine	387213004	Pentazocine (substance)	0.2	g	P	NA
+N02AD02	phenazocine	387326002	Phenazocine (substance)	3	mg	P	NA
+N02AE01	buprenorphine	387173000	Buprenorphine (substance)	1.2	mg	P	NA
+N02AE01	buprenorphine	387173000	Buprenorphine (substance)	1.2	mg	SL	NA
+N02AE01	buprenorphine	387173000	Buprenorphine (substance)	1.2	mg	TD	NA
+N02AF01	butorphanol	373467000	Butorphanol (substance)	12	mg	P	NA
+N02AF02	nalbuphine	373539006	Nalbuphine (substance)	80	mg	P	NA
+N02AX01	tilidine	373562008	Tilidine (substance)	0.2	g	O	NA
+N02AX01	tilidine	373562008	Tilidine (substance)	0.2	g	P	NA
+N02AX02	tramadol	386858008	Tramadol (substance)	0.3	g	O	NA
+N02AX02	tramadol	386858008	Tramadol (substance)	0.3	g	P	NA
+N02AX02	tramadol	386858008	Tramadol (substance)	0.3	g	R	NA
+N02AX05	meptazinol	395783008	Meptazinol (substance)	1.2	g	O	NA
+N02AX05	meptazinol	395783008	Meptazinol (substance)	1.2	g	P	NA
+N02AX06	tapentadol	441757005	Tapentadol (substance)	0.4	g	O	NA
+N02BA01	acetylsalicylic acid	387458008	Aspirin (substance)	3	g	O	NA
+N02BA01	acetylsalicylic acid	387458008	Aspirin (substance)	1	g	P	Expressed as lysine acetylsalisylate
+N02BA01	acetylsalicylic acid	387458008	Aspirin (substance)	3	g	R	NA
+N02BA02	aloxiprin	421012002	Aloxiprin (substance)	3	g	O	NA
+N02BA03	choline salicylate	65302009	Choline salicylate (substance)	3	g	O	NA
+N02BA04	sodium salicylate	387411000	Sodium salicylate (substance)	3	g	O	NA
+N02BA05	salicylamide	22192002	Salicylamide (substance)	3	g	O	NA
+N02BA06	salsalate	387072007	Salsalate (substance)	3	g	O	NA
+N02BA07	ethenzamide	712687008	Ethenzamide (substance)	3	g	O	NA
+N02BA10	benorilate	391819000	Benorilate (substance)	3	g	O	NA
+N02BA11	diflunisal	387116004	Diflunisal (substance)	0.75	g	O	NA
+N02BA15	carbasalate calcium	111122008	Calcium carbaspirin (substance)	3.6	g	O	NA
+N02BB01	phenazone	55486005	Phenazone (substance)	3	g	O	NA
+N02BB02	metamizole sodium	22165008	Metamizole sodium (substance)	3	g	O	NA
+N02BB02	metamizole sodium	22165008	Metamizole sodium (substance)	3	g	P	NA
+N02BB02	metamizole sodium	22165008	Metamizole sodium (substance)	3	g	R	NA
+N02BB03	aminophenazone	65458000	Aminophenazone (substance)	0.5	g	R	NA
+N02BB04	propyphenazone	699188007	Propyphenazone (substance)	3	g	R	NA
+N02BE01	paracetamol	387517004	Paracetamol (substance)	3	g	O	NA
+N02BE01	paracetamol	387517004	Paracetamol (substance)	3	g	P	NA
+N02BE01	paracetamol	387517004	Paracetamol (substance)	3	g	R	NA
+N02BE03	phenacetin	83267007	Phenacetin (substance)	1.8	g	O	NA
+N02BE05	propacetamol	1285524005	Propacetamol (substance)	6	g	P	NA
+N02BG08	ziconotide	416512006	Ziconotide (substance)	12	mcg	P	NA
+N02CA01	dihydroergotamine	387267005	Dihydroergotamine (substance)	1	mg	N	NA
+N02CA01	dihydroergotamine	387267005	Dihydroergotamine (substance)	4	mg	O	NA
+N02CA01	dihydroergotamine	387267005	Dihydroergotamine (substance)	4	mg	P	NA
+N02CA02	ergotamine	395975005	Ergotamine (substance)	4	mg	Inhal.aerosol	NA
+N02CA02	ergotamine	395975005	Ergotamine (substance)	4	mg	O	NA
+N02CA02	ergotamine	395975005	Ergotamine (substance)	4	mg	P	NA
+N02CA02	ergotamine	395975005	Ergotamine (substance)	4	mg	R	NA
+N02CA02	ergotamine	395975005	Ergotamine (substance)	4	mg	SL	NA
+N02CA04	methysergide	387044000	Methysergide (substance)	4	mg	O	NA
+N02CC01	sumatriptan	395892000	Sumatriptan (substance)	20	mg	N	NA
+N02CC01	sumatriptan	395892000	Sumatriptan (substance)	50	mg	O	NA
+N02CC01	sumatriptan	395892000	Sumatriptan (substance)	6	mg	P	NA
+N02CC01	sumatriptan	395892000	Sumatriptan (substance)	25	mg	R	NA
+N02CC02	naratriptan	363571003	Naratriptan (substance)	2.5	mg	O	NA
+N02CC03	zolmitriptan	363582006	Zolmitriptan (substance)	2.5	mg	N	NA
+N02CC03	zolmitriptan	363582006	Zolmitriptan (substance)	2.5	mg	O	NA
+N02CC04	rizatriptan	363573000	Rizatriptan (substance)	10	mg	O	NA
+N02CC05	almotriptan	363569003	Almotriptan (substance)	12.5	mg	O	NA
+N02CC06	eletriptan	410843003	Eletriptan (substance)	40	mg	O	NA
+N02CC07	frovatriptan	411990007	Frovatriptan (substance)	2.5	mg	O	NA
+N02CD01	erenumab	771590007	Erenumab (substance)	2.5	mg	P	NA
+N02CD02	galcanezumab	782371005	Galcanezumab (substance)	4	mg	P	NA
+N02CD03	fremanezumab	781125008	Fremanezumab (substance)	7.5	mg	P	NA
+N02CX01	pizotifen	395834002	Pizotifen (substance)	1.5	mg	O	NA
+N02CX02	clonidine	372805007	Clonidine (substance)	0.1	mg	O	NA
+N03AA01	methylphenobarbital	387252006	Methylphenobarbital (substance)	0.5	g	O	NA
+N03AA02	phenobarbital	373505007	Phenobarbital (substance)	0.1	g	O	NA
+N03AA02	phenobarbital	373505007	Phenobarbital (substance)	0.1	g	P	NA
+N03AA03	primidone	387256009	Primidone (substance)	1.25	g	O	NA
+N03AA30	metharbital	30676006	Metharbital (substance)	0.2	g	O	NA
+N03AB01	ethotoin	64463006	Ethotoin (substance)	2.5	g	O	NA
+N03AB02	phenytoin	387220006	Phenytoin (substance)	0.3	g	O	NA
+N03AB02	phenytoin	387220006	Phenytoin (substance)	0.3	g	P	NA
+N03AB04	mephenytoin	28344001	Mephenytoin (substance)	0.4	g	O	NA
+N03AB05	fosphenytoin	372484000	Fosphenytoin (substance)	0.45	g	P	NA
+N03AC01	paramethadione	61357000	Paramethadione (substance)	0.9	g	O	NA
+N03AC02	trimethadione	70732003	Trimethadione (substance)	1.5	g	O	NA
+N03AD01	ethosuximide	387244008	Ethosuximide (substance)	1.25	g	O	NA
+N03AD02	phensuximide	61904007	Phensuximide (substance)	2	g	O	NA
+N03AD03	mesuximide	58325006	Mesuximide (substance)	0.9	g	O	NA
+N03AE01	clonazepam	387383007	Clonazepam (substance)	8	mg	O	NA
+N03AE01	clonazepam	387383007	Clonazepam (substance)	8	mg	P	NA
+N03AF01	carbamazepine	387222003	Carbamazepine (substance)	1	g	O	NA
+N03AF01	carbamazepine	387222003	Carbamazepine (substance)	1	g	R	NA
+N03AF02	oxcarbazepine	387025007	Oxcarbazepine (substance)	1	g	O	NA
+N03AF03	rufinamide	429835003	Rufinamide (substance)	1.4	g	O	NA
+N03AF04	eslicarbazepine	697998007	Eslicarbazepine (substance)	0.8	g	O	NA
+N03AG01	valproic acid	387080000	Valproic acid (substance)	1.5	g	O	NA
+N03AG01	valproic acid	387080000	Valproic acid (substance)	1.5	g	P	NA
+N03AG01	valproic acid	387080000	Valproic acid (substance)	1.5	g	R	NA
+N03AG02	valpromide	698808002	Valpromide (substance)	1.5	g	O	NA
+N03AG04	vigabatrin	310283001	Vigabatrin (substance)	2	g	O	NA
+N03AG06	tiagabine	372485004	Tiagabine (substance)	30	mg	O	NA
+N03AX03	sultiame	50580004	Sulthiamine (substance)	0.4	g	O	NA
+N03AX07	phenacemide	18712002	Phenacemide (substance)	1.5	g	O	NA
+N03AX09	lamotrigine	387562000	Lamotrigine (substance)	0.3	g	O	NA
+N03AX10	felbamate	96194006	Felbamate (substance)	2.4	g	O	NA
+N03AX11	topiramate	386844006	Topiramate (substance)	0.3	g	O	NA
+N03AX12	gabapentin	386845007	Gabapentin (substance)	1.8	g	O	NA
+N03AX14	levetiracetam	387000003	Levetiracetam (substance)	1.5	g	O	NA
+N03AX14	levetiracetam	387000003	Levetiracetam (substance)	1.5	g	P	NA
+N03AX15	zonisamide	125693002	Zonisamide (substance)	0.2	g	O	NA
+N03AX16	pregabalin	415160008	Pregabalin (substance)	0.3	g	O	NA

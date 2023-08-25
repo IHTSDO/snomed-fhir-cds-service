@@ -33,7 +33,7 @@ class MedicationOrderSelectServiceTest {
 	private MedicationConditionRuleLoaderService ruleLoaderService;
 
 	@MockBean
-	private MedicationRuleLoaderService medicationRuleLoaderService;
+	private MedicationCombinationRuleLoaderService medicationRuleLoaderService;
 
 	@Autowired
 	private MedicationOrderSelectService service;
