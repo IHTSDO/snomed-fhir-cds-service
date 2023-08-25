@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class MedicationRuleLoaderService {
+public class MedicationCombinationRuleLoaderService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
