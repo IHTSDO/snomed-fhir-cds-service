@@ -13,16 +13,11 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "1145419005",
-              "display": "Atorvastatin (as atorvastatin calcium) 10 mg oral tablet"
-            },
-            {
-              "system": "http://bahmni.org/cds",
-              "code": "36939d4e-d325-4819-9c81-91e1a0434f9a",
-              "display": "Atorvastatin (as atorvastatin calcium) 10 mg oral tablet"
+              "code": "433216006",
+              "display": "Colchicine 500 microgram and probenecid 500 mg oral tablet"
             }
           ],
-          "text": "Atorvastatin (as atorvastatin calcium) 10 mg oral tablet"
+          "text": "Colchicine 500 microgram and probenecid 500 mg oral tablet"
         },
         "subject": {
           "reference": "Patient/618b2992-eec7-45c9-8544-12c9f586b78c"
@@ -45,8 +40,8 @@
             "timing": {
               "repeat": {
                 "frequency": 1,
-                "period": 1,
-                "periodUnit": "d"
+                "period": 2,
+                "periodUnit": "h"
               }
             },
             "asNeededBoolean": false,

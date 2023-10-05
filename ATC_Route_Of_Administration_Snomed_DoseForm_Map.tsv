@@ -1,0 +1,17 @@
+adm_r	adm_label	snomed_basic_dose_form	snomed_administration_method	snomed_intended_site	manufactured_dose_form_snomed_query	priority
+Implant	 Implant		827107003 |Implant|		< 736542009 |Pharmaceutical dose form (dose form)| : 736472000 |Has dose form administration method| = <<827107003 |Implant|	3
+Inhal	 Inhalation		740666001 |Inhale|		< 736542009 |Pharmaceutical dose form (dose form)| : 736472000 |Has dose form administration method| = <<740666001 |Inhale|	3
+Instill	 Instillation		738994005 |Instill|		< 736542009 |Pharmaceutical dose form (dose form)| : 736472000 |Has dose form administration method| = <<738994005 |Instill|	3
+N	 nasal			738948007 |Nasal|	< 736542009 |Pharmaceutical dose form (dose form)| : 736474004 |Has dose form intended site| = <<738948007 |Nasal|	3
+O	 oral			738956005 |Oral|	< 736542009 |Pharmaceutical dose form (dose form)| : 736474004 |Has dose form intended site| = <<738956005 |Oral|	3
+P	 parenteral			738984000 |Parenteral|	< 736542009 |Pharmaceutical dose form (dose form)| : 736474004 |Has dose form intended site| = <<738984000 |Parenteral|	3
+R	rectal			738986003 |Rectal|	< 736542009 |Pharmaceutical dose form (dose form)| : 736474004 |Has dose form intended site| = <<738986003 |Rectal|	3
+SL	 sublingual/buccal/oromucosal			738982001 |Oromucosal|	< 736542009 |Pharmaceutical dose form (dose form)| : 736474004 |Has dose form intended site| = <<738982001 |Oromucosal|	3
+TD	 transdermal			738987007 |Transdermal|	< 736542009 |Pharmaceutical dose form (dose form)| : 736474004 |Has dose form intended site| = <<738987007 |Transdermal|	3
+V	 vaginal			738989005 |Vaginal|	< 736542009 |Pharmaceutical dose form (dose form)| : 736474004 |Has dose form intended site| = <<738989005 |Vaginal|	3
+Inhal.powder		739005008 |Powder|	740666001 |Inhale|		< 736542009 |Pharmaceutical dose form (dose form)| : 736476002 |Has basic dose form| = <<739005008 |Powder|, 736472000 |Has dose form administration method| = <<740666001 |Inhale|	2
+Inhal.solution		420699003 |Basic dose form with liquid state of matter|	740666001 |Inhale|		< 736542009 |Pharmaceutical dose form (dose form)| : 736476002 |Has basic dose form| = <<420699003 |Basic dose form with liquid state of matter|, 736472000 |Has dose form administration method| = <<740666001 |Inhale|	2
+Inhal.aerosol		421131006 |Basic dose form with gas state of matter|	740666001 |Inhale|		< 736542009 |Pharmaceutical dose form (dose form)| : 736476002 |Has basic dose form| = <<421131006 |Basic dose form with gas state of matter|, 736472000 |Has dose form administration method| = <<740666001 |Inhale|	2
+oral aerosol		421131006 |Basic dose form with gas state of matter|		738956005 |Oral|	< 736542009 |Pharmaceutical dose form (dose form)| : 736476002 |Has basic dose form| = <<421131006 |Basic dose form with gas state of matter|, 736474004 |Has dose form intended site| = <<738956005 |Oral|	1
+s.c. implant			827107003 |Implant|	764295003 |Subcutaneous|	< 736542009 |Pharmaceutical dose form (dose form)| : 736472000 |Has dose form administration method| = <<827107003 |Implant|, 736474004 |Has dose form intended site| = <<764295003 |Subcutaneous|	1
+urethral				738988002 |Urethral|	< 736542009 |Pharmaceutical dose form (dose form)| : 736474004 |Has dose form intended site| = <<738988002 |Urethral|	1
