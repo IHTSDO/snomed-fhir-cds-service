@@ -1,4 +1,4 @@
-package org.snomed.cdsservice.service;
+package org.snomed.cdsservice.service.medication.dose;
 
 import jakarta.annotation.PostConstruct;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
@@ -9,8 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snomed.cdsservice.model.*;
+import org.snomed.cdsservice.service.ArgumentAssertionUtil;
+import org.snomed.cdsservice.service.ServiceException;
+import org.snomed.cdsservice.service.medication.dose.MedicationDoseFormsLoaderService;
 import org.snomed.cdsservice.service.model.ManyToOneMapEntry;
-import org.snomed.cdsservice.service.model.SubstanceDefinedDailyDose;
+import org.snomed.cdsservice.service.medication.dose.SubstanceDefinedDailyDose;
 import org.snomed.cdsservice.service.tsclient.ConceptParameters;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.service.tsclient.SnomedConceptNormalForm;
@@ -46,18 +49,19 @@ public class SnomedMedicationDefinedDailyDoseService {
     public static final String ATTRIBUTE_HAS_CONCENTRATION_STRENGTH_NUMERATOR_UNIT = "733725009";
     public static final String ATTRIBUTE_HAS_CONCENTRATION_STRENGTH_DENOMINATOR_VALUE = "1142137007";
     public static final String ATTRIBUTE_HAS_CONCENTRATION_STRENGTH_DENOMINATOR_UNIT = "733722007";
+
     public static final String WARNING = "warning";
     public static final String INFO = "info";
     private static final String NEW_LINE = "\n";
-    private final Map<String, List<SubstanceDefinedDailyDose>> substanceDDD = new HashMap<>();
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-    @Value("${rules.medication-substance-daily-doses.tsv}")
-    private String tsvPath;
+
     @Autowired
     private FHIRTerminologyServerClient tsClient;
+
     @Autowired
     private MedicationDoseFormsLoaderService doseFormsLoaderService;
-    private List<ManyToOneMapEntry> doseFormsManySnomedToOneAtcCodeMap;
+
+    @Value("${rules.medication-substance-daily-doses.tsv}")
+    private String tsvPath;
     @Value("${acceptable-daily-dose-threshold-factor}")
     private String acceptableDailyDoseThresholdFactor;
     @Value("${maximum-daily-dose-threshold-factor}")
@@ -66,6 +70,47 @@ public class SnomedMedicationDefinedDailyDoseService {
     private String cardSummaryTemplate;
     @Value("${who.atc.url-template}")
     private String atcUrlTemplate;
+
+    private List<ManyToOneMapEntry> doseFormsManySnomedToOneAtcCodeMap;
+    private final Map<String, List<SubstanceDefinedDailyDose>> substanceDDD = new HashMap<>();
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @PostConstruct
+    public void init() throws ServiceException {
+        doseFormsManySnomedToOneAtcCodeMap = doseFormsLoaderService.loadDoseFormMap();
+
+        logger.info("Loading SNOMED CT Substance Defined Daily Dose information");
+        try (BufferedReader reader = new BufferedReader(new FileReader(tsvPath))) {
+            String expectedHeader = "atc_code\tatc_name\tsnomed_code\tsnomed_label\tddd\tuom\tadm_r\tnote";
+            String header = reader.readLine();
+            if (!expectedHeader.equals(header)) {
+                throw new ServiceException(format("SNOMED Substance DDD file does not have the expected header. " + "Expected: '%s', Actual: '%s'", expectedHeader, header));
+            }
+
+            String line;
+            int row = 1;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    row++;
+                    // Columns and indexes
+                    // atc_code	atc_name	snomed_code	snomed_label	ddd	uom	adm_r	note
+                    // 0		1			2			3				4	5	6		7
+                    String[] values = line.split("\t");
+                    String substanceSnomedCode = values[2];
+                    float dose = Float.parseFloat(values[4]);
+                    String unit = values[5];
+                    String atcRouteOfAdministrationCode = values[6];
+                    String atcCode = values[0];
+                    substanceDDD.computeIfAbsent(substanceSnomedCode, i -> new ArrayList<>()).add(new SubstanceDefinedDailyDose(atcRouteOfAdministrationCode, dose, unit, atcCode));
+                }
+            } catch (NumberFormatException e) {
+                throw new ServiceException(format("Failed to read SNOMED Substance DDDs from tab separated file. " + "Number format error while reading row %s", row), e);
+            }
+        } catch (Exception e) {
+            throw new ServiceException("Failed to read SNOMED Substance DDDs from tab separated file", e);
+        }
+        logger.info("Doses loaded for {} substances.", substanceDDD.size());
+    }
 
     public List<CDSCard> checkMedications(List<MedicationRequest> medicationRequests) {
         List<CDSCard> cards = new ArrayList<>();
@@ -103,9 +148,9 @@ public class SnomedMedicationDefinedDailyDoseService {
                 String atcRouteOfAdministrationCode = null;
                 String routeOfAdministrationLabel = null;
                 for (ManyToOneMapEntry manyToOneMapEntry : doseFormsManySnomedToOneAtcCodeMap) {
-                    if (manyToOneMapEntry.getSourceCodes().contains(manufacturedDoseForm)) {
-                        atcRouteOfAdministrationCode = manyToOneMapEntry.getTargetCode();
-                        routeOfAdministrationLabel = manyToOneMapEntry.getLabel() != null ? manyToOneMapEntry.getLabel() : atcRouteOfAdministrationCode;
+                    if (manyToOneMapEntry.sourceCodes().contains(manufacturedDoseForm)) {
+                        atcRouteOfAdministrationCode = manyToOneMapEntry.targetCode();
+                        routeOfAdministrationLabel = manyToOneMapEntry.label() != null ? manyToOneMapEntry.label() : atcRouteOfAdministrationCode;
                     }
                 }
                 if (atcRouteOfAdministrationCode == null) {
@@ -188,7 +233,7 @@ public class SnomedMedicationDefinedDailyDoseService {
             }
             SubstanceDefinedDailyDose substanceDefinedDailyDose = null;
             for (SubstanceDefinedDailyDose substanceDDD : substanceDefinedDailyDoses) {
-                if (atcRouteOfAdministrationCode.equals(substanceDDD.getAtcRouteOfAdministration())) {
+                if (atcRouteOfAdministrationCode.equals(substanceDDD.atcRouteOfAdministration())) {
                     substanceDefinedDailyDose = substanceDDD;
                 }
             }
@@ -223,7 +268,7 @@ public class SnomedMedicationDefinedDailyDoseService {
 
 
             PrescribedDailyDose prescribedDailyDoseInUnitOfSubstanceStrength = getPrescribedDailyDoseInUnitOfSubstanceStrength(prescribedDailyDose, strengthValue, strengthUnit, denominatorValue, denominatorUnit);
-            PrescribedDailyDose prescribedDailyDoseInUnitOfDDD = getPrescribedDailyDoseInUnitOfDDD(prescribedDailyDoseInUnitOfSubstanceStrength.getQuantity(), prescribedDailyDoseInUnitOfSubstanceStrength.getUnit(), substanceDefinedDailyDose.getUnit());
+            PrescribedDailyDose prescribedDailyDoseInUnitOfDDD = getPrescribedDailyDoseInUnitOfDDD(prescribedDailyDoseInUnitOfSubstanceStrength.getQuantity(), prescribedDailyDoseInUnitOfSubstanceStrength.getUnit(), substanceDefinedDailyDose.unit());
             AggregatedMedicationsBySubstance aggregatedMedicationsBySubstance = aggregatedMedicationsBySubstanceMap.get(substance);
             if (aggregatedMedicationsBySubstance == null) {
                 String substanceShortName = getSnomedParameterValue(substance, "display");
@@ -259,7 +304,7 @@ public class SnomedMedicationDefinedDailyDoseService {
             return null;
         }
         DosageComparisonByRoute dosageComparisonByRoute = dosageInfoEntry.get().getValue();
-        return MessageFormat.format(atcUrlTemplate, dosageComparisonByRoute.getSubstanceDefinedDailyDose().getAtcCode());
+        return MessageFormat.format(atcUrlTemplate, dosageComparisonByRoute.getSubstanceDefinedDailyDose().atcCode());
     }
 
     private String getAlertIndicator(double prescribedDosageFactor) {
@@ -275,7 +320,7 @@ public class SnomedMedicationDefinedDailyDoseService {
     private Double getPrescribedDosageFactor(Map<String, DosageComparisonByRoute> dosageComparisonByRouteMap) {
         Double prescribedDosageFactor = Double.valueOf(0);
         for (var eachRoute : dosageComparisonByRouteMap.entrySet()) {
-            prescribedDosageFactor = prescribedDosageFactor + (eachRoute.getValue().getTotalPrescribedDailyDose().getQuantity() / eachRoute.getValue().getSubstanceDefinedDailyDose().getDose());
+            prescribedDosageFactor = prescribedDosageFactor + (eachRoute.getValue().getTotalPrescribedDailyDose().getQuantity() / eachRoute.getValue().getSubstanceDefinedDailyDose().dose());
         }
         return prescribedDosageFactor;
     }
@@ -311,43 +356,6 @@ public class SnomedMedicationDefinedDailyDoseService {
         return new PrescribedDailyDose(prescribedDailyDoseQuantity, targetStrengthUnit);
     }
 
-    @PostConstruct
-    public void init() throws ServiceException {
-        doseFormsManySnomedToOneAtcCodeMap = doseFormsLoaderService.loadDoseFormMap();
-
-        logger.info("Loading SNOMED CT Substance Defined Daily Dose information");
-        try (BufferedReader reader = new BufferedReader(new FileReader(tsvPath))) {
-            String expectedHeader = "atc_code\tatc_name\tsnomed_code\tsnomed_label\tddd\tuom\tadm_r\tnote";
-            String header = reader.readLine();
-            if (!expectedHeader.equals(header)) {
-                throw new ServiceException(format("SNOMED Substance DDD file does not have the expected header. " + "Expected: '%s', Actual: '%s'", expectedHeader, header));
-            }
-
-            String line;
-            int row = 1;
-            try {
-                while ((line = reader.readLine()) != null) {
-                    row++;
-                    // Columns and indexes
-                    // atc_code	atc_name	snomed_code	snomed_label	ddd	uom	adm_r	note
-                    // 0		1			2			3				4	5	6		7
-                    String[] values = line.split("\t");
-                    String substanceSnomedCode = values[2];
-                    float dose = Float.parseFloat(values[4]);
-                    String unit = values[5];
-                    String atcRouteOfAdministrationCode = values[6];
-                    String atcCode = values[0];
-                    substanceDDD.computeIfAbsent(substanceSnomedCode, i -> new ArrayList<>()).add(new SubstanceDefinedDailyDose(atcRouteOfAdministrationCode, dose, unit, atcCode));
-                }
-            } catch (NumberFormatException e) {
-                throw new ServiceException(format("Failed to read SNOMED Substance DDDs from tab separated file. " + "Number format error while reading row %s", row), e);
-            }
-        } catch (Exception e) {
-            throw new ServiceException("Failed to read SNOMED Substance DDDs from tab separated file", e);
-        }
-        logger.info("Doses loaded for {} substances.", substanceDDD.size());
-    }
-
     private String getCardSummaryTemplate() {
         return cardSummaryTemplate;
     }
@@ -369,7 +377,7 @@ public class SnomedMedicationDefinedDailyDoseService {
             DosageComparisonByRoute dosageComparisonByRouteValue = dosageInfo.getValue();
             PrescribedDailyDose aggregatedDailyDosage = dosageComparisonByRouteValue.getTotalPrescribedDailyDose();
             SubstanceDefinedDailyDose substanceDefinedDailyDose = dosageComparisonByRouteValue.getSubstanceDefinedDailyDose();
-            sb.append(new UnorderedList<>(List.of(dosageComparisonByRouteValue.getRouteOfAdministration(), new UnorderedList<>(List.of("Prescribed daily dose : " + aggregatedDailyDosage.getQuantity() + aggregatedDailyDosage.getUnit(), "Recommended average daily dose : " + substanceDefinedDailyDose.getDose() + substanceDefinedDailyDose.getUnit(), "Prescribed amount is " + getDecimalPlace(aggregatedDailyDosage.getQuantity() / substanceDefinedDailyDose.getDose()) + " times over the average daily dose"))))).append(NEW_LINE).append(NEW_LINE);
+            sb.append(new UnorderedList<>(List.of(dosageComparisonByRouteValue.getRouteOfAdministration(), new UnorderedList<>(List.of("Prescribed daily dose : " + aggregatedDailyDosage.getQuantity() + aggregatedDailyDosage.getUnit(), "Recommended average daily dose : " + substanceDefinedDailyDose.dose() + substanceDefinedDailyDose.unit(), "Prescribed amount is " + getDecimalPlace(aggregatedDailyDosage.getQuantity() / substanceDefinedDailyDose.dose()) + " times over the average daily dose"))))).append(NEW_LINE).append(NEW_LINE);
         }
     }
 

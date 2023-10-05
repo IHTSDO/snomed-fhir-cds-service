@@ -1,8 +1,9 @@
-package org.snomed.cdsservice.service;
+package org.snomed.cdsservice.service.medication.dose;
 
 import org.hl7.fhir.r4.model.Coding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.snomed.cdsservice.service.ServiceException;
 import org.snomed.cdsservice.service.model.ManyToOneMapEntry;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.util.SnomedValueSetUtil;
@@ -64,7 +65,7 @@ public class MedicationDoseFormsLoaderService {
                     throw new ServiceException(format("Failed to expand value set '%s'", valueSetURI), e);
                 }
             }
-            mapEntries.sort(Comparator.comparing(ManyToOneMapEntry::getMapPriority));
+            mapEntries.sort(Comparator.comparing(ManyToOneMapEntry::mapPriority));
 
             return mapEntries;
         } catch (Exception e) {

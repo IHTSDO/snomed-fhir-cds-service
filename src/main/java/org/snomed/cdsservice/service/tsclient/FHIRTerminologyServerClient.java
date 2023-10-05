@@ -3,7 +3,6 @@ package org.snomed.cdsservice.service.tsclient;
 import ca.uhn.fhir.context.FhirContext;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Parameters;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snomed.cdsservice.model.CDSCoding;

@@ -1,9 +1,10 @@
-package org.snomed.cdsservice.service;
+package org.snomed.cdsservice.service.hello;
 
 import org.snomed.cdsservice.model.CDSCard;
 import org.snomed.cdsservice.model.CDSIndicator;
 import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
+import org.snomed.cdsservice.service.CDSService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

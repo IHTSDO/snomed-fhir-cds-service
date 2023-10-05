@@ -1,4 +1,4 @@
-package org.snomed.cdsservice.service;
+package org.snomed.cdsservice.service.medication;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
@@ -10,6 +10,8 @@ import org.snomed.cdsservice.model.CDSCoding;
 import org.snomed.cdsservice.model.CDSReference;
 import org.snomed.cdsservice.model.CDSTrigger;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
+import org.snomed.cdsservice.service.*;
+import org.snomed.cdsservice.service.medication.dose.SnomedMedicationDefinedDailyDoseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class MedicationOrderSelectService extends CDSService {
+public class MedicationOrderSelectCDSService extends CDSService {
 
 	@Autowired
 	private FhirContext fhirContext;
@@ -39,7 +41,7 @@ public class MedicationOrderSelectService extends CDSService {
 
 	private List<CDSTrigger> drugDrugInteractionTriggers;
 
-	public MedicationOrderSelectService() {
+	public MedicationOrderSelectCDSService() {
 		super("medication-order-select");
 		setPrefetch(Map.of(
 				"patient", "Patient/{{context.patientId}}",

@@ -1,4 +1,4 @@
-package org.snomed.cdsservice.service;
+package org.snomed.cdsservice.service.medication;
 
 import com.google.common.base.Strings;
 import org.hl7.fhir.r4.model.Coding;
@@ -10,6 +10,7 @@ import org.snomed.cdsservice.model.CDSIndicator;
 import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.model.CDSTrigger;
 import org.snomed.cdsservice.model.MedicationInterationCDSTrigger;
+import org.snomed.cdsservice.service.ServiceException;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.util.SnomedValueSetUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,11 +72,11 @@ public class MedicationCombinationRuleLoaderService {
                     continue;
                 }
 
-                if (medication1SnomedCode != null && medication1SnomedCode.contains("|") && !medication1SnomedCode.startsWith("ECL=")) {
+                if (medication1SnomedCode.contains("|") && !medication1SnomedCode.startsWith("ECL=")) {
                     medication1SnomedCode = medication1SnomedCode.substring(medication1SnomedCode.indexOf("|")).trim();
                 }
 
-                if (medication2SnomedCode != null && medication2SnomedCode.contains("|") && !medication2SnomedCode.startsWith("ECL=")) {
+                if (medication2SnomedCode.contains("|") && !medication2SnomedCode.startsWith("ECL=")) {
                     medication2SnomedCode = medication2SnomedCode.substring(medication2SnomedCode.indexOf("|")).trim();
                 }
 

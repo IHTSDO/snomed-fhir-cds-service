@@ -1,6 +1,6 @@
 package org.snomed.cdsservice.model;
 
-import org.snomed.cdsservice.service.model.SubstanceDefinedDailyDose;
+import org.snomed.cdsservice.service.medication.dose.SubstanceDefinedDailyDose;
 
 public class DosageComparisonByRoute {
     PrescribedDailyDose totalPrescribedDailyDose;

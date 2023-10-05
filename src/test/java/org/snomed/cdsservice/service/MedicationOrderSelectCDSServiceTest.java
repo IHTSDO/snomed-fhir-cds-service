@@ -11,6 +11,9 @@ import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.model.CDSTrigger;
 import org.snomed.cdsservice.model.MedicationConditionCDSTrigger;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
+import org.snomed.cdsservice.service.medication.MedicationCombinationRuleLoaderService;
+import org.snomed.cdsservice.service.medication.MedicationConditionRuleLoaderService;
+import org.snomed.cdsservice.service.medication.MedicationOrderSelectCDSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class MedicationOrderSelectServiceTest {
+class MedicationOrderSelectCDSServiceTest {
 
 	@MockBean
 	private MedicationConditionRuleLoaderService ruleLoaderService;
@@ -37,7 +40,7 @@ class MedicationOrderSelectServiceTest {
 	private MedicationCombinationRuleLoaderService medicationRuleLoaderService;
 
 	@Autowired
-	private MedicationOrderSelectService service;
+	private MedicationOrderSelectCDSService service;
 
 	@BeforeEach
 	void setMockOutput() {
