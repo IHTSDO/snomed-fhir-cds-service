@@ -31,7 +31,7 @@ public class ConceptParameters extends Parameters {
 		Pattern attributePattern = Pattern.compile("(\\d+) ?= ?#?([\\d.]+)");
 		String ungroupedAttributes = null;
 		if (attributesAndGroups.contains("{")) {
-			ungroupedAttributes = attributesAndGroups.substring(attributesAndGroups.indexOf("{"));
+			ungroupedAttributes = attributesAndGroups.substring(0,attributesAndGroups.indexOf("{")-2);
 		} else {
 			ungroupedAttributes = attributesAndGroups;
 		}
@@ -39,7 +39,7 @@ public class ConceptParameters extends Parameters {
 		Map<String, String> attributes = normalForm.getAttributes();
 		Matcher attributeMatcher = attributePattern.matcher(ungroupedAttributes);
 		while (attributeMatcher.find()) {
-			attributes.put(attributeMatcher.group(0), attributeMatcher.group(1));
+			attributes.put(attributeMatcher.group(1), attributeMatcher.group(2));
 		}
 
 		Pattern groupPattern = Pattern.compile("\\{([^}]*)}");
@@ -49,7 +49,7 @@ public class ConceptParameters extends Parameters {
 			Map<String, String> groupAttributes = new HashMap<>();
 			Matcher groupedAttributeMatcher = attributePattern.matcher(group);
 			while (groupedAttributeMatcher.find()) {
-				groupAttributes.put(groupedAttributeMatcher.group(0), groupedAttributeMatcher.group(1));
+				groupAttributes.put(groupedAttributeMatcher.group(1), groupedAttributeMatcher.group(2));
 			}
 			normalForm.getAttributeGroups().add(groupAttributes);
 		}
@@ -59,7 +59,7 @@ public class ConceptParameters extends Parameters {
 
 	@Nullable
 	public String getPropertyValue(String propertyName) {
-		List<ParametersParameterComponent> properties = getParameters("properties");
+		List<ParametersParameterComponent> properties = getParameters("property");
 		for (Parameters.ParametersParameterComponent property : properties) {
 			boolean correctPart = false;
 			for (Parameters.ParametersParameterComponent part : property.getPart()) {

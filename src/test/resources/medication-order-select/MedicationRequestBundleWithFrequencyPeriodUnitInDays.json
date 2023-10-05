@@ -44,7 +44,7 @@
             "sequence": 1,
             "timing": {
               "repeat": {
-                "frequency": 1,
+                "frequency": 24,
                 "period": 1,
                 "periodUnit": "d"
               }

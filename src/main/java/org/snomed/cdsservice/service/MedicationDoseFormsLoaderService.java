@@ -54,11 +54,12 @@ public class MedicationDoseFormsLoaderService {
                 String atcAdministrationCode = columns[0];
                 String snomedDoseFormQuery = columns[5];
                 int mapPriority = Integer.parseInt(columns[6]);
+                String routeOfAdministrationLabel = columns[1];
                 String valueSetURI = SnomedValueSetUtil.getSnomedECLValueSetURI(snomedDoseFormQuery);
                 try {
                     Set<String> manufacturedDoseFormSnomedCodes = tsClient.expandValueSet(valueSetURI).stream().map(Coding::getCode).collect(Collectors.toSet());
                     logger.info("Mapping {} SNOMED CT Manufactured dose forms to ATC route of administration '{}'.", manufacturedDoseFormSnomedCodes.size(), atcAdministrationCode);
-                    mapEntries.add(new ManyToOneMapEntry(manufacturedDoseFormSnomedCodes, atcAdministrationCode, mapPriority));
+                    mapEntries.add(new ManyToOneMapEntry(manufacturedDoseFormSnomedCodes, atcAdministrationCode, mapPriority, routeOfAdministrationLabel));
                 } catch (RestClientException e) {
                     throw new ServiceException(format("Failed to expand value set '%s'", valueSetURI), e);
                 }

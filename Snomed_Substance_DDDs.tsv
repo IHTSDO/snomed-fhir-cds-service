@@ -369,7 +369,7 @@ B02BA01	phytomenadione	66656000	Phytomenadione (substance)	20	mg	O	NA
 B02BA01	phytomenadione	66656000	Phytomenadione (substance)	20	mg	P	NA
 B02BA02	menadione	412244007	Menadione (substance)	10	mg	O	NA
 B02BA02	menadione	412244007	Menadione (substance)	2	mg	P	NA
-B02BB01	fibrinogen, human	418326009	Human fibrinogen (substance)	5	g	P	NA
+B02BB01	"fibrinogen, human"	418326009	Human fibrinogen (substance)	5	g	P	NA
 B02BX04	romiplostim	439122000	Romiplostim (substance)	30	mcg	P	NA
 B02BX05	eltrombopag	432005001	Eltrombopag (substance)	50	mg	O	NA
 B02BX06	emicizumab	763611007	Emicizumab (substance)	15	mg	P	NA
@@ -396,7 +396,6 @@ B03XA03	methoxy polyethylene glycol-epoetin beta	425913002	Methoxy polyethylene 
 B06AC02	icatibant	703834005	Icatibant (substance)	30	mg	P	NA
 B06AC04	conestat alfa	713468002	Conestat alfa (substance)	3.5	TU	P	NA
 B06AC05	lanadelumab	773956002	Lanadelumab (substance)	21.4	mg	P	NA
-B06AC05	lanadelumab	773956002	Lanadelumab (substance)	NA	NA	NA	NA
 C01AA04	digitoxin	373534001	Digitoxin (substance)	0.1	mg	O	NA
 C01AA04	digitoxin	373534001	Digitoxin (substance)	0.1	mg	P	NA
 C01AA05	digoxin	387461009	Digoxin (substance)	0.25	mg	O	NA
@@ -719,7 +718,7 @@ G02AD03	gemeprost	395729005	Gemeprost (substance)	1	mg	V	Single dose treatment
 G02AD04	carboprost	373455002	Carboprost (substance)	2.5	mg	P	Single dose treatment
 G02AD05	sulprostone	713461008	Sulprostone (substance)	0.5	mg	P	NA
 G02AD06	misoprostol	387242007	Misoprostol (substance)	0.2	mg	O	NA
-G02AD06	misoprostol	387242007	Misoprostol (substance)	0.2	mg	V	vaginal insert, refers to the content of one vaginal insert
+G02AD06	misoprostol	387242007	Misoprostol (substance)	0.2	mg	V	"vaginal insert, refers to the content of one vaginal insert"
 G02CA01	ritodrine	372893009	Ritodrine (substance)	40	mg	O	NA
 G02CA01	ritodrine	372893009	Ritodrine (substance)	40	mg	P	NA
 G02CA02	buphenine	111140007	Nylidrin (substance)	30	mg	P	NA
@@ -749,11 +748,11 @@ G03CA03	estradiol	126172005	Estradiol (substance)	2	mg	O	NA
 G03CA03	estradiol	126172005	Estradiol (substance)	1	mg	P	depot short duration
 G03CA03	estradiol	126172005	Estradiol (substance)	0.3	mg	P	depot long duration
 G03CA03	estradiol	126172005	Estradiol (substance)	5	mg	R	NA
-G03CA03	estradiol	126172005	Estradiol (substance)	50	mcg	TD	patch, refer to amount delivered per 24 hours
+G03CA03	estradiol	126172005	Estradiol (substance)	50	mcg	TD	"patch, refer to amount delivered per 24 hours"
 G03CA03	estradiol	126172005	Estradiol (substance)	1	mg	TD	gel
 G03CA03	estradiol	126172005	Estradiol (substance)	1.53	mg	TD	spray
 G03CA03	estradiol	126172005	Estradiol (substance)	25	mcg	V	NA
-G03CA03	estradiol	126172005	Estradiol (substance)	7.5	mcg	V	vaginal ring,  refers to amount delivered per 24 hours
+G03CA03	estradiol	126172005	Estradiol (substance)	7.5	mcg	V	"vaginal ring,  refers to amount delivered per 24 hours"
 G03CA04	estriol	73723004	Estriol (substance)	2	mg	O	NA
 G03CA04	estriol	73723004	Estriol (substance)	2	mg	P	NA
 G03CA04	estriol	73723004	Estriol (substance)	0.2	mg	V	NA

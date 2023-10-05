@@ -1,5 +1,6 @@
 package org.snomed.cdsservice.service.tsclient;
 
+import ca.uhn.fhir.context.FhirContext;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Parameters;
 import org.jetbrains.annotations.Nullable;
@@ -39,9 +40,12 @@ public class FHIRTerminologyServerClient {
 		if (!lookupCache.containsKey(cacheKey)) {
 			logger.info("Lookup system {} code {}", codeSystem, code);
 
-			ResponseEntity<ConceptParameters> response = restTemplate.exchange(format("/CodeSystem/$lookup?_format=json&system=%s&code=%s", codeSystem, code),
-					HttpMethod.GET, null, ConceptParameters.class);
-			lookupCache.put(cacheKey, response.getBody());
+			ResponseEntity<String> response = restTemplate.exchange(format("/CodeSystem/$lookup?_format=json&system=%s&code=%s&property=*", codeSystem, code),
+					HttpMethod.GET, null, String.class);
+			Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response.getBody());
+			ConceptParameters conceptParameters =  new ConceptParameters();
+			conceptParameters.setParameter(parameters.getParameter());
+			lookupCache.put(cacheKey, conceptParameters);
 		}
 		return lookupCache.get(cacheKey);
 	}
