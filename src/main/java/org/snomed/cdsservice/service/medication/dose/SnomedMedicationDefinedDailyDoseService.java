@@ -53,6 +53,7 @@ public class SnomedMedicationDefinedDailyDoseService {
     public static final String WARNING = "warning";
     public static final String INFO = "info";
     private static final String NEW_LINE = "\n";
+    private static final String HIGH_DOSAGE_ALERT_TYPE = "High Dosage";
 
     @Autowired
     private FHIRTerminologyServerClient tsClient;
@@ -292,7 +293,7 @@ public class SnomedMedicationDefinedDailyDoseService {
                 String cardSummaryMsg = String.format(getCardSummaryTemplate(), substanceName, getDynamicDecimalPlace(prescribedDosageFactor));
                 String cardDetailMsg = getCardDetailsInMarkDown(aggregatedMedicationsBySubstanceEntry.getValue(), prescribedDosageFactor);
                 String atcUrl = getAtcUrl(aggregatedMedicationsBySubstanceEntry);
-                CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMsg, cardDetailMsg, CDSIndicator.valueOf(alertLevelIndicator), new CDSSource("WHO ATC DDD", atcUrl), aggregatedMedicationsBySubstanceEntry.getValue().getReferenceList(), null);
+                CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMsg, cardDetailMsg, CDSIndicator.valueOf(alertLevelIndicator), new CDSSource("WHO ATC DDD", atcUrl), aggregatedMedicationsBySubstanceEntry.getValue().getReferenceList(), null, HIGH_DOSAGE_ALERT_TYPE);
                 cards.add(cdsCard);
             }
         }

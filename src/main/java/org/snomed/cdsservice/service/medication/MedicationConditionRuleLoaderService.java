@@ -32,6 +32,8 @@ import static java.lang.String.format;
 
 @Service
 public class MedicationConditionRuleLoaderService {
+	private static final String CONTRAINDICATION_ALERT_TYPE = "Contraindication";
+
 
 	@Value("${rules.medication-condition.spreadsheet}")
 	private String spreadsheetPath;
@@ -150,7 +152,7 @@ public class MedicationConditionRuleLoaderService {
 					}
 				}
 				if (rowNumber > 1 && !Strings.isNullOrEmpty(source) && medicationSnomedCode != null && conditionSnomedCode != null) {
-					CDSCard cdsCard = new CDSCard(uuid, cardSummary, cardDetail, CDSIndicator.valueOf(cardIndicator), new CDSSource(source, sourceLink), null, null);
+					CDSCard cdsCard = new CDSCard(uuid, cardSummary, cardDetail, CDSIndicator.valueOf(cardIndicator), new CDSSource(source, sourceLink), null, null, CONTRAINDICATION_ALERT_TYPE);
 					Collection<Coding> medicationCodings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medicationSnomedCode));
 					Collection<Coding> conditionCodings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(conditionSnomedCode));
 					logger.info("Created trigger {} / {}", medicationLabel, conditionLabel);
