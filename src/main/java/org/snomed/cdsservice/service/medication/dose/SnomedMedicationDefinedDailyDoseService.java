@@ -378,7 +378,7 @@ public class SnomedMedicationDefinedDailyDoseService {
             DosageComparisonByRoute dosageComparisonByRouteValue = dosageInfo.getValue();
             PrescribedDailyDose aggregatedDailyDosage = dosageComparisonByRouteValue.getTotalPrescribedDailyDose();
             SubstanceDefinedDailyDose substanceDefinedDailyDose = dosageComparisonByRouteValue.getSubstanceDefinedDailyDose();
-            sb.append(new UnorderedList<>(List.of(dosageComparisonByRouteValue.getRouteOfAdministration(), new UnorderedList<>(List.of("Prescribed daily dose : " + aggregatedDailyDosage.getQuantity() + aggregatedDailyDosage.getUnit(), "Recommended average daily dose : " + substanceDefinedDailyDose.dose() + substanceDefinedDailyDose.unit(), "Prescribed amount is " + getDecimalPlace(aggregatedDailyDosage.getQuantity() / substanceDefinedDailyDose.dose()) + " times over the average daily dose"))))).append(NEW_LINE).append(NEW_LINE);
+            sb.append(new UnorderedList<>(List.of(dosageComparisonByRouteValue.getRouteOfAdministration(), new UnorderedList<>(List.of("Prescribed daily dose : " + getDecimalPlace(aggregatedDailyDosage.getQuantity()) + aggregatedDailyDosage.getUnit(), "Recommended average daily dose : " +  substanceDefinedDailyDose.dose() + substanceDefinedDailyDose.unit(), "Prescribed amount is " + getDecimalPlace(aggregatedDailyDosage.getQuantity() / substanceDefinedDailyDose.dose()) + " times over the average daily dose"))))).append(NEW_LINE).append(NEW_LINE);
         }
     }
 
