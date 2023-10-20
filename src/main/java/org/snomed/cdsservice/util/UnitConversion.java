@@ -24,7 +24,10 @@ public enum UnitConversion {
     UL_UL("uL", "uL", 1.0),
     TABLET_TABLET("Tablet", "Tablet", 1.0),
     TABLET_CAPSULE("Tablet", "Capsule", 1.0),
-    CAPSULE_CAPSULE("Capsule", "Capsule", 1.0);
+    CAPSULE_CAPSULE("Capsule", "Capsule", 1.0),
+    PUFF_ACTUATION("Actuation", "Actuation", 1.0),
+    SPOONFUL_SPOONFUL("Spoonful", "Spoonful", 1.0),
+    DROP_DROP("Drop", "Drop", 1.0);
 
 
     private static final Map<String, Double> BY_UNIT = new HashMap<>();

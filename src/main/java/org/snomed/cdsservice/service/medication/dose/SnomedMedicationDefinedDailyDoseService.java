@@ -53,6 +53,7 @@ public class SnomedMedicationDefinedDailyDoseService {
     public static final String WARNING = "warning";
     public static final String INFO = "info";
     private static final String NEW_LINE = "\n";
+    private static final String HIGH_DOSAGE_ALERT_TYPE = "High Dosage";
 
     @Autowired
     private FHIRTerminologyServerClient tsClient;
@@ -292,7 +293,7 @@ public class SnomedMedicationDefinedDailyDoseService {
                 String cardSummaryMsg = String.format(getCardSummaryTemplate(), substanceName, getDynamicDecimalPlace(prescribedDosageFactor));
                 String cardDetailMsg = getCardDetailsInMarkDown(aggregatedMedicationsBySubstanceEntry.getValue(), prescribedDosageFactor);
                 String atcUrl = getAtcUrl(aggregatedMedicationsBySubstanceEntry);
-                CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMsg, cardDetailMsg, CDSIndicator.valueOf(alertLevelIndicator), new CDSSource("WHO ATC DDD", atcUrl), aggregatedMedicationsBySubstanceEntry.getValue().getReferenceList(), null);
+                CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMsg, cardDetailMsg, CDSIndicator.valueOf(alertLevelIndicator), new CDSSource("WHO ATC DDD", atcUrl), aggregatedMedicationsBySubstanceEntry.getValue().getReferenceList(), null, HIGH_DOSAGE_ALERT_TYPE);
                 cards.add(cdsCard);
             }
         }
@@ -377,7 +378,7 @@ public class SnomedMedicationDefinedDailyDoseService {
             DosageComparisonByRoute dosageComparisonByRouteValue = dosageInfo.getValue();
             PrescribedDailyDose aggregatedDailyDosage = dosageComparisonByRouteValue.getTotalPrescribedDailyDose();
             SubstanceDefinedDailyDose substanceDefinedDailyDose = dosageComparisonByRouteValue.getSubstanceDefinedDailyDose();
-            sb.append(new UnorderedList<>(List.of(dosageComparisonByRouteValue.getRouteOfAdministration(), new UnorderedList<>(List.of("Prescribed daily dose : " + aggregatedDailyDosage.getQuantity() + aggregatedDailyDosage.getUnit(), "Recommended average daily dose : " + substanceDefinedDailyDose.dose() + substanceDefinedDailyDose.unit(), "Prescribed amount is " + getDecimalPlace(aggregatedDailyDosage.getQuantity() / substanceDefinedDailyDose.dose()) + " times over the average daily dose"))))).append(NEW_LINE).append(NEW_LINE);
+            sb.append(new UnorderedList<>(List.of(dosageComparisonByRouteValue.getRouteOfAdministration(), new UnorderedList<>(List.of("Prescribed daily dose : " + getDecimalPlace(aggregatedDailyDosage.getQuantity()) + aggregatedDailyDosage.getUnit(), "Recommended average daily dose : " +  substanceDefinedDailyDose.dose() + substanceDefinedDailyDose.unit(), "Prescribed amount is " + getDecimalPlace(aggregatedDailyDosage.getQuantity() / substanceDefinedDailyDose.dose()) + " times over the average daily dose"))))).append(NEW_LINE).append(NEW_LINE);
         }
     }
 

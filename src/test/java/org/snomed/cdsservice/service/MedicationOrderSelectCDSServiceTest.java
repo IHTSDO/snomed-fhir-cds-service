@@ -33,6 +33,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class MedicationOrderSelectCDSServiceTest {
 
+	private static final String CONTRAINDICATION_ALERT_TYPE = "Contraindication";
+	private static final String HIGH_DOSAGE_ALERT_TYPE = "High Dosage";
+
 	@MockBean
 	private MedicationConditionRuleLoaderService ruleLoaderService;
 
@@ -59,7 +62,7 @@ class MedicationOrderSelectCDSServiceTest {
 						CDSIndicator.warning,
 						new CDSSource("Wikipedia"),
 						Stream.of(new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "1145419005")))).collect(Collectors.toList()),
-						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007")))));
+						new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007"))), CONTRAINDICATION_ALERT_TYPE));
 		service.setMedicationOrderSelectTriggers(List.of(trigger));
 	}
 
@@ -81,6 +84,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertEquals("The use of Atorvastatin is contraindicated when the patient has Disease of liver.", cdsCard.getDetail());
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertEquals("197321007", cdsCard.getReferenceCondition().getCoding().get(0).getCode());
+		assertEquals(CONTRAINDICATION_ALERT_TYPE, cdsCard.getAlertType());
 	}
 
 
@@ -102,6 +106,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard.getDetail().contains("Conclusion : Combined prescribed amount is 6.00 times the average daily dose."));
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=C10AA05"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 
 	@Test
@@ -122,6 +127,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard.getDetail().contains("Conclusion : Combined prescribed amount is 2.50 times the average daily dose."));
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=C10AA05"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 	@Test
 	public void shouldNotReturnOverDoseAlert_WhenPrescribedDailyDoseIsWithinAcceptableThresholdFactor() throws IOException {
@@ -153,6 +159,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard.getDetail().contains("Conclusion : Combined prescribed amount is 12.00 times the average daily dose."));
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=C10AA05"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInHours() throws IOException {
@@ -172,6 +179,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard.getDetail().contains("Conclusion : Combined prescribed amount is 12.00 times the average daily dose."));
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=C10AA05"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInWeeks() throws IOException {
@@ -191,6 +199,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard.getDetail().contains("Conclusion : Combined prescribed amount is 5.00 times the average daily dose."));
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=C10AA05"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInMonths() throws IOException {
@@ -210,6 +219,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard.getDetail().contains("Conclusion : Combined prescribed amount is 5.00 times the average daily dose."));
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=C10AA05"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 
 
@@ -230,6 +240,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard1.getDetail().contains("Conclusion : Combined prescribed amount is 96.00 times the average daily dose."));
 		assertEquals("408051007", cdsCard1.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard1.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=C09AA05"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard1.getAlertType());
 
 		CDSCard cdsCard2 = cards.get(1);
 		assertEquals("The amount of Ranitidine prescribed is 40 times the average daily dose.", cdsCard2.getSummary());
@@ -237,6 +248,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard2.getDetail().contains("Conclusion : Combined prescribed amount is 40.00 times the average daily dose."));
 		assertEquals("782087002", cdsCard2.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard2.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=A02BA02"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard2.getAlertType());
 	}
 
 	@Test
@@ -260,6 +272,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertEquals("317249006", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertEquals("782087002", cdsCard.getReferenceMedications().get(1).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=A02BA02"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 
 	@Test
@@ -283,6 +296,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertEquals("317249006", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertEquals("782087002", cdsCard.getReferenceMedications().get(1).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=A02BA02"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 
 	@Test
@@ -304,6 +318,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertEquals("433216006", cdsCard1.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertEquals(1, cdsCard1.getReferenceMedications().size());
 		assertTrue(cdsCard1.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=M04AB01"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard1.getAlertType());
 
 		CDSCard cdsCard2 = cards.get(1);
 		assertEquals("The amount of Colchicine prescribed is 6 times the average daily dose.", cdsCard2.getSummary());
@@ -312,6 +327,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertEquals("433216006", cdsCard2.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertEquals(1, cdsCard2.getReferenceMedications().size());
 		assertTrue(cdsCard2.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=M04AC01"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard2.getAlertType());
 
 	}
 }

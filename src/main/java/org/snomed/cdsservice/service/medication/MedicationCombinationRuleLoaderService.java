@@ -26,6 +26,7 @@ import java.util.List;
 public class MedicationCombinationRuleLoaderService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final String CONTRAINDICATION_ALERT_TYPE = "Contraindication";
 
     @Value("${rules.medication-medication.tsv}")
     private String tsvPath;
@@ -80,7 +81,7 @@ public class MedicationCombinationRuleLoaderService {
                     medication2SnomedCode = medication2SnomedCode.substring(medication2SnomedCode.indexOf("|")).trim();
                 }
 
-                CDSCard cdsCard = new CDSCard(uuid, cardSummary, cardDetail, CDSIndicator.valueOf(cardIndicator), new CDSSource(source, sourceLink), null, null);
+                CDSCard cdsCard = new CDSCard(uuid, cardSummary, cardDetail, CDSIndicator.valueOf(cardIndicator), new CDSSource(source, sourceLink), null, null, CONTRAINDICATION_ALERT_TYPE);
                 Collection<Coding> medication1Codings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medication1SnomedCode));
                 Collection<Coding> medication2Codings = tsClient.expandValueSet(SnomedValueSetUtil.getSNOMEDValueSetURI(medication2SnomedCode));
                 logger.info("Created trigger {} / {}", medication1Label, medication2Label);
