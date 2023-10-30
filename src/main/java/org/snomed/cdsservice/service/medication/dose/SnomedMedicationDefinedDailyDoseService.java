@@ -394,4 +394,8 @@ public class SnomedMedicationDefinedDailyDoseService {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         return decimalFormat.format(value);
     }
+
+    public void setDoseFormsManySnomedToOneAtcCodeMap(List<ManyToOneMapEntry> mapEntries) {
+        this.doseFormsManySnomedToOneAtcCodeMap = mapEntries;
+    }
 }
