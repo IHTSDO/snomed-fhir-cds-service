@@ -1,19 +1,21 @@
 package org.snomed.cdsservice.model;
 
+import java.math.BigDecimal;
+
 public class PrescribedDailyDose {
-    Double quantity;
+    BigDecimal quantity;
     String unit;
 
-    public PrescribedDailyDose(Double quantity, String unit) {
+    public PrescribedDailyDose(BigDecimal quantity, String unit) {
         this.quantity = quantity;
         this.unit = unit;
     }
 
-    public Double getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Double quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 
@@ -25,8 +27,8 @@ public class PrescribedDailyDose {
         this.unit = unit;
     }
 
-    public void addQuantity(Double newQuantity) {
-        this.quantity += newQuantity;
+    public void addQuantity(BigDecimal newQuantity) {
+        this.quantity = this.quantity.add(newQuantity);
     }
 
 }
