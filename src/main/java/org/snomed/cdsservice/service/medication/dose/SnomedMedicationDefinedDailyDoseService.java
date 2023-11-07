@@ -30,6 +30,7 @@ import org.snomed.cdsservice.util.Frequency;
 import org.snomed.cdsservice.util.UnitConversion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -286,13 +287,13 @@ public class SnomedMedicationDefinedDailyDoseService {
             try {
                 prescribedDailyDoseInUnitOfSubstanceStrength = getPrescribedDailyDoseInUnitOfSubstanceStrength(prescribedDailyDose, strengthValue, strengthUnit, denominatorValue, denominatorUnit);
             } catch (Exception e) {
-                throw new ResponseStatusException(412, String.format("Mismatched Strength units for the medicine %s", snomedMedicationLabel), null);
+                throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Mismatched Strength units for the medicine %s", snomedMedicationLabel), null);
             }
             PrescribedDailyDose prescribedDailyDoseInUnitOfDDD;
             try {
                 prescribedDailyDoseInUnitOfDDD = getPrescribedDailyDoseInUnitOfDDD(prescribedDailyDoseInUnitOfSubstanceStrength.getQuantity(), prescribedDailyDoseInUnitOfSubstanceStrength.getUnit(), substanceDefinedDailyDose.unit());
             } catch (Exception e) {
-                throw new ResponseStatusException(412, String.format("Mismatched Dose  units for the medicine %s", snomedMedicationLabel), null);
+                throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Mismatched Dose  units for the medicine %s", snomedMedicationLabel), null);
             }
             AggregatedMedicationsBySubstance aggregatedMedicationsBySubstance = aggregatedMedicationsBySubstanceMap.get(substance);
             if (aggregatedMedicationsBySubstance == null) {
