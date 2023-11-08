@@ -284,13 +284,9 @@ public class SnomedMedicationDefinedDailyDoseService {
                 denominatorUnit = attributeGroup.get(ATTRIBUTE_HAS_CONCENTRATION_STRENGTH_DENOMINATOR_UNIT);
             }
             PrescribedDailyDose prescribedDailyDoseInUnitOfSubstanceStrength;
-            try {
-                prescribedDailyDoseInUnitOfSubstanceStrength = getPrescribedDailyDoseInUnitOfSubstanceStrength(prescribedDailyDose, strengthValue, strengthUnit, denominatorValue, denominatorUnit);
-            } catch (Exception e) {
-                throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Prescribed dosage could not be validated for %s. Reason: Invalid dose unit.", snomedMedicationLabel), null);
-            }
             PrescribedDailyDose prescribedDailyDoseInUnitOfDDD;
             try {
+                prescribedDailyDoseInUnitOfSubstanceStrength = getPrescribedDailyDoseInUnitOfSubstanceStrength(prescribedDailyDose, strengthValue, strengthUnit, denominatorValue, denominatorUnit);
                 prescribedDailyDoseInUnitOfDDD = getPrescribedDailyDoseInUnitOfDDD(prescribedDailyDoseInUnitOfSubstanceStrength.getQuantity(), prescribedDailyDoseInUnitOfSubstanceStrength.getUnit(), substanceDefinedDailyDose.unit());
             } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Prescribed dosage could not be validated for %s. Reason: Invalid dose unit.", snomedMedicationLabel), null);
