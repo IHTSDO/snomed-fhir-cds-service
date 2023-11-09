@@ -128,7 +128,7 @@ class MedicationOrderSelectCDSServiceTest {
 		cdsRequest.setPrefetchStrings(Map.of(
 				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
 				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithWarningOverDose.json"), StandardCharsets.UTF_8)
+				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithWarningExceedsOverDose.json"), StandardCharsets.UTF_8)
 		));
 
 		List<CDSCard> cards = service.call(cdsRequest);
@@ -140,6 +140,27 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue( cdsCard.getDetail().contains("Conclusion : Combined prescribed amount is 6.00 times the average daily dose."));
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
 		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=C10AA05"));
+		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
+	}
+
+	@Test
+	public void shouldReturnOverDoseWarningAlert_WhenPrescribedDailyDoseEqualsMaximumThresholdFactor() throws IOException {
+		CDSRequest cdsRequest = new CDSRequest();
+		cdsRequest.setPrefetchStrings(Map.of(
+				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
+				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
+				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithWarningEqualsOverDose.json"), StandardCharsets.UTF_8)
+		));
+
+		List<CDSCard> cards = service.call(cdsRequest);
+		assertEquals(1, cards.size());
+
+		CDSCard cdsCard = cards.get(0);
+		assertEquals("The amount of Ranitidine prescribed is 4 times the average daily dose.", cdsCard.getSummary());
+		assertEquals(CDSIndicator.warning, cdsCard.getIndicator());
+		assertTrue( cdsCard.getDetail().contains("Conclusion : Combined prescribed amount is 4.00 times the average daily dose."));
+		assertEquals("317249006", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
+		assertTrue(cdsCard.getSource().getUrl().contains("https://www.whocc.no/atc_ddd_index/?code=A02BA02"));
 		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard.getAlertType());
 	}
 

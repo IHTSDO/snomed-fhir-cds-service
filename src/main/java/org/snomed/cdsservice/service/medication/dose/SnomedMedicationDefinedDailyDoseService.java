@@ -37,6 +37,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -197,7 +198,7 @@ public class SnomedMedicationDefinedDailyDoseService {
         int frequencyCount = doseFrequency.getFrequencyCount();
         int periodCount = doseFrequency.getPeriodCount();
         String periodUnit = doseFrequency.getPeriodUnit();
-        Double dailyDoseQuantity = calculateTotalDosePerDay(doseQuantityValue, frequencyCount, periodCount, periodUnit);
+        BigDecimal dailyDoseQuantity = calculateTotalDosePerDay(doseQuantityValue, frequencyCount, periodCount, periodUnit);
         return new PrescribedDailyDose(dailyDoseQuantity, doseQuantity.getUnit());
     }
 
@@ -214,7 +215,7 @@ public class SnomedMedicationDefinedDailyDoseService {
         return dosage;
     }
 
-    private Double calculateTotalDosePerDay(BigDecimal doseQuantityValue, int frequencyCount, int periodCount, String periodUnit) {
+    private BigDecimal calculateTotalDosePerDay(BigDecimal doseQuantityValue, int frequencyCount, int periodCount, String periodUnit) {
         //calculate number of times per day
         BigDecimal timesPerDay = new BigDecimal(0);
         if (periodUnit.equals(Timing.UnitsOfTime.H.getDisplay())) {
@@ -226,7 +227,7 @@ public class SnomedMedicationDefinedDailyDoseService {
         }
         //calculate total dose per day
         BigDecimal totalDosePerDay = timesPerDay.multiply(doseQuantityValue);
-        return totalDosePerDay.doubleValue();
+        return totalDosePerDay;
     }
 
     private void updateTotalPrescribedDailyDose(AggregatedMedicationsBySubstance aggregatedMedicationsBySubstance, PrescribedDailyDose prescribedDailyDoseInUnitOfDDD, String routeOfAdministrationCode, SubstanceDefinedDailyDose substanceDefinedDailyDose, String routeOfAdministration) {
@@ -307,11 +308,11 @@ public class SnomedMedicationDefinedDailyDoseService {
     void composeDosageAlerts(Map<String, AggregatedMedicationsBySubstance> aggregatedMedicationsBySubstanceMap, List<CDSCard> cards) {
         for (var aggregatedMedicationsBySubstanceEntry : aggregatedMedicationsBySubstanceMap.entrySet()) {
             String substanceName = aggregatedMedicationsBySubstanceEntry.getValue().getSubstanceShortName();
-            Double prescribedDosageFactor = getPrescribedDosageFactor(aggregatedMedicationsBySubstanceEntry.getValue().getDosageComparisonByRouteMap());
+            BigDecimal prescribedDosageFactor = (getPrescribedDosageFactor(aggregatedMedicationsBySubstanceEntry.getValue().getDosageComparisonByRouteMap()));
             String alertLevelIndicator = getAlertIndicator(prescribedDosageFactor);
             if (StringUtils.isNotBlank(alertLevelIndicator)) {
                 UUID randomUuid = UUID.fromString(UUID.nameUUIDFromBytes(substanceName.getBytes()).toString());
-                String cardSummaryMsg = String.format(getCardSummaryTemplate(), substanceName, getDynamicDecimalPlace(prescribedDosageFactor));
+                String cardSummaryMsg = String.format(getCardSummaryTemplate(), substanceName, prescribedDosageFactor.stripTrailingZeros().toPlainString());
                 String cardDetailMsg = getCardDetailsInMarkDown(aggregatedMedicationsBySubstanceEntry.getValue(), prescribedDosageFactor);
                 String atcUrl = getAtcUrl(aggregatedMedicationsBySubstanceEntry);
                 CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMsg, cardDetailMsg, CDSIndicator.valueOf(alertLevelIndicator), new CDSSource("WHO ATC DDD", atcUrl), aggregatedMedicationsBySubstanceEntry.getValue().getReferenceList(), null, HIGH_DOSAGE_ALERT_TYPE);
@@ -329,20 +330,21 @@ public class SnomedMedicationDefinedDailyDoseService {
         return MessageFormat.format(atcUrlTemplate, dosageComparisonByRoute.getSubstanceDefinedDailyDose().atcCode());
     }
 
-    private String getAlertIndicator(double prescribedDosageFactor) {
+    private String getAlertIndicator(BigDecimal prescribedDosageFactor) {
         String alertLevel = null;
-        if (prescribedDosageFactor >= Double.parseDouble(maximumDailyDoseThresholdFactor)) {
+        if (prescribedDosageFactor.compareTo(new BigDecimal(maximumDailyDoseThresholdFactor)) >= 0) {
             alertLevel = WARNING;
-        } else if (prescribedDosageFactor >= Double.parseDouble(acceptableDailyDoseThresholdFactor)) {
+        } else if (prescribedDosageFactor.compareTo(new BigDecimal(acceptableDailyDoseThresholdFactor)) >=0) {
             alertLevel = INFO;
         }
         return alertLevel;
     }
 
-    private Double getPrescribedDosageFactor(Map<String, DosageComparisonByRoute> dosageComparisonByRouteMap) {
-        Double prescribedDosageFactor = Double.valueOf(0);
+    private BigDecimal getPrescribedDosageFactor(Map<String, DosageComparisonByRoute> dosageComparisonByRouteMap) {
+        BigDecimal prescribedDosageFactor = BigDecimal.ZERO;
         for (var eachRoute : dosageComparisonByRouteMap.entrySet()) {
-            prescribedDosageFactor = prescribedDosageFactor + (eachRoute.getValue().getTotalPrescribedDailyDose().getQuantity() / eachRoute.getValue().getSubstanceDefinedDailyDose().dose());
+            BigDecimal eachRoutePrescribedDosageFactor = (eachRoute.getValue().getTotalPrescribedDailyDose().getQuantity()).divide(new BigDecimal(eachRoute.getValue().getSubstanceDefinedDailyDose().dose()), 2, RoundingMode.HALF_UP);
+            prescribedDosageFactor = prescribedDosageFactor.add(eachRoutePrescribedDosageFactor);
         }
         return prescribedDosageFactor;
     }
@@ -359,12 +361,12 @@ public class SnomedMedicationDefinedDailyDoseService {
     }
 
     private PrescribedDailyDose getPrescribedDailyDoseInUnitOfSubstanceStrength(PrescribedDailyDose prescribedDailyDose, String strengthValue, String strengthUnit, String denominatorValue, String denominatorUnit) {
-        Double prescribedDoseQuantity = prescribedDailyDose.getQuantity();
+        BigDecimal prescribedDoseQuantity = prescribedDailyDose.getQuantity();
         String prescribedDisplayUnit = prescribedDailyDose.getUnit();
 
         String strengthDisplayUnit = getSnomedParameterValue(strengthUnit, "display");
         String denominatorDisplayUnit = getSnomedParameterValue(denominatorUnit, "display");
-        double prescribedDoseQuantityInUnitOfSubstanceStrength = prescribedDoseQuantity * Double.parseDouble(strengthValue) / Double.parseDouble(denominatorValue) * UnitConversion.factorOfConversion(prescribedDisplayUnit, denominatorDisplayUnit);
+        BigDecimal prescribedDoseQuantityInUnitOfSubstanceStrength = prescribedDoseQuantity.multiply((new BigDecimal(strengthValue)).divide(new BigDecimal(denominatorValue))).multiply(new BigDecimal(UnitConversion.factorOfConversion(prescribedDisplayUnit, denominatorDisplayUnit)));
         return new PrescribedDailyDose(prescribedDoseQuantityInUnitOfSubstanceStrength, strengthDisplayUnit);
     }
 
@@ -373,8 +375,8 @@ public class SnomedMedicationDefinedDailyDoseService {
         return conceptParameters.getParameter(parameterName).getValue().toString();
     }
 
-    private PrescribedDailyDose getPrescribedDailyDoseInUnitOfDDD(Double inputStrengthValue, String inputStrengthUnit, String targetStrengthUnit) {
-        Double prescribedDailyDoseQuantity = inputStrengthValue * UnitConversion.factorOfConversion(inputStrengthUnit, targetStrengthUnit);
+    private PrescribedDailyDose getPrescribedDailyDoseInUnitOfDDD(BigDecimal inputStrengthValue, String inputStrengthUnit, String targetStrengthUnit) {
+        BigDecimal prescribedDailyDoseQuantity = inputStrengthValue.multiply(new BigDecimal(UnitConversion.factorOfConversion(inputStrengthUnit, targetStrengthUnit)));
         return new PrescribedDailyDose(prescribedDailyDoseQuantity, targetStrengthUnit);
     }
 
@@ -382,7 +384,7 @@ public class SnomedMedicationDefinedDailyDoseService {
         return cardSummaryTemplate;
     }
 
-    private String getCardDetailsInMarkDown(AggregatedMedicationsBySubstance aggregatedMedicationsBySubstance, Double dosageWeight) {
+    private String getCardDetailsInMarkDown(AggregatedMedicationsBySubstance aggregatedMedicationsBySubstance, BigDecimal dosageWeight) {
         StringBuilder sb = new StringBuilder();
         sb.append(new Text("Substance : " + aggregatedMedicationsBySubstance.getSubstanceShortName())).append(NEW_LINE).append(NEW_LINE);
         sb.append(new Text("Present in this patient’s medication :")).append(NEW_LINE);
@@ -390,7 +392,7 @@ public class SnomedMedicationDefinedDailyDoseService {
         sb.append(NEW_LINE).append(new Text("Route of administration :")).append(NEW_LINE);
         Map<String, DosageComparisonByRoute> dosageMapByRoute = aggregatedMedicationsBySubstance.getDosageComparisonByRouteMap();
         composeDosageByRoute(dosageMapByRoute, sb);
-        sb.append(new Text("Conclusion : Combined prescribed amount is " + getDecimalPlace(dosageWeight) + " times the average daily dose."));
+        sb.append(new Text("Conclusion : Combined prescribed amount is " + dosageWeight + " times the average daily dose."));
         return sb.toString();
     }
 
@@ -399,7 +401,7 @@ public class SnomedMedicationDefinedDailyDoseService {
             DosageComparisonByRoute dosageComparisonByRouteValue = dosageInfo.getValue();
             PrescribedDailyDose aggregatedDailyDosage = dosageComparisonByRouteValue.getTotalPrescribedDailyDose();
             SubstanceDefinedDailyDose substanceDefinedDailyDose = dosageComparisonByRouteValue.getSubstanceDefinedDailyDose();
-            sb.append(new UnorderedList<>(List.of(dosageComparisonByRouteValue.getRouteOfAdministration(), new UnorderedList<>(List.of("Prescribed daily dose : " + getDecimalPlace(aggregatedDailyDosage.getQuantity()) + aggregatedDailyDosage.getUnit(), "Recommended average daily dose : " +  substanceDefinedDailyDose.dose() + substanceDefinedDailyDose.unit(), "Prescribed amount is " + getDecimalPlace(aggregatedDailyDosage.getQuantity() / substanceDefinedDailyDose.dose()) + " times over the average daily dose"))))).append(NEW_LINE).append(NEW_LINE);
+            sb.append(new UnorderedList<>(List.of(dosageComparisonByRouteValue.getRouteOfAdministration(), new UnorderedList<>(List.of("Prescribed daily dose : " + formatToTwoDecimalPlaces(aggregatedDailyDosage.getQuantity()) + aggregatedDailyDosage.getUnit(), "Recommended average daily dose : " + substanceDefinedDailyDose.dose() + substanceDefinedDailyDose.unit(), "Prescribed amount is " + (aggregatedDailyDosage.getQuantity()).divide(new BigDecimal(substanceDefinedDailyDose.dose()),0, RoundingMode.HALF_UP) + " times over the average daily dose"))))).append(NEW_LINE).append(NEW_LINE);
         }
     }
 
@@ -414,6 +416,10 @@ public class SnomedMedicationDefinedDailyDoseService {
     private String getDynamicDecimalPlace(Double value) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         return decimalFormat.format(value);
+    }
+
+    private BigDecimal formatToTwoDecimalPlaces(BigDecimal value){
+        return value.setScale(2, RoundingMode.HALF_UP);
     }
 
     public void setDoseFormsManySnomedToOneAtcCodeMap(List<ManyToOneMapEntry> mapEntries) {
