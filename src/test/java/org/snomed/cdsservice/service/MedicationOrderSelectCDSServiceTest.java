@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -362,6 +364,17 @@ class MedicationOrderSelectCDSServiceTest {
 		assertEquals(HIGH_DOSAGE_ALERT_TYPE, cdsCard2.getAlertType());
 
     }
+
+	@Test
+	public void shouldThrowException_WhenRequestBundleContainsMismatchedDoseUnits() throws IOException {
+		CDSRequest cdsRequest = new CDSRequest();
+		cdsRequest.setPrefetchStrings(Map.of(
+				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
+				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
+				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithMismatchedDoseUnits"), StandardCharsets.UTF_8)
+		));
+		assertThrows(ResponseStatusException.class, () ->service.call(cdsRequest) );
+	}
 
 
     private ConceptParameters getConceptParamsForDoseUnitMg() {

@@ -4,16 +4,25 @@ import jakarta.annotation.PostConstruct;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Dosage;
+import org.hl7.fhir.r4.model.MedicationRequest;
+import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Timing;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snomed.cdsservice.model.*;
+import org.snomed.cdsservice.model.AggregatedMedicationsBySubstance;
+import org.snomed.cdsservice.model.CDSCard;
+import org.snomed.cdsservice.model.CDSCoding;
+import org.snomed.cdsservice.model.CDSIndicator;
+import org.snomed.cdsservice.model.CDSReference;
+import org.snomed.cdsservice.model.CDSSource;
+import org.snomed.cdsservice.model.DosageComparisonByRoute;
+import org.snomed.cdsservice.model.PrescribedDailyDose;
 import org.snomed.cdsservice.service.ArgumentAssertionUtil;
 import org.snomed.cdsservice.service.ServiceException;
-import org.snomed.cdsservice.service.medication.dose.MedicationDoseFormsLoaderService;
 import org.snomed.cdsservice.service.model.ManyToOneMapEntry;
-import org.snomed.cdsservice.service.medication.dose.SubstanceDefinedDailyDose;
 import org.snomed.cdsservice.service.tsclient.ConceptParameters;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.service.tsclient.SnomedConceptNormalForm;
@@ -21,14 +30,22 @@ import org.snomed.cdsservice.util.Frequency;
 import org.snomed.cdsservice.util.UnitConversion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -266,10 +283,14 @@ public class SnomedMedicationDefinedDailyDoseService {
                 denominatorValue = attributeGroup.get(ATTRIBUTE_HAS_CONCENTRATION_STRENGTH_DENOMINATOR_VALUE);
                 denominatorUnit = attributeGroup.get(ATTRIBUTE_HAS_CONCENTRATION_STRENGTH_DENOMINATOR_UNIT);
             }
-
-
-            PrescribedDailyDose prescribedDailyDoseInUnitOfSubstanceStrength = getPrescribedDailyDoseInUnitOfSubstanceStrength(prescribedDailyDose, strengthValue, strengthUnit, denominatorValue, denominatorUnit);
-            PrescribedDailyDose prescribedDailyDoseInUnitOfDDD = getPrescribedDailyDoseInUnitOfDDD(prescribedDailyDoseInUnitOfSubstanceStrength.getQuantity(), prescribedDailyDoseInUnitOfSubstanceStrength.getUnit(), substanceDefinedDailyDose.unit());
+            PrescribedDailyDose prescribedDailyDoseInUnitOfSubstanceStrength;
+            PrescribedDailyDose prescribedDailyDoseInUnitOfDDD;
+            try {
+                prescribedDailyDoseInUnitOfSubstanceStrength = getPrescribedDailyDoseInUnitOfSubstanceStrength(prescribedDailyDose, strengthValue, strengthUnit, denominatorValue, denominatorUnit);
+                prescribedDailyDoseInUnitOfDDD = getPrescribedDailyDoseInUnitOfDDD(prescribedDailyDoseInUnitOfSubstanceStrength.getQuantity(), prescribedDailyDoseInUnitOfSubstanceStrength.getUnit(), substanceDefinedDailyDose.unit());
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Prescribed dosage could not be validated for %s. Reason: Invalid dose unit.", snomedMedicationLabel), null);
+            }
             AggregatedMedicationsBySubstance aggregatedMedicationsBySubstance = aggregatedMedicationsBySubstanceMap.get(substance);
             if (aggregatedMedicationsBySubstance == null) {
                 String substanceShortName = getSnomedParameterValue(substance, "display");
