@@ -291,7 +291,7 @@ public class SnomedMedicationDefinedDailyDoseService {
             String alertLevelIndicator = getAlertIndicator(prescribedDosageFactor);
             if (StringUtils.isNotBlank(alertLevelIndicator)) {
                 UUID randomUuid = UUID.fromString(UUID.nameUUIDFromBytes(substanceName.getBytes()).toString());
-                String cardSummaryMsg = String.format(getCardSummaryTemplate(), substanceName, prescribedDosageFactor);
+                String cardSummaryMsg = String.format(getCardSummaryTemplate(), substanceName, prescribedDosageFactor.stripTrailingZeros().toPlainString());
                 String cardDetailMsg = getCardDetailsInMarkDown(aggregatedMedicationsBySubstanceEntry.getValue(), prescribedDosageFactor);
                 String atcUrl = getAtcUrl(aggregatedMedicationsBySubstanceEntry);
                 CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMsg, cardDetailMsg, CDSIndicator.valueOf(alertLevelIndicator), new CDSSource("WHO ATC DDD", atcUrl), aggregatedMedicationsBySubstanceEntry.getValue().getReferenceList(), null, HIGH_DOSAGE_ALERT_TYPE);
@@ -322,7 +322,8 @@ public class SnomedMedicationDefinedDailyDoseService {
     private BigDecimal getPrescribedDosageFactor(Map<String, DosageComparisonByRoute> dosageComparisonByRouteMap) {
         BigDecimal prescribedDosageFactor = BigDecimal.ZERO;
         for (var eachRoute : dosageComparisonByRouteMap.entrySet()) {
-            prescribedDosageFactor = prescribedDosageFactor.add((eachRoute.getValue().getTotalPrescribedDailyDose().getQuantity()).divide(new BigDecimal(eachRoute.getValue().getSubstanceDefinedDailyDose().dose()), 2 , RoundingMode.HALF_UP));
+            BigDecimal eachRoutePrescribedDosageFactor = (eachRoute.getValue().getTotalPrescribedDailyDose().getQuantity()).divide(new BigDecimal(eachRoute.getValue().getSubstanceDefinedDailyDose().dose()), 2, RoundingMode.HALF_UP);
+            prescribedDosageFactor = prescribedDosageFactor.add(eachRoutePrescribedDosageFactor);
         }
         return prescribedDosageFactor;
     }
