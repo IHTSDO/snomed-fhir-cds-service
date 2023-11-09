@@ -4,6 +4,8 @@ import org.hl7.fhir.r4.model.Coding;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,15 +32,19 @@ public abstract class CDSTrigger {
 	public abstract CDSCard createRelevantCard(Set<Coding> activeDiagnosesOrMedicationCodings, Set<Coding> draftMedicationOrderCodings);
 
 	public void addReferenceMedicationToCDSCard(Collection<Coding> medicationIntersection, CDSCard cardInstance) {
-		CDSReference cdsReference = new CDSReference(medicationIntersection.stream().map(coding -> new CDSCoding(coding.getSystem(), coding.getCode())).collect(Collectors.toList()));
+		List<CDSReference> cdsReferences = medicationIntersection.stream().map(coding -> new CDSCoding(coding.getSystem(), coding.getCode())).map(cdsCoding -> new CDSReference(Collections.singletonList(cdsCoding))).collect(Collectors.toList());
 		if (cardInstance.getReferenceMedications() == null) {
 			cardInstance.setReferenceMedications(new ArrayList<>());
 		}
-		cardInstance.getReferenceMedications().add(cdsReference);
+		cardInstance.getReferenceMedications().addAll(cdsReferences);
 	}
 
 	public void addReferenceConditionToCDSCard(Collection<Coding> conditionIntersection, CDSCard cardInstance) {
-		cardInstance.setReferenceCondition(new CDSReference(conditionIntersection.stream().map(coding -> new CDSCoding(coding.getSystem(), coding.getCode())).collect(Collectors.toList())));
+		List<CDSReference> cdsReferences = conditionIntersection.stream().map(coding -> new CDSCoding(coding.getSystem(), coding.getCode())).map(cdsCoding -> new CDSReference(Collections.singletonList(cdsCoding))).collect(Collectors.toList());
+		if(cardInstance.getReferenceConditions() == null) {
+			cardInstance.setReferenceConditions( new ArrayList<>());
+		}// todo check if it should be added as the list and filter already existing values
+		cardInstance.getReferenceConditions().addAll(cdsReferences);
 	}
 
 	public Collection<Coding> getIntersection(Collection<Coding> codingsA, Collection<Coding> codingsB) {
