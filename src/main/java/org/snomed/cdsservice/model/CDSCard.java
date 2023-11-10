@@ -17,18 +17,18 @@ public class CDSCard {
 
 	private List<CDSReference> referenceMedications;
 
-	private CDSReference referenceCondition;
+	private List<CDSReference> referenceConditions;
 
 	private final String alertType;
 
-	public CDSCard(String uuid, String summary, String detail, CDSIndicator indicator, CDSSource source, List<CDSReference> referenceMedications, CDSReference referenceCondition, String alertType) {
+	public CDSCard(String uuid, String summary, String detail, CDSIndicator indicator, CDSSource source, List<CDSReference> referenceMedications, List<CDSReference> referenceConditions, String alertType) {
 		this.uuid = uuid;
 		this.summary = summary;
 		this.detail = detail;
 		this.indicator = indicator;
 		this.source = source;
 		this.referenceMedications = referenceMedications;
-		this.referenceCondition = referenceCondition;
+		this.referenceConditions = referenceConditions;
 		this.alertType = alertType;
 	}
 
@@ -69,16 +69,16 @@ public class CDSCard {
 		this.referenceMedications = referenceMedications;
 	}
 
-	public CDSReference getReferenceCondition() {
-		return referenceCondition;
+	public List<CDSReference> getReferenceConditions() {
+		return referenceConditions;
 	}
 
-	public void setReferenceCondition(CDSReference referenceCondition) {
-		this.referenceCondition = referenceCondition;
+	public void setReferenceConditions(List<CDSReference> referenceConditions) {
+		this.referenceConditions = referenceConditions;
 	}
 
 	public CDSCard cloneCard() {
-		return new CDSCard(uuid, summary, detail, indicator, source, referenceMedications, referenceCondition, alertType);
+		return new CDSCard(uuid, summary, detail, indicator, source, referenceMedications, referenceConditions, alertType);
 	}
 
 	public String getAlertType() {

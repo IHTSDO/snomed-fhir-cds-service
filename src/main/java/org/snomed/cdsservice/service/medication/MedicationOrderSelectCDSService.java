@@ -75,7 +75,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 			CDSCard card = trigger.createRelevantCard(activeDiagnosesCodings, draftMedicationOrderCodings);
 			if (card != null) {
 				addCodesFromOtherCodingSystemsForDraftMedications(card.getReferenceMedications(), medicationRequests);
-				addCodesFromOtherCodingSystemsForConditions(card.getReferenceCondition(), activeDiagnoses);
+				addCodesFromOtherCodingSystemsForConditions(card.getReferenceConditions(), activeDiagnoses);
 				cards.add(card);
 			}
 		}
@@ -93,14 +93,17 @@ public class MedicationOrderSelectCDSService extends CDSService {
 		return cards;
 	}
 
-	private void addCodesFromOtherCodingSystemsForConditions(CDSReference referenceCondition, List<Condition> activeDiagnoses) {
-		CDSCoding cdsCoding = referenceCondition.getCoding().get(0);
-		Optional<Condition> optionalCondition = activeDiagnoses.stream().filter(condition -> {
-			List<Coding> codingList = condition.getCode().getCoding();
-			Optional<Coding> optionalCoding = codingList.stream().filter(coding -> coding.getCode().equals(cdsCoding.getCode()) && coding.getSystem().equals(cdsCoding.getSystem())).findFirst();
-			return optionalCoding.isPresent();
-		}).findFirst();
-		optionalCondition.ifPresent(getCDSReferenceConditionConsumer(referenceCondition));
+	private void addCodesFromOtherCodingSystemsForConditions(List<CDSReference> referenceConditions, List<Condition> activeDiagnoses) {
+		referenceConditions.forEach(referenceCondition-> {
+					CDSCoding cdsCoding = referenceCondition.getCoding().get(0);
+					Optional<Condition> optionalCondition = activeDiagnoses.stream().filter(condition -> {
+						List<Coding> codingList = condition.getCode().getCoding();
+						Optional<Coding> optionalCoding = codingList.stream().filter(coding -> coding.getCode().equals(cdsCoding.getCode()) && coding.getSystem().equals(cdsCoding.getSystem())).findFirst();
+						return optionalCoding.isPresent();
+					}).findFirst();
+					optionalCondition.ifPresent(getCDSReferenceConditionConsumer(referenceCondition));
+				}
+		);
 	}
 
 	private void addCodesFromOtherCodingSystemsForDraftMedications(List<CDSReference> referenceMedications, List<MedicationRequest> draftMedicationOrders) {

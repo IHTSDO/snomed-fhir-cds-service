@@ -80,7 +80,7 @@ class MedicationOrderSelectCDSServiceTest {
                         CDSIndicator.warning,
                         new CDSSource("Wikipedia"),
                         Stream.of(new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "1145419005")))).collect(Collectors.toList()),
-                        new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007"))), CONTRAINDICATION_ALERT_TYPE));
+						Stream.of(new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007")))).collect(Collectors.toList()), CONTRAINDICATION_ALERT_TYPE));
         service.setMedicationOrderSelectTriggers(List.of(trigger));
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("1145419005"))).thenReturn(getConceptParamsForDrugAtorvastatinTablet());
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("258684004"))).thenReturn(getConceptParamsForDoseUnitMg());
@@ -117,7 +117,7 @@ class MedicationOrderSelectCDSServiceTest {
 		assertEquals(CDSIndicator.warning, cdsCard.getIndicator());
 		assertEquals("The use of Atorvastatin is contraindicated when the patient has Disease of liver.", cdsCard.getDetail());
 		assertEquals("1145419005", cdsCard.getReferenceMedications().get(0).getCoding().get(0).getCode());
-		assertEquals("197321007", cdsCard.getReferenceCondition().getCoding().get(0).getCode());
+		assertEquals("197321007", cdsCard.getReferenceConditions().get(0).getCoding().get(0).getCode());
 		assertEquals(CONTRAINDICATION_ALERT_TYPE, cdsCard.getAlertType());
 	}
 
