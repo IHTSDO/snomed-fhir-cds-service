@@ -79,8 +79,8 @@ class MedicationOrderSelectCDSServiceTest {
                         "The use of {{RuleMedication}} is contraindicated when the patient has {{RuleCondition}}.",
                         CDSIndicator.warning,
                         new CDSSource("Wikipedia"),
-                        null,
-						null, CONTRAINDICATION_ALERT_TYPE));
+                        Stream.of(new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "1145419005")))).collect(Collectors.toList()),
+						Stream.of(new CDSReference(Collections.singletonList(new CDSCoding("http://snomed.info/sct", "197321007")))).collect(Collectors.toList()), CONTRAINDICATION_ALERT_TYPE));
         service.setMedicationOrderSelectTriggers(List.of(trigger));
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("1145419005"))).thenReturn(getConceptParamsForDrugAtorvastatinTablet());
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("258684004"))).thenReturn(getConceptParamsForDoseUnitMg());
