@@ -43,7 +43,7 @@ public abstract class CDSTrigger {
 		List<CDSReference> cdsReferences = conditionIntersection.stream().map(coding -> new CDSCoding(coding.getSystem(), coding.getCode())).map(cdsCoding -> new CDSReference(Collections.singletonList(cdsCoding))).collect(Collectors.toList());
 		if(cardInstance.getReferenceConditions() == null) {
 			cardInstance.setReferenceConditions( new ArrayList<>());
-		}// todo check if it should be added as the list and filter already existing values
+		}
 		cardInstance.getReferenceConditions().addAll(cdsReferences);
 	}
 
