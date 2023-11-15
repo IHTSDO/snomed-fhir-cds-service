@@ -39,7 +39,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,9 +72,9 @@ public class SnomedMedicationDefinedDailyDoseService {
     public static final String INFO = "info";
     private static final String NEW_LINE = "\n";
     private static final String HIGH_DOSAGE_ALERT_TYPE = "High Dosage";
-    private static final String DOSAGE_EXCEPTION_ALERT_TYPE = "Dosage Exception";
-    private static final String DOSAGE_EXCEPTION_DOSE_INPUT = "Dose Inputs";
-    private static final String DOSAGE_EXCEPTION_ROUTE_INPUT = "Dose Route";
+    private static final String INVALID_DOSAGE_ALERT_TYPE = "Validation Error";
+    private static final String DOSAGE_EXCEPTION_DOSE_INPUT = "dose unit";
+    private static final String DOSAGE_EXCEPTION_ROUTE_INPUT = "dose route";
 
     @Autowired
     private FHIRTerminologyServerClient tsClient;
@@ -150,7 +149,8 @@ public class SnomedMedicationDefinedDailyDoseService {
             Optional<Coding> snomedMedication = codingList.stream().filter(coding -> SNOMEDCT_SYSTEM.equals(coding.getSystem())).findFirst();
             if (snomedMedication.isPresent()) {
                 String snomedMedicationCode = snomedMedication.get().getCode();
-                String snomedMedicationLabel = snomedMedication.get().getDisplay();if ("NA".equals(doseQuantity.getUnit())) {
+                String snomedMedicationLabel = snomedMedication.get().getDisplay();
+                if ("NA".equals(doseQuantity.getUnit())) {
                     logger.debug("Prescribed dosage could not be validated for {}. Reason: Dose unit unknown to CDSS.", snomedMedicationLabel);
                     continue;
                 }
@@ -158,8 +158,9 @@ public class SnomedMedicationDefinedDailyDoseService {
                 try {
                      conceptParameters = tsClient.lookup(SNOMEDCT_SYSTEM, snomedMedicationCode);
                 } catch (Exception e) {
-                    logger.error("");
-                    throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Bahmni->SNOMED mapping is misconfigured for medication %s.", snomedMedicationLabel), null);
+                    String errorMessage = String.format("Bahmni->SNOMED mapping is misconfigured for medication %s.", snomedMedicationLabel);
+                    logger.error(errorMessage);
+                    throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, errorMessage, null);
                 }
                 if (conceptParameters == null) {
                     logger.debug("No SNOMED concept found for code {}, ignoring.", snomedMedicationCode);
@@ -188,9 +189,10 @@ public class SnomedMedicationDefinedDailyDoseService {
                     logger.info("SNOMED dose form {} is not covered by the route of administration dynamic map, skipping", manufacturedDoseForm);
                     continue;
                 }
-                if (!dosage.getRoute().getText().equals(atcRouteOfAdministrationCode)) {
-                    logger.info("");
-                    composeCdssCardForDosageMismatch(cards, snomedMedicationLabel, codingList, atcRouteOfAdministrationCode, false);
+                if (!(dosage.getRoute() != null && atcRouteOfAdministrationCode.equals(dosage.getRoute().getText()))) {
+                    String expectedUnit = atcRouteOfAdministrationCode + (routeOfAdministrationLabel.equals(atcRouteOfAdministrationCode) ? "" : " (" + routeOfAdministrationLabel.trim() + ")" );
+                    logger.info("Expected route {} for medication {}", expectedUnit, snomedMedicationLabel);
+                    composeCdssCardForDosageMismatch(cards, snomedMedicationLabel, codingList, expectedUnit, false);
                     continue;
                 }
                 aggregateMedicationsBySubstance(aggregatedMedicationsBySubstanceMap, prescribedDailyDose, codingList, snomedMedicationLabel, atcRouteOfAdministrationCode, routeOfAdministrationLabel, normalForm, cards);
@@ -327,11 +329,11 @@ public class SnomedMedicationDefinedDailyDoseService {
         UUID randomUuid = UUID.fromString(UUID.nameUUIDFromBytes(medicationLabel.getBytes()).toString());
         String invalidMessage = isDoseUnit ? DOSAGE_EXCEPTION_DOSE_INPUT : DOSAGE_EXCEPTION_ROUTE_INPUT;
         Optional<CDSCard> optionalCard = cards.stream().filter(cdsCard -> cdsCard.getUuid().equals(randomUuid.toString())).findFirst();
-        String cardDetailMsg = "%s found invalid. Expected %s for %s";
-        cardDetailMsg = new UnorderedListItem(String.format(cardDetailMsg, invalidMessage, expectedUnit, medicationLabel)).toString();
-        String cardSummaryMessage = "Invalid Dose";
+        String cardDetailMsg = "Expected %s for %s";
+        cardDetailMsg = new UnorderedListItem(String.format(cardDetailMsg, expectedUnit, invalidMessage)).toString();
+        String cardSummaryMessage = String.format("One or more dose Inputs are invalid for  %s", medicationLabel);
         if(optionalCard.isEmpty()) {
-            CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMessage, cardSummaryMessage + NEW_LINE + cardDetailMsg, CDSIndicator.valueOf(WARNING), new CDSSource("DummyService", null), Collections.singletonList(new CDSReference(getCodings(codingList))), null, DOSAGE_EXCEPTION_ALERT_TYPE);
+            CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMessage, NEW_LINE + cardDetailMsg, CDSIndicator.valueOf(WARNING), new CDSSource("DummyService", null), Collections.singletonList(new CDSReference(getCodings(codingList))), null, INVALID_DOSAGE_ALERT_TYPE);
             cards.add(cdsCard);
             return;
         }
