@@ -50,7 +50,9 @@ class MedicationOrderSelectCDSServiceTest {
     public static final String SNOMEDCT_SYSTEM = "http://snomed.info/sct";
     private static final String CONTRAINDICATION_ALERT_TYPE = "Contraindication";
     private static final String HIGH_DOSAGE_ALERT_TYPE = "High Dosage";
-    @Autowired
+	private static final String DOSAGE_EXCEPTION_ALERT_TYPE = "Dosage Exception";
+
+	@Autowired
     SnomedMedicationDefinedDailyDoseService snomedMedicationDefinedDailyDoseService;
     @MockBean
     private MedicationConditionRuleLoaderService ruleLoaderService;
@@ -394,7 +396,12 @@ class MedicationOrderSelectCDSServiceTest {
 				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
 				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithMismatchedDoseUnits"), StandardCharsets.UTF_8)
 		));
-		assertThrows(ResponseStatusException.class, () ->service.call(cdsRequest) );
+		List<CDSCard> cards = service.call(cdsRequest);
+		CDSCard cdsCard1 = cards.get(0);
+		CDSCard cdsCard2 = cards.get(1);
+		assertEquals(2, cards.size());
+		assertEquals(CONTRAINDICATION_ALERT_TYPE, cdsCard1.getAlertType());
+		assertEquals(DOSAGE_EXCEPTION_ALERT_TYPE, cdsCard2.getAlertType());
 	}
 
 

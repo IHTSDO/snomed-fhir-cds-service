@@ -2,6 +2,7 @@ package org.snomed.cdsservice.service.medication.dose;
 
 import jakarta.annotation.PostConstruct;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
+import net.steppschuh.markdowngenerator.list.UnorderedListItem;
 import net.steppschuh.markdowngenerator.text.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Coding;
@@ -72,6 +73,9 @@ public class SnomedMedicationDefinedDailyDoseService {
     public static final String INFO = "info";
     private static final String NEW_LINE = "\n";
     private static final String HIGH_DOSAGE_ALERT_TYPE = "High Dosage";
+    private static final String DOSAGE_EXCEPTION_ALERT_TYPE = "Dosage Exception";
+    private static final String DOSAGE_EXCEPTION_DOSE_INPUT = "Dose Inputs";
+    private static final String DOSAGE_EXCEPTION_ROUTE_INPUT = "Dose Route";
 
     @Autowired
     private FHIRTerminologyServerClient tsClient;
@@ -147,8 +151,17 @@ public class SnomedMedicationDefinedDailyDoseService {
             if (snomedMedication.isPresent()) {
                 String snomedMedicationCode = snomedMedication.get().getCode();
                 String snomedMedicationLabel = snomedMedication.get().getDisplay();
-
-                ConceptParameters conceptParameters = tsClient.lookup(SNOMEDCT_SYSTEM, snomedMedicationCode);
+                if ("NA".equals(doseQuantity.getUnit())) {
+                    logger.debug("Prescribed dosage could not be validated for {}. Reason: Dose unit unknown to CDSS.", snomedMedicationLabel);
+                    continue;
+                }
+                ConceptParameters conceptParameters = null;
+                try {
+                     conceptParameters = tsClient.lookup(SNOMEDCT_SYSTEM, snomedMedicationCode);
+                } catch (Exception e) {
+                    logger.error("");
+                    throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Bahmni->SNOMED mapping is misconfigured for medication %s.", snomedMedicationLabel), null);
+                }
                 if (conceptParameters == null) {
                     logger.debug("No SNOMED concept found for code {}, ignoring.", snomedMedicationCode);
                     continue;
@@ -176,7 +189,12 @@ public class SnomedMedicationDefinedDailyDoseService {
                     logger.info("SNOMED dose form {} is not covered by the route of administration dynamic map, skipping", manufacturedDoseForm);
                     continue;
                 }
-                aggregateMedicationsBySubstance(aggregatedMedicationsBySubstanceMap, prescribedDailyDose, codingList, snomedMedicationLabel, atcRouteOfAdministrationCode, routeOfAdministrationLabel, normalForm);
+                if (!dosage.getRoute().getCodingFirstRep().getDisplay().equals(atcRouteOfAdministrationCode)) {
+                    logger.info("");
+                    composeCdssCardForDosageMismatch(cards, snomedMedicationLabel, codingList, atcRouteOfAdministrationCode, false);
+                    continue;
+                }
+                aggregateMedicationsBySubstance(aggregatedMedicationsBySubstanceMap, prescribedDailyDose, codingList, snomedMedicationLabel, atcRouteOfAdministrationCode, routeOfAdministrationLabel, normalForm, cards);
             }
         }
         composeDosageAlerts(aggregatedMedicationsBySubstanceMap, cards);
@@ -241,7 +259,7 @@ public class SnomedMedicationDefinedDailyDoseService {
         }
     }
 
-    private void aggregateMedicationsBySubstance(Map<String, AggregatedMedicationsBySubstance> aggregatedMedicationsBySubstanceMap, PrescribedDailyDose prescribedDailyDose, List<Coding> codingList, String snomedMedicationLabel, String atcRouteOfAdministrationCode, String routeOfAdministrationLabel, SnomedConceptNormalForm normalForm) {
+    private void aggregateMedicationsBySubstance(Map<String, AggregatedMedicationsBySubstance> aggregatedMedicationsBySubstanceMap, PrescribedDailyDose prescribedDailyDose, List<Coding> codingList, String snomedMedicationLabel, String atcRouteOfAdministrationCode, String routeOfAdministrationLabel, SnomedConceptNormalForm normalForm, List<CDSCard> cards) {
         // The substances within the clinical drug concepts are contained within attribute groups
         for (Map<String, String> attributeGroup : normalForm.getAttributeGroups()) {
             String substance = attributeGroup.get(ATTRIBUTE_HAS_BASIS_OF_STRENGTH_SUBSTANCE);
@@ -287,10 +305,11 @@ public class SnomedMedicationDefinedDailyDoseService {
             PrescribedDailyDose prescribedDailyDoseInUnitOfSubstanceStrength;
             PrescribedDailyDose prescribedDailyDoseInUnitOfDDD;
             try {
-                prescribedDailyDoseInUnitOfSubstanceStrength = getPrescribedDailyDoseInUnitOfSubstanceStrength(prescribedDailyDose, strengthValue, strengthUnit, denominatorValue, denominatorUnit);
-                prescribedDailyDoseInUnitOfDDD = getPrescribedDailyDoseInUnitOfDDD(prescribedDailyDoseInUnitOfSubstanceStrength.getQuantity(), prescribedDailyDoseInUnitOfSubstanceStrength.getUnit(), substanceDefinedDailyDose.unit());
+                prescribedDailyDoseInUnitOfSubstanceStrength = getPrescribedDailyDoseInUnitOfSubstanceStrength(prescribedDailyDose, strengthValue, strengthUnit, denominatorValue, denominatorUnit, cards, snomedMedicationLabel, codingList);
+                prescribedDailyDoseInUnitOfDDD = getPrescribedDailyDoseInUnitOfDDD(prescribedDailyDoseInUnitOfSubstanceStrength.getQuantity(), prescribedDailyDoseInUnitOfSubstanceStrength.getUnit(), substanceDefinedDailyDose.unit(), cards, snomedMedicationLabel, codingList);
             } catch (Exception e) {
-                throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Prescribed dosage could not be validated for %s. Reason: Invalid dose unit.", snomedMedicationLabel), null);
+                logger.debug(String.format("Prescribed dosage could not be validated for %s. Reason: Invalid dose unit.", snomedMedicationLabel));
+                continue;
             }
             AggregatedMedicationsBySubstance aggregatedMedicationsBySubstance = aggregatedMedicationsBySubstanceMap.get(substance);
             if (aggregatedMedicationsBySubstance == null) {
@@ -303,6 +322,25 @@ public class SnomedMedicationDefinedDailyDoseService {
                 addMedications(aggregatedMedicationsBySubstance, snomedMedicationLabel, codingList);
             }
         }
+    }
+
+    private void composeCdssCardForDosageMismatch(List<CDSCard> cards, String medicationLabel, List<Coding> codingList, String expectedUnit, boolean isDoseUnit) {
+        UUID randomUuid = UUID.fromString(UUID.nameUUIDFromBytes(medicationLabel.getBytes()).toString());
+        String invalidMessage = isDoseUnit ? DOSAGE_EXCEPTION_DOSE_INPUT : DOSAGE_EXCEPTION_ROUTE_INPUT;
+        Optional<CDSCard> optionalCard = cards.stream().filter(cdsCard -> cdsCard.getUuid().equals(randomUuid.toString())).findFirst();
+        String cardDetailMsg = "%s found invalid. Expected %s for %s";
+        cardDetailMsg = String.format(cardDetailMsg, invalidMessage, expectedUnit, medicationLabel);
+        String cardSummaryMessage = "Invalid Dose Inputs";
+        if(optionalCard.isEmpty()) {
+            CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMessage, cardDetailMsg, CDSIndicator.valueOf(WARNING), new CDSSource("DummyService", null), Collections.singletonList(new CDSReference(getCodings(codingList))), null, DOSAGE_EXCEPTION_ALERT_TYPE);
+            cards.add(cdsCard);
+            return;
+        }
+        CDSCard card = optionalCard.get();
+        if(!card.getDetail().contains(invalidMessage)) {
+            card.setDetail(card.getDetail() + new UnorderedListItem(cardDetailMsg));
+        }
+
     }
 
     void composeDosageAlerts(Map<String, AggregatedMedicationsBySubstance> aggregatedMedicationsBySubstanceMap, List<CDSCard> cards) {
@@ -360,14 +398,19 @@ public class SnomedMedicationDefinedDailyDoseService {
         }
     }
 
-    private PrescribedDailyDose getPrescribedDailyDoseInUnitOfSubstanceStrength(PrescribedDailyDose prescribedDailyDose, String strengthValue, String strengthUnit, String denominatorValue, String denominatorUnit) {
+    private PrescribedDailyDose getPrescribedDailyDoseInUnitOfSubstanceStrength(PrescribedDailyDose prescribedDailyDose, String strengthValue, String strengthUnit, String denominatorValue, String denominatorUnit, List<CDSCard> cards, String medicationLabel, List<Coding> codingList) {
         BigDecimal prescribedDoseQuantity = prescribedDailyDose.getQuantity();
         String prescribedDisplayUnit = prescribedDailyDose.getUnit();
 
         String strengthDisplayUnit = getSnomedParameterValue(strengthUnit, "display");
         String denominatorDisplayUnit = getSnomedParameterValue(denominatorUnit, "display");
-        BigDecimal prescribedDoseQuantityInUnitOfSubstanceStrength = prescribedDoseQuantity.multiply((new BigDecimal(strengthValue)).divide(new BigDecimal(denominatorValue))).multiply(new BigDecimal(UnitConversion.factorOfConversion(prescribedDisplayUnit, denominatorDisplayUnit)));
-        return new PrescribedDailyDose(prescribedDoseQuantityInUnitOfSubstanceStrength, strengthDisplayUnit);
+        try {
+            BigDecimal prescribedDoseQuantityInUnitOfSubstanceStrength = prescribedDoseQuantity.multiply((new BigDecimal(strengthValue)).divide(new BigDecimal(denominatorValue))).multiply(new BigDecimal(UnitConversion.factorOfConversion(prescribedDisplayUnit, denominatorDisplayUnit)));
+            return new PrescribedDailyDose(prescribedDoseQuantityInUnitOfSubstanceStrength, strengthDisplayUnit);
+        } catch (Exception e) {
+            composeCdssCardForDosageMismatch(cards, medicationLabel, codingList, denominatorDisplayUnit, true);
+            throw new RuntimeException(e);
+        }
     }
 
     private String getSnomedParameterValue(String snomedCode, String parameterName) {
@@ -375,9 +418,14 @@ public class SnomedMedicationDefinedDailyDoseService {
         return conceptParameters.getParameter(parameterName).getValue().toString();
     }
 
-    private PrescribedDailyDose getPrescribedDailyDoseInUnitOfDDD(BigDecimal inputStrengthValue, String inputStrengthUnit, String targetStrengthUnit) {
-        BigDecimal prescribedDailyDoseQuantity = inputStrengthValue.multiply(new BigDecimal(UnitConversion.factorOfConversion(inputStrengthUnit, targetStrengthUnit)));
-        return new PrescribedDailyDose(prescribedDailyDoseQuantity, targetStrengthUnit);
+    private PrescribedDailyDose getPrescribedDailyDoseInUnitOfDDD(BigDecimal inputStrengthValue, String inputStrengthUnit, String targetStrengthUnit, List<CDSCard> cards, String medicationLabel, List<Coding> codingList) {
+        try {
+            BigDecimal prescribedDailyDoseQuantity = inputStrengthValue.multiply(new BigDecimal(UnitConversion.factorOfConversion(inputStrengthUnit, targetStrengthUnit)));
+            return new PrescribedDailyDose(prescribedDailyDoseQuantity, targetStrengthUnit);
+        } catch (Exception e) {
+            composeCdssCardForDosageMismatch(cards, medicationLabel, codingList, targetStrengthUnit, true);
+            throw new RuntimeException(e);
+        }
     }
 
     private String getCardSummaryTemplate() {
@@ -407,15 +455,6 @@ public class SnomedMedicationDefinedDailyDoseService {
 
     private List<CDSCoding> getCodings(List<Coding> codings) {
         return codings.stream().map(coding -> new CDSCoding(coding.getSystem(), coding.getCode(), coding.getDisplay())).collect(Collectors.toList());
-    }
-
-    private String getDecimalPlace(Double value) {
-        return String.format("%.2f", value);
-    }
-
-    private String getDynamicDecimalPlace(Double value) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        return decimalFormat.format(value);
     }
 
     private BigDecimal formatToTwoDecimalPlaces(BigDecimal value){
