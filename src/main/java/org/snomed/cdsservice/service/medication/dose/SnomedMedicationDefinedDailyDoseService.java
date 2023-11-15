@@ -150,8 +150,7 @@ public class SnomedMedicationDefinedDailyDoseService {
             Optional<Coding> snomedMedication = codingList.stream().filter(coding -> SNOMEDCT_SYSTEM.equals(coding.getSystem())).findFirst();
             if (snomedMedication.isPresent()) {
                 String snomedMedicationCode = snomedMedication.get().getCode();
-                String snomedMedicationLabel = snomedMedication.get().getDisplay();
-                if ("NA".equals(doseQuantity.getUnit())) {
+                String snomedMedicationLabel = snomedMedication.get().getDisplay();if ("NA".equals(doseQuantity.getUnit())) {
                     logger.debug("Prescribed dosage could not be validated for {}. Reason: Dose unit unknown to CDSS.", snomedMedicationLabel);
                     continue;
                 }
@@ -189,7 +188,7 @@ public class SnomedMedicationDefinedDailyDoseService {
                     logger.info("SNOMED dose form {} is not covered by the route of administration dynamic map, skipping", manufacturedDoseForm);
                     continue;
                 }
-                if (!dosage.getRoute().getCodingFirstRep().getDisplay().equals(atcRouteOfAdministrationCode)) {
+                if (!dosage.getRoute().getText().equals(atcRouteOfAdministrationCode)) {
                     logger.info("");
                     composeCdssCardForDosageMismatch(cards, snomedMedicationLabel, codingList, atcRouteOfAdministrationCode, false);
                     continue;
@@ -329,16 +328,16 @@ public class SnomedMedicationDefinedDailyDoseService {
         String invalidMessage = isDoseUnit ? DOSAGE_EXCEPTION_DOSE_INPUT : DOSAGE_EXCEPTION_ROUTE_INPUT;
         Optional<CDSCard> optionalCard = cards.stream().filter(cdsCard -> cdsCard.getUuid().equals(randomUuid.toString())).findFirst();
         String cardDetailMsg = "%s found invalid. Expected %s for %s";
-        cardDetailMsg = String.format(cardDetailMsg, invalidMessage, expectedUnit, medicationLabel);
-        String cardSummaryMessage = "Invalid Dose Inputs";
+        cardDetailMsg = new UnorderedListItem(String.format(cardDetailMsg, invalidMessage, expectedUnit, medicationLabel)).toString();
+        String cardSummaryMessage = "Invalid Dose";
         if(optionalCard.isEmpty()) {
-            CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMessage, cardDetailMsg, CDSIndicator.valueOf(WARNING), new CDSSource("DummyService", null), Collections.singletonList(new CDSReference(getCodings(codingList))), null, DOSAGE_EXCEPTION_ALERT_TYPE);
+            CDSCard cdsCard = new CDSCard(randomUuid.toString(), cardSummaryMessage, cardSummaryMessage + NEW_LINE + cardDetailMsg, CDSIndicator.valueOf(WARNING), new CDSSource("DummyService", null), Collections.singletonList(new CDSReference(getCodings(codingList))), null, DOSAGE_EXCEPTION_ALERT_TYPE);
             cards.add(cdsCard);
             return;
         }
         CDSCard card = optionalCard.get();
         if(!card.getDetail().contains(invalidMessage)) {
-            card.setDetail(card.getDetail() + new UnorderedListItem(cardDetailMsg));
+            card.setDetail(card.getDetail() + NEW_LINE + cardDetailMsg);
         }
 
     }
