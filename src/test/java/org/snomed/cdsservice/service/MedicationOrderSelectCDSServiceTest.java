@@ -50,7 +50,9 @@ class MedicationOrderSelectCDSServiceTest {
     public static final String SNOMEDCT_SYSTEM = "http://snomed.info/sct";
     private static final String CONTRAINDICATION_ALERT_TYPE = "Contraindication";
     private static final String HIGH_DOSAGE_ALERT_TYPE = "High Dosage";
-    @Autowired
+	private static final String INVALID_DOSAGE_ALERT_TYPE = "Validation Error";
+
+	@Autowired
     SnomedMedicationDefinedDailyDoseService snomedMedicationDefinedDailyDoseService;
     @MockBean
     private MedicationConditionRuleLoaderService ruleLoaderService;
@@ -96,6 +98,7 @@ class MedicationOrderSelectCDSServiceTest {
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387365004"))).thenReturn(getConceptParamsForSubstanceProbenecid());
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("258685003"))).thenReturn(getConceptParamsForDoseUnitMcg());
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387413002"))).thenReturn(getConceptParamsForSubstanceColchicine());
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("dummyCode"))).thenThrow(new RuntimeException("dummy exception"));
         when(mockDoseFormsLoaderService.loadDoseFormMap()).thenReturn(getMockMapList());
         snomedMedicationDefinedDailyDoseService.setDoseFormsManySnomedToOneAtcCodeMap(getMockMapList());
     }
@@ -387,12 +390,31 @@ class MedicationOrderSelectCDSServiceTest {
     }
 
 	@Test
-	public void shouldThrowException_WhenRequestBundleContainsMismatchedDoseUnits() throws IOException {
+	public void shouldCreateInvalidDosageCdssAlerts_WhenRequestBundleContainsMismatchedDoseUnitsAndRoutes() throws IOException {
 		CDSRequest cdsRequest = new CDSRequest();
 		cdsRequest.setPrefetchStrings(Map.of(
 				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
 				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithMismatchedDoseUnits"), StandardCharsets.UTF_8)
+				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithMismatchedDoseUnitsAndRoutes.json"), StandardCharsets.UTF_8)
+		));
+		List<CDSCard> cards = service.call(cdsRequest);
+		CDSCard cdsCard1 = cards.get(0);
+		CDSCard cdsCard2 = cards.get(1);
+		CDSCard cdsCard3 = cards.get(2);
+		assertEquals(3, cards.size());
+		assertEquals(CONTRAINDICATION_ALERT_TYPE, cdsCard1.getAlertType());
+		assertEquals(INVALID_DOSAGE_ALERT_TYPE, cdsCard2.getAlertType());
+		assertEquals(INVALID_DOSAGE_ALERT_TYPE, cdsCard3.getAlertType());
+		assertTrue(cdsCard2.getDetail().contains("dose unit"));
+		assertTrue(cdsCard3.getDetail().contains("dose route"));
+	}
+	@Test
+	public void shouldThrowException_WhenRequestBundleContainsInvalidMedicationCode() throws IOException {
+		CDSRequest cdsRequest = new CDSRequest();
+		cdsRequest.setPrefetchStrings(Map.of(
+				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
+				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
+				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithInvalidMedicationCode.json"), StandardCharsets.UTF_8)
 		));
 		assertThrows(ResponseStatusException.class, () ->service.call(cdsRequest) );
 	}

@@ -61,7 +61,16 @@
                   "unit": "Tablet"
                 }
               }
-            ]
+            ],
+            "route": {
+              "coding": [
+                {
+                  "code": "",
+                  "display": "O"
+                }
+              ],
+              "text": "O"
+            }
           }
         ]
       },
@@ -132,7 +141,16 @@
                   "unit": "mL"
                 }
               }
-            ]
+            ],
+            "route": {
+              "coding": [
+                {
+                  "code": "",
+                  "display": "P"
+                }
+              ],
+              "text": "P"
+            }
           }
         ]
       },
