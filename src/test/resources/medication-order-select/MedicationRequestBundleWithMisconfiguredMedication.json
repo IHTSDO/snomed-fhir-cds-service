@@ -13,7 +13,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "1145419005",
+              "code": "dummyCode",
               "display": "Atorvastatin (as atorvastatin calcium) 10 mg oral tablet"
             },
             {
@@ -44,9 +44,9 @@
             "sequence": 1,
             "timing": {
               "repeat": {
-                "frequency": 3,
+                "frequency": 1,
                 "period": 1,
-                "periodUnit": "mo"
+                "periodUnit": "d"
               }
             },
             "asNeededBoolean": false,
@@ -62,11 +62,20 @@
                   ]
                 },
                 "doseQuantity": {
-                  "value": 10,
-                  "unit": "mL"
+                  "value": 1,
+                  "unit": "Tablet"
                 }
               }
-            ]
+            ],
+            "route": {
+              "coding": [
+                {
+                  "code": "",
+                  "display": "O"
+                }
+              ],
+              "text": "O"
+            }
           }
         ]
       },
