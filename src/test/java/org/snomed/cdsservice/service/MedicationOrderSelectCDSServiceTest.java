@@ -409,12 +409,12 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue(cdsCard3.getDetail().contains("dose route"));
 	}
 	@Test
-	public void shouldThrowException_WhenRequestBundleContainsMisconfiguredMedications() throws IOException {
+	public void shouldThrowException_WhenRequestBundleContainsInvalidMedicationCode() throws IOException {
 		CDSRequest cdsRequest = new CDSRequest();
 		cdsRequest.setPrefetchStrings(Map.of(
 				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
 				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithMisconfiguredMedication.json"), StandardCharsets.UTF_8)
+				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithInvalidMedicationCode.json"), StandardCharsets.UTF_8)
 		));
 		assertThrows(ResponseStatusException.class, () ->service.call(cdsRequest) );
 	}
