@@ -44,7 +44,6 @@ public class MedicationOrderSelectCDSService extends CDSService {
 	public MedicationOrderSelectCDSService() {
 		super("medication-order-select");
 		setPrefetch(Map.of(
-				"patient", "Patient/{{context.patientId}}",
 				"conditions", "Condition?patient={{context.patientId}}&category=problem-list-item&status=active",
 				"draftMedicationRequests", "MedicationRequest?patient={{context.patientId}}&status=draft"
 		));
