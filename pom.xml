@@ -11,7 +11,7 @@
 
 	<groupId>org.snomed</groupId>
 	<artifactId>snomed-fhir-cds-service</artifactId>
-	<version>1.0.0-beta</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>SNOMED-CT FHIR CDS Service Demo</name>
 	<description>SNOMED-CT FHIR CDS Service demonstrator</description>
 
