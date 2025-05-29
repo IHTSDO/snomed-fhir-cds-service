@@ -25,6 +25,7 @@ import java.util.List;
 @Service
 public class MedicationCombinationRuleLoaderService {
 
+    public static final char TAB_DELIMITER = '\t';
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final String CONTRAINDICATION_ALERT_TYPE = "Contraindication";
 
@@ -39,7 +40,6 @@ public class MedicationCombinationRuleLoaderService {
         List<CDSTrigger> triggers = new ArrayList<>();
         try (FileInputStream file = new FileInputStream(tsvPath)) {
             CSVReader csvReader = new CSVReader(file);
-            char TAB_DELIMITER = '\t';
             csvReader.setDelimiter(TAB_DELIMITER);
             String[] expectedHeadings = new String[]{
                     "UUID",
