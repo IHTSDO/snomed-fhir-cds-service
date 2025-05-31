@@ -29,6 +29,9 @@ public class FHIRTerminologyServerClient {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public FHIRTerminologyServerClient(@Value("${fhir.terminology-server.url}") String terminologyServerUrl) {
+		if (terminologyServerUrl.isEmpty()) {
+			throw new IllegalArgumentException("Terminology server URL cannot be empty. Please set config item 'fhir.terminology-server.url'.");
+		}
 		restTemplate = new RestTemplateBuilder()
 				.rootUri(terminologyServerUrl)
 				.build();

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.snomed.cdsservice.model.CDSCard;
 import org.snomed.cdsservice.model.CDSIndicator;
-import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.model.CDSTrigger;
 import org.snomed.cdsservice.model.MedicationConditionCDSTrigger;
 import org.snomed.cdsservice.service.ServiceException;
