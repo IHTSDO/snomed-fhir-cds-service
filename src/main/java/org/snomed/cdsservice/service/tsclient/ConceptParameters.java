@@ -2,6 +2,10 @@ package org.snomed.cdsservice.service.tsclient;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +15,17 @@ import java.util.regex.Pattern;
 
 public class ConceptParameters extends Parameters {
 
+	private static final Logger logger = LoggerFactory.getLogger(ConceptParameters.class);
+
 	public SnomedConceptNormalForm getNormalForm() {
 		SnomedConceptNormalForm normalForm = new SnomedConceptNormalForm();
 		String normalFormString = getPropertyValue("normalFormTerse");
+
+		if (normalFormString == null) {
+			String errorMessage = "No 'normalFormTerse' property found in response from FHIR Termionlogy Server.";
+			logger.error(errorMessage);
+			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, errorMessage, null);
+		}
 
 		// Remove definition status (=== or <<<)
 		normalFormString = normalFormString.replace("===", "");
@@ -29,9 +41,9 @@ public class ConceptParameters extends Parameters {
 		}
 
 		Pattern attributePattern = Pattern.compile("(\\d+) ?= ?#?([\\d.]+)");
-		String ungroupedAttributes = null;
+		String ungroupedAttributes;
 		if (attributesAndGroups.contains("{")) {
-			ungroupedAttributes = attributesAndGroups.substring(0,attributesAndGroups.indexOf("{")-2);
+			ungroupedAttributes = attributesAndGroups.substring(0,attributesAndGroups.indexOf("{"));
 		} else {
 			ungroupedAttributes = attributesAndGroups;
 		}

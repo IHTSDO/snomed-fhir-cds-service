@@ -154,7 +154,7 @@ public class SnomedMedicationDefinedDailyDoseService {
                     logger.debug("Prescribed dosage could not be validated for {}. Reason: Dose unit unknown to CDSS.", snomedMedicationLabel);
                     continue;
                 }
-                ConceptParameters conceptParameters = null;
+                ConceptParameters conceptParameters;
                 try {
                      conceptParameters = tsClient.lookup(SNOMEDCT_SYSTEM, snomedMedicationCode);
                 } catch (Exception e) {
