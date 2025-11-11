@@ -33,7 +33,7 @@ public class ConceptParameters extends Parameters {
 
 		String[] colonSplit = normalFormString.split(":", 2);
 		String parents = colonSplit[0];
-		String attributesAndGroups = colonSplit[1];
+		String attributesAndGroups = colonSplit.length > 1 ? colonSplit[1] : "";
 
 		String[] parentConcepts = parents.split(" + ");
 		for (String parentConcept : parentConcepts) {
