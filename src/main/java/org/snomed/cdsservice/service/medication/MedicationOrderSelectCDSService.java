@@ -35,6 +35,8 @@ import java.util.stream.Stream;
 @Service
 public class MedicationOrderSelectCDSService extends CDSService {
 
+	public static final String SNOMED_URI = "http://snomed.info/sct";
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -259,7 +261,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 			// Get SNOMED medication code
 			List<Coding> codingList = medicationRequest.getMedicationCodeableConcept().getCoding();
 			Optional<Coding> snomedMedication = codingList.stream()
-					.filter(coding -> "http://snomed.info/sct".equals(coding.getSystem()))
+					.filter(coding -> SNOMED_URI.equals(coding.getSystem()))
 					.findFirst();
 			
 			if (snomedMedication.isEmpty()) {
@@ -272,7 +274,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 			try {
 				// Get medication concept details from terminology server
 				logger.debug("Looking up medication concept: {}", medicationCode);
-				var conceptParameters = tsClient.lookup("http://snomed.info/sct", medicationCode);
+				var conceptParameters = tsClient.lookup(SNOMED_URI, medicationCode);
 				
 				if (conceptParameters == null || conceptParameters.getNormalForm() == null) {
 					logger.debug("No normal form found for medication {}, skipping allergy check", medicationCode);
@@ -303,9 +305,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 							CDSCard allergyCard = createAllergyAlertCard(
 									allergyCoding, 
 									snomedMedication.get(),
-									medicationDisplay,
-									substanceCode
-							);
+									medicationDisplay);
 							allergyCards.add(allergyCard);
 						}
 					}
@@ -389,8 +389,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 	/**
 	 * Creates a CDS Card alert for allergy-medication conflict.
 	 */
-	private CDSCard createAllergyAlertCard(Coding allergyCoding, Coding medicationCoding, 
-	                                        String medicationDisplay, String substanceCode) {
+	private CDSCard createAllergyAlertCard(Coding allergyCoding, Coding medicationCoding, String medicationDisplay) {
 		String uuid = UUID.randomUUID().toString();
 		String summary = String.format("ALLERGY ALERT: Patient has known allergy to %s", 
 				allergyCoding.getDisplay() != null ? allergyCoding.getDisplay() : allergyCoding.getCode());
@@ -400,7 +399,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 				allergyCoding.getDisplay() != null ? allergyCoding.getDisplay() : allergyCoding.getCode(),
 				medicationDisplay);
 		
-		CDSCard card = new CDSCard(
+		return new CDSCard(
 				uuid,
 				summary,
 				detail,
@@ -410,8 +409,6 @@ public class MedicationOrderSelectCDSService extends CDSService {
 				List.of(), // No condition references for allergy alerts
 				"Allergy Contraindication"
 		);
-		
-		return card;
 	}
 
 	/**
@@ -428,7 +425,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 					allergyCoding.getCode());
 			
 			// Lookup the allergy concept to get its normalForm
-			ConceptParameters conceptParameters = tsClient.lookup("http://snomed.info/sct", allergyCoding.getCode());
+			ConceptParameters conceptParameters = tsClient.lookup(SNOMED_URI, allergyCoding.getCode());
 			SnomedConceptNormalForm normalForm = conceptParameters.getNormalForm();
 			
 			// Causative agent attribute code
@@ -469,15 +466,15 @@ public class MedicationOrderSelectCDSService extends CDSService {
 	private void lookupCausativeAgent(String causativeAgentCode, Set<Coding> causativeAgents) {
 		// Lookup the causative agent code to get its display name
 		try {
-			var agentParams = tsClient.lookup("http://snomed.info/sct", causativeAgentCode);
+			var agentParams = tsClient.lookup(SNOMED_URI, causativeAgentCode);
 			String display = agentParams.getParameters("display").stream()
 					.findFirst()
 					.map(p -> p.getValue().toString())
 					.orElse(null);
-			causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, display));
+			causativeAgents.add(new Coding(SNOMED_URI, causativeAgentCode, display));
 		} catch (Exception e) {
 			logger.warn("Failed to lookup display for causative agent code {}: {}", causativeAgentCode, e.getMessage());
-			causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, null));
+			causativeAgents.add(new Coding(SNOMED_URI, causativeAgentCode, null));
 		}
 	}
 
