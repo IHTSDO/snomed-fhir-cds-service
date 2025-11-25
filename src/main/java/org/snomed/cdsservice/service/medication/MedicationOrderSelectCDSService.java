@@ -20,7 +20,6 @@ import org.snomed.cdsservice.service.tsclient.ConceptParameters;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.service.tsclient.SnomedConceptNormalForm;
 import org.snomed.cdsservice.util.SnomedValueSetUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -36,34 +35,35 @@ import java.util.stream.Stream;
 public class MedicationOrderSelectCDSService extends CDSService {
 
 	public static final String SNOMED_URI = "http://snomed.info/sct";
+	public static final String DRAFT_MEDICATION_REQUESTS = "draftMedicationRequests";
+	public static final String ALLERGIES = "allergies";
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	private FhirContext fhirContext;
-
-	@Autowired
-	private MedicationConditionRuleLoaderService ruleLoaderService;
-
-	@Autowired
-	private MedicationCombinationRuleLoaderService medicationRuleLoaderService;
-
-	@Autowired
-	private SnomedMedicationDefinedDailyDoseService definedDailyDoseService;
-
-	@Autowired
-	private FHIRTerminologyServerClient tsClient;
+	private final FhirContext fhirContext;
+	private final MedicationConditionRuleLoaderService ruleLoaderService;
+	private final MedicationCombinationRuleLoaderService medicationRuleLoaderService;
+	private final SnomedMedicationDefinedDailyDoseService definedDailyDoseService;
+	private final FHIRTerminologyServerClient tsClient;
 
 	private List<CDSTrigger> medicationOrderSelectTriggers;
-
 	private List<CDSTrigger> drugDrugInteractionTriggers;
 
-	public MedicationOrderSelectCDSService() {
+	public MedicationOrderSelectCDSService(FhirContext fhirContext, MedicationConditionRuleLoaderService ruleLoaderService,
+			MedicationCombinationRuleLoaderService medicationRuleLoaderService, SnomedMedicationDefinedDailyDoseService definedDailyDoseService,
+			FHIRTerminologyServerClient tsClient) {
+
 		super("medication-order-select");
+		this.fhirContext = fhirContext;
+		this.ruleLoaderService = ruleLoaderService;
+		this.medicationRuleLoaderService = medicationRuleLoaderService;
+		this.definedDailyDoseService = definedDailyDoseService;
+		this.tsClient = tsClient;
+
 		setPrefetch(Map.of(
 				"conditions", "Condition?patient={{context.patientId}}&category=problem-list-item&status=active",
-				"draftMedicationRequests", "MedicationRequest?patient={{context.patientId}}&status=draft",
-				"allergies", "AllergyIntolerance?patient={{context.patientId}}&clinical-status=active"
+				DRAFT_MEDICATION_REQUESTS, "MedicationRequest?patient={{context.patientId}}&status=draft",
+				ALLERGIES, "AllergyIntolerance?patient={{context.patientId}}&clinical-status=active"
 		));
 	}
 
@@ -76,18 +76,18 @@ public class MedicationOrderSelectCDSService extends CDSService {
 	@Override
 	public List<CDSCard> call(CDSRequest cdsRequest) {
 		Map<String, String> prefetch = cdsRequest.getPrefetchStrings();
-		if (prefetch == null || prefetch.get("patient") == null || prefetch.get("conditions") == null || prefetch.get("draftMedicationRequests") == null) {
+		if (prefetch == null || prefetch.get("patient") == null || prefetch.get("conditions") == null || prefetch.get(DRAFT_MEDICATION_REQUESTS) == null) {
 			throw new ResponseStatusException(412, "Request does not include required prefetch information: patient, diagnosis and medications.", null);
 		}
 
 		IParser parser = fhirContext.newJsonParser();
 		List<Condition> activeDiagnoses = getPrefetchResourcesFromBundle(prefetch, "conditions", Condition.class, parser);
-		List<MedicationRequest> medicationRequests = getPrefetchResourcesFromBundle(prefetch, "draftMedicationRequests", MedicationRequest.class, parser);
+		List<MedicationRequest> medicationRequests = getPrefetchResourcesFromBundle(prefetch, DRAFT_MEDICATION_REQUESTS, MedicationRequest.class, parser);
 		
 		// Read allergies from prefetch (if available)
 		List<AllergyIntolerance> activeAllergies = new ArrayList<>();
-		if (prefetch.get("allergies") != null) {
-			activeAllergies = getPrefetchResourcesFromBundle(prefetch, "allergies", AllergyIntolerance.class, parser);
+		if (prefetch.get(ALLERGIES) != null) {
+			activeAllergies = getPrefetchResourcesFromBundle(prefetch, ALLERGIES, AllergyIntolerance.class, parser);
 		}
 
 		Set<Coding> activeDiagnosesCodings = getCodings(activeDiagnoses.stream().map(Condition::getCode));

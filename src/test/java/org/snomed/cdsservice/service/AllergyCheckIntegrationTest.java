@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource(properties = {
     "fhir.terminology-server.url=https://implementation-demo.snomedtools.org/fhir"
 })
-public class AllergyCheckIntegrationTest {
+class AllergyCheckIntegrationTest {
 
     @Autowired
     private MedicationOrderSelectCDSService service;
@@ -48,7 +48,7 @@ public class AllergyCheckIntegrationTest {
     private FHIRTerminologyServerClient tsClient; // ← Real client, NOT @MockBean
 
     @Test
-    public void testBetaBlockerSubsumptionWithRealServer() throws IOException {
+    void testBetaBlockerSubsumptionWithRealServer() throws IOException {
         // This test makes REAL requests to the SNOMED terminology server
         // It verifies that the subsumption logic works with real SNOMED data
         
@@ -110,7 +110,7 @@ public class AllergyCheckIntegrationTest {
     }
 
     @Test
-    public void testAllergyPropensityResolutionWithRealServer() throws IOException {
+    void testAllergyPropensityResolutionWithRealServer() {
         // This test verifies that propensity codes are resolved correctly using real SNOMED data
         // Example: "Allergy to atenolol" (293965006) → resolves to "Atenolol" (387506000)
         // Uses lookup with normalForm (refactored approach)
@@ -171,7 +171,7 @@ public class AllergyCheckIntegrationTest {
     
     @Test
     @Disabled("Integration test - server demo may not have same data as production SNOMED server")
-    public void testPenicillinSubsumptionWithRealServer() throws IOException {
+    void testPenicillinSubsumptionWithRealServer() {
         // Test: Allergy to Penicillin class should detect Amoxicillin
         
         System.out.println("\n=== INTEGRATION TEST: Penicillin Subsumption ===");
@@ -188,7 +188,7 @@ public class AllergyCheckIntegrationTest {
                     .forEach(coding -> System.out.println("  - " + coding.getCode() + " | " + coding.getDisplay()));
             
             // Verify we got some results
-            assertTrue(descendants.size() > 0, "Penicillin class expansion should return at least one substance");
+			assertFalse(descendants.isEmpty(), "Penicillin class expansion should return at least one substance");
             
             // Check if Amoxicillin is in the expansion (code 372687004)
             boolean hasAmoxicillin = descendants.stream()
