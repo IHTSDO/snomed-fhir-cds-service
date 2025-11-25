@@ -222,14 +222,11 @@ public class MedicationOrderSelectCDSService extends CDSService {
 							codings.addAll(causativeAgents);
 							substancesExtracted = true;
 						} else {
-							// TO DO Add subsumption check to test if code is a substance
-							// {{url}}/CodeSystem/$subsumes?system=http://snomed.info/sct&codeA=307355007&codeB=118940003
-
-							// No causative agents found - code might be a direct substance
-							// Check if it looks like a substance (not a propensity/finding)
-							// For now, add it - reaction.substance will be skipped if we found substances
-//							codings.add(coding);
-//							substancesExtracted = true;
+							// No causative agents found - code might be a direct substance or substance class
+							// (e.g., Penicillin, Beta-blocker). Use the code itself for subsumption checking.
+							// The isAllergyMatch method will handle subsumption via ECL expansion.
+							codings.add(coding);
+							substancesExtracted = true;
 						}
 					}
 				}
