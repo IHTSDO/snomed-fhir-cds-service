@@ -19,10 +19,14 @@ public class ConceptParameters extends Parameters {
 
 	public SnomedConceptNormalForm getNormalForm() {
 		SnomedConceptNormalForm normalForm = new SnomedConceptNormalForm();
+		// Try normalFormTerse first, then fall back to normalForm
 		String normalFormString = getPropertyValue("normalFormTerse");
+		if (normalFormString == null) {
+			normalFormString = getPropertyValue("normalForm");
+		}
 
 		if (normalFormString == null) {
-			String errorMessage = "No 'normalFormTerse' property found in response from FHIR Termionlogy Server.";
+			String errorMessage = "No 'normalFormTerse' or 'normalForm' property found in response from FHIR Terminology Server.";
 			logger.error(errorMessage);
 			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, errorMessage, null);
 		}
@@ -40,7 +44,10 @@ public class ConceptParameters extends Parameters {
 			normalForm.addParent(parentConcept.trim());
 		}
 
-		Pattern attributePattern = Pattern.compile("(\\d+) ?= ?#?([\\d.]+)");
+		// Pattern to match attributes in both formats:
+		// - normalFormTerse: "246075003 = 387458008"
+		// - normalForm: "246075003|Causative agent (attribute)| = 387458008|Aspirin (substance)|"
+		Pattern attributePattern = Pattern.compile("(\\d+)(?:\\|[^|]*\\|)? ?= ?#?([\\d]+)(?:\\|[^|]*\\|)?");
 		String ungroupedAttributes;
 		if (attributesAndGroups.contains("{")) {
 			ungroupedAttributes = attributesAndGroups.substring(0,attributesAndGroups.indexOf("{"));

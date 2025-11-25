@@ -750,14 +750,9 @@ class MedicationOrderSelectCDSServiceTest {
 
     @Test
     public void shouldResolveAllergyPropensityToCausativeAgent() throws IOException {
-        // Mock the expandValueSet call to return Atenolol (387506000) when querying for causative agent of "Allergy to atenolol" (293965006)
-        // ECL: << 293965006 . 246075003
-        // Note: The SnomedValueSetUtil decodes < and > for readability, and uses %20 for spaces (RFC 3986)
-        String eclValueSetURI = "http://snomed.info/sct?fhir_vs=ecl/<<%20293965006%20.%20246075003";
-        List<Coding> causativeAgents = List.of(
-                new Coding("http://snomed.info/sct", "387506000", "Atenolol")
-        );
-        when(mockTsClient.expandValueSet(eq(eclValueSetURI))).thenReturn(causativeAgents);
+        // Mock the lookup call for "Allergy to atenolol" (293965006) to return normalForm with causative agent
+        // The normalForm should contain attribute 246075003|Causative agent| = 387506000|Atenolol| in an attribute group
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("293965006"))).thenReturn(getConceptParamsForAllergyToAtenolol());
         
         // Mock the medication lookup to return concept with Atenolol as substance
         // Atenolol 25 mg oral tablet (318434003) contains Atenolol (387506000) as ingredient
@@ -825,6 +820,16 @@ class MedicationOrderSelectCDSServiceTest {
     private ConceptParameters getConceptParamsForSubstanceAmoxicillin() {
         // Amoxicillin substance (372687004)
         String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"372687004\"},{\"name\":\"display\",\"valueString\":\"Amoxicillin\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"105590001\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"105590001|Substance (substance)|\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForAllergyToAtenolol() {
+        // Allergy to atenolol (293965006)
+        // NormalForm contains causative agent attribute (246075003) = Atenolol (387506000) in an attribute group
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"293965006\"},{\"name\":\"display\",\"valueString\":\"Allergy to atenolol\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"293610009 + 293585002 : { 719722006 = 472964009, 246075003 = 387506000 }\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"293610009|Allergy to non-steroidal anti-inflammatory agent (finding)| + 293585002|Allergy to salicylate (finding)| : { 719722006|Has realization (attribute)| = 472964009|Allergic process (qualifier value)|, 246075003|Causative agent (attribute)| = 387506000|Atenolol (substance)| }\"}]}]}";
         Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
         ConceptParameters conceptParameters = new ConceptParameters();
         conceptParameters.setParameter(parameters.getParameter());

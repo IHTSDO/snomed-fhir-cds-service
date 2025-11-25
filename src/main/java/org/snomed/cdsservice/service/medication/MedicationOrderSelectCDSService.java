@@ -16,6 +16,7 @@ import org.snomed.cdsservice.model.CDSTrigger;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
 import org.snomed.cdsservice.service.*;
 import org.snomed.cdsservice.service.medication.dose.SnomedMedicationDefinedDailyDoseService;
+import org.snomed.cdsservice.service.tsclient.ConceptParameters;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.service.tsclient.SnomedConceptNormalForm;
 import org.snomed.cdsservice.util.SnomedValueSetUtil;
@@ -183,8 +184,8 @@ public class MedicationOrderSelectCDSService extends CDSService {
 		List<T> resources = new ArrayList<>();
 		for (Bundle.BundleEntryComponent component : bundle.getEntry()) {
 			Resource resource = component.getResource();
-			if (resource.getResourceType().name().equals(theResourceType.getSimpleName())) {
-				resources.add((T) resource);
+			if (resource != null && resource.getResourceType().name().equals(theResourceType.getSimpleName())) {
+				resources.add(theResourceType.cast(resource));
 			}
 		}
 		return resources;
@@ -416,26 +417,62 @@ public class MedicationOrderSelectCDSService extends CDSService {
 	}
 
 	/**
-	 * Gets the causative agent(s) for an allergy code using ECL.
+	 * Gets the causative agent(s) for an allergy code using lookup with normalForm.
 	 * For propensity codes (e.g., "Allergy to atenolol"), this will return the substance (e.g., "Atenolol").
 	 * For direct substance codes, this may return empty set or the code itself.
 	 * 
-	 * Uses ECL: << CODE . 246075003 |Causative agent|
-	 * Example: << 293965006 . 246075003 returns 387506000 |Atenolol|
+	 * Uses CodeSystem/$lookup with property=normalForm to extract the causative agent attribute (246075003).
+	 * Example: Lookup 293586001 returns normalForm with "246075003|Causative agent| = 387458008|Aspirin|"
 	 */
 	private Set<Coding> getCausativeAgentsForAllergy(Coding allergyCoding) {
 		try {
-			// Build ECL to get causative agent attribute value
-			// The dot notation (.) follows the relationship to get the attribute value
-			String ecl = String.format("<< %s . 246075003", allergyCoding.getCode());
-			String valueSetURI = SnomedValueSetUtil.getSnomedECLValueSetURI(ecl);
+			logger.info("Attempting to resolve allergy propensity {} using lookup with normalForm", 
+					allergyCoding.getCode());
 			
-			logger.info("Attempting to resolve allergy propensity {} using ECL: {}", 
-					allergyCoding.getCode(), ecl);
-			logger.info("ValueSet URI: {}", valueSetURI);
+			// Lookup the allergy concept to get its normalForm
+			var conceptParameters = tsClient.lookup("http://snomed.info/sct", allergyCoding.getCode());
+			SnomedConceptNormalForm normalForm = conceptParameters.getNormalForm();
 			
-			// Expand the value set to get causative agents
-			Collection<Coding> causativeAgents = tsClient.expandValueSet(valueSetURI);
+			// Causative agent attribute code
+			final String CAUSATIVE_AGENT_ATTRIBUTE = "246075003";
+			
+			Set<Coding> causativeAgents = new HashSet<>();
+			
+			// Check direct attributes first
+			String causativeAgentCode = normalForm.getAttributes().get(CAUSATIVE_AGENT_ATTRIBUTE);
+			if (causativeAgentCode != null) {
+				// Lookup the causative agent code to get its display name
+				try {
+					var agentParams = tsClient.lookup("http://snomed.info/sct", causativeAgentCode);
+					String display = agentParams.getParameters("display").stream()
+							.findFirst()
+							.map(p -> p.getValue().toString())
+							.orElse(null);
+					causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, display));
+				} catch (Exception e) {
+					logger.warn("Failed to lookup display for causative agent code {}: {}", causativeAgentCode, e.getMessage());
+					causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, null));
+				}
+			}
+			
+			// Check attribute groups (causative agent is often in a group)
+			for (Map<String, String> group : normalForm.getAttributeGroups()) {
+				causativeAgentCode = group.get(CAUSATIVE_AGENT_ATTRIBUTE);
+				if (causativeAgentCode != null) {
+					// Lookup the causative agent code to get its display name
+					try {
+						var agentParams = tsClient.lookup("http://snomed.info/sct", causativeAgentCode);
+						String display = agentParams.getParameters("display").stream()
+								.findFirst()
+								.map(p -> p.getValue().toString())
+								.orElse(null);
+						causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, display));
+					} catch (Exception e) {
+						logger.warn("Failed to lookup display for causative agent code {}: {}", causativeAgentCode, e.getMessage());
+						causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, null));
+					}
+				}
+			}
 			
 			if (!causativeAgents.isEmpty()) {
 				logger.info("Resolved allergy propensity {} to {} causative agent(s)", 
@@ -446,13 +483,13 @@ public class MedicationOrderSelectCDSService extends CDSService {
 						agent.getCode())
 				);
 			} else {
-				logger.info("No causative agents found for allergy code {}, using code as-is", 
+				logger.info("No causative agents found for allergy code {} in normalForm, using code as-is", 
 						allergyCoding.getCode());
 			}
 			
-			return new HashSet<>(causativeAgents);
+			return causativeAgents;
 		} catch (Exception e) {
-			// If ECL fails, log and return empty set (will use original code as fallback)
+			// If lookup fails, log and return empty set (will use original code as fallback)
 			logger.warn("Failed to get causative agent for allergy code {}: {}", 
 					allergyCoding.getCode(), e.getMessage());
 			return new HashSet<>();
