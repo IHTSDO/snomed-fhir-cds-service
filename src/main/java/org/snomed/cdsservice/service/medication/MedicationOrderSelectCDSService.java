@@ -21,7 +21,9 @@ import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.service.tsclient.SnomedConceptNormalForm;
 import org.snomed.cdsservice.util.SnomedValueSetUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -88,14 +90,14 @@ public class MedicationOrderSelectCDSService extends CDSService {
 
 		Set<Coding> activeDiagnosesCodings = getCodings(activeDiagnoses.stream().map(Condition::getCode));
 		Set<Coding> draftMedicationOrderCodings = getCodings(medicationRequests.stream().map(MedicationRequest::getMedicationCodeableConcept));
-		Set<Coding> allergyCodings = getAllergyCodings(activeAllergies);
+		Set<Coding> allergySubstanceCodings = getAllergyCodings(activeAllergies);
 		
 		// Log allergies found for debugging
 		if (!activeAllergies.isEmpty()) {
-			logger.info("Processing {} allergy intolerance(s)", activeAllergies.size());
-			logger.info("Extracted {} allergen substance code(s)", allergyCodings.size());
-			allergyCodings.forEach(coding -> 
-				logger.info("Allergen substance: {} (Code: {})", 
+			logger.debug("Processing {} allergy intolerance(s)", activeAllergies.size());
+			logger.debug("Extracted {} allergen substance code(s)", allergySubstanceCodings.size());
+			allergySubstanceCodings.forEach(coding ->
+				logger.debug("Allergen substance: {} (Code: {})",
 					coding.getDisplay() != null ? coding.getDisplay() : coding.getCode(), 
 					coding.getCode())
 			);
@@ -123,7 +125,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 		
 		// Check for allergy-medication conflicts
 		if (!activeAllergies.isEmpty() && !medicationRequests.isEmpty()) {
-			cards.addAll(checkAllergyMedicationConflicts(allergyCodings, medicationRequests));
+			cards.addAll(checkAllergyMedicationConflicts(allergySubstanceCodings, medicationRequests));
 		}
 
 		return cards;
@@ -220,16 +222,15 @@ public class MedicationOrderSelectCDSService extends CDSService {
 							codings.addAll(causativeAgents);
 							substancesExtracted = true;
 						} else {
+							// TO DO Add subsumption check to test if code is a substance
+							// {{url}}/CodeSystem/$subsumes?system=http://snomed.info/sct&codeA=307355007&codeB=118940003
+
 							// No causative agents found - code might be a direct substance
 							// Check if it looks like a substance (not a propensity/finding)
 							// For now, add it - reaction.substance will be skipped if we found substances
-							codings.add(coding);
-							substancesExtracted = true;
+//							codings.add(coding);
+//							substancesExtracted = true;
 						}
-					} else {
-						// Non-SNOMED codes, use as-is
-						codings.add(coding);
-						substancesExtracted = true;
 					}
 				}
 			}
@@ -296,7 +297,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 					for (Coding allergyCoding : allergyCodings) {
 						// Check if allergy substance matches or subsumes medication ingredient
 						if (isAllergyMatch(allergyCoding.getCode(), substanceCode)) {
-							logger.warn("ALLERGY ALERT: Patient allergic to {} ({}), found in medication {} ({})",
+							logger.info("ALLERGY ALERT: Patient allergic to {} ({}), found in medication {} ({})",
 									allergyCoding.getDisplay() != null ? allergyCoding.getDisplay() : allergyCoding.getCode(), 
 									allergyCoding.getCode(),
 									medicationDisplay, medicationCode);
@@ -430,7 +431,7 @@ public class MedicationOrderSelectCDSService extends CDSService {
 					allergyCoding.getCode());
 			
 			// Lookup the allergy concept to get its normalForm
-			var conceptParameters = tsClient.lookup("http://snomed.info/sct", allergyCoding.getCode());
+			ConceptParameters conceptParameters = tsClient.lookup("http://snomed.info/sct", allergyCoding.getCode());
 			SnomedConceptNormalForm normalForm = conceptParameters.getNormalForm();
 			
 			// Causative agent attribute code
@@ -438,39 +439,12 @@ public class MedicationOrderSelectCDSService extends CDSService {
 			
 			Set<Coding> causativeAgents = new HashSet<>();
 			
-			// Check direct attributes first
-			String causativeAgentCode = normalForm.getAttributes().get(CAUSATIVE_AGENT_ATTRIBUTE);
-			if (causativeAgentCode != null) {
-				// Lookup the causative agent code to get its display name
-				try {
-					var agentParams = tsClient.lookup("http://snomed.info/sct", causativeAgentCode);
-					String display = agentParams.getParameters("display").stream()
-							.findFirst()
-							.map(p -> p.getValue().toString())
-							.orElse(null);
-					causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, display));
-				} catch (Exception e) {
-					logger.warn("Failed to lookup display for causative agent code {}: {}", causativeAgentCode, e.getMessage());
-					causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, null));
-				}
-			}
-			
 			// Check attribute groups (causative agent is often in a group)
 			for (Map<String, String> group : normalForm.getAttributeGroups()) {
-				causativeAgentCode = group.get(CAUSATIVE_AGENT_ATTRIBUTE);
+				String causativeAgentCode = group.get(CAUSATIVE_AGENT_ATTRIBUTE);
 				if (causativeAgentCode != null) {
 					// Lookup the causative agent code to get its display name
-					try {
-						var agentParams = tsClient.lookup("http://snomed.info/sct", causativeAgentCode);
-						String display = agentParams.getParameters("display").stream()
-								.findFirst()
-								.map(p -> p.getValue().toString())
-								.orElse(null);
-						causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, display));
-					} catch (Exception e) {
-						logger.warn("Failed to lookup display for causative agent code {}: {}", causativeAgentCode, e.getMessage());
-						causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, null));
-					}
+					lookupCausativeAgent(causativeAgentCode, causativeAgents);
 				}
 			}
 			
@@ -488,11 +462,25 @@ public class MedicationOrderSelectCDSService extends CDSService {
 			}
 			
 			return causativeAgents;
-		} catch (Exception e) {
+		} catch (RestClientException e) {
 			// If lookup fails, log and return empty set (will use original code as fallback)
-			logger.warn("Failed to get causative agent for allergy code {}: {}", 
-					allergyCoding.getCode(), e.getMessage());
-			return new HashSet<>();
+			logger.warn("Failed to get causative agent for allergy code {}: {}", allergyCoding.getCode(), e.getMessage(), e);
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Terminology server lookup failed while checking allergies.");
+		}
+	}
+
+	private void lookupCausativeAgent(String causativeAgentCode, Set<Coding> causativeAgents) {
+		// Lookup the causative agent code to get its display name
+		try {
+			var agentParams = tsClient.lookup("http://snomed.info/sct", causativeAgentCode);
+			String display = agentParams.getParameters("display").stream()
+					.findFirst()
+					.map(p -> p.getValue().toString())
+					.orElse(null);
+			causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, display));
+		} catch (Exception e) {
+			logger.warn("Failed to lookup display for causative agent code {}: {}", causativeAgentCode, e.getMessage());
+			causativeAgents.add(new Coding("http://snomed.info/sct", causativeAgentCode, null));
 		}
 	}
 
