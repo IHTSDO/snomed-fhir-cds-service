@@ -568,6 +568,9 @@ class MedicationOrderSelectCDSServiceTest {
         String allergyECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372661004%20.%20246075003";
         when(mockTsClient.expandValueSet(eq(allergyECL))).thenReturn(Collections.emptyList());
         
+        // Mock lookup for allergy code - 372661004 is a substance class, not a propensity, so no normalForm with causative agent
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372661004"))).thenReturn(getConceptParamsForSubstanceClassBetaBlocker());
+        
         // Mock medication lookup - Atenolol tablet contains Atenolol (387506000)
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("318434003"))).thenReturn(getConceptParamsForDrugAtenololTablet());
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387506000"))).thenReturn(getConceptParamsForSubstanceAtenolol());
@@ -623,6 +626,9 @@ class MedicationOrderSelectCDSServiceTest {
         String allergyECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372806008%20.%20246075003";
         when(mockTsClient.expandValueSet(eq(allergyECL))).thenReturn(Collections.emptyList());
         
+        // Mock lookup for allergy code - 372806008 is a substance class (Penicillin), not a propensity
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372806008"))).thenReturn(getConceptParamsForSubstanceClassPenicillin());
+        
         // Mock medication lookup - Amoxicillin tablet contains Amoxicillin (372687004)
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("27658006"))).thenReturn(getConceptParamsForDrugAmoxicillinTablet());
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372687004"))).thenReturn(getConceptParamsForSubstanceAmoxicillin());
@@ -675,6 +681,9 @@ class MedicationOrderSelectCDSServiceTest {
 		String allergyECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372806008%20.%20246075003";
 		when(mockTsClient.expandValueSet(eq(allergyECL))).thenReturn(Collections.emptyList());
 		
+		// Mock lookup for allergy code - 372806008 is a substance class (Penicillin), not a propensity
+		when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372806008"))).thenReturn(getConceptParamsForSubstanceClassPenicillin());
+		
 		// Mock medication lookup with NULL display
 		when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("27658006"))).thenReturn(getConceptParamsForDrugAmoxicillinTablet());
 		when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372687004"))).thenReturn(getConceptParamsForSubstanceAmoxicillin());
@@ -718,6 +727,10 @@ class MedicationOrderSelectCDSServiceTest {
         // Mock expandValueSet to return empty (no causative agents found, so code is used as-is)
         String eclValueSetURI = "http://snomed.info/sct?fhir_vs=ecl/<<%20387506000%20.%20246075003";
         when(mockTsClient.expandValueSet(eq(eclValueSetURI))).thenReturn(Collections.emptyList());
+        
+        // Mock lookup for allergy code - 387506000 is a direct substance (Atenolol), not a propensity
+        // The code will try to lookup this, but since it's a substance, normalForm will be simple
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387506000"))).thenReturn(getConceptParamsForSubstanceAtenolol());
         
         // Create a request with direct substance allergy code and medication
         CDSRequest cdsRequest = new CDSRequest();
@@ -830,6 +843,26 @@ class MedicationOrderSelectCDSServiceTest {
         // Allergy to atenolol (293965006)
         // NormalForm contains causative agent attribute (246075003) = Atenolol (387506000) in an attribute group
         String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"293965006\"},{\"name\":\"display\",\"valueString\":\"Allergy to atenolol\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"293610009 + 293585002 : { 719722006 = 472964009, 246075003 = 387506000 }\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"293610009|Allergy to non-steroidal anti-inflammatory agent (finding)| + 293585002|Allergy to salicylate (finding)| : { 719722006|Has realization (attribute)| = 472964009|Allergic process (qualifier value)|, 246075003|Causative agent (attribute)| = 387506000|Atenolol (substance)| }\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForSubstanceClassBetaBlocker() {
+        // Substance with beta-1 adrenergic receptor antagonist mechanism of action (372661004)
+        // This is a substance class, not a propensity, so normalForm is simple (no causative agent)
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"372661004\"},{\"name\":\"display\",\"valueString\":\"Substance with beta-1 adrenergic receptor antagonist mechanism of action\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"105590001\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"105590001|Substance (substance)|\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForSubstanceClassPenicillin() {
+        // Penicillin (372806008)
+        // This is a substance class, not a propensity, so normalForm is simple (no causative agent)
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"372806008\"},{\"name\":\"display\",\"valueString\":\"Penicillin\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"105590001\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"105590001|Substance (substance)|\"}]}]}";
         Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
         ConceptParameters conceptParameters = new ConceptParameters();
         conceptParameters.setParameter(parameters.getParameter());
