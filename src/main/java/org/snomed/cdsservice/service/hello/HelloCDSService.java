@@ -16,6 +16,10 @@ public class HelloCDSService extends CDSService {
 
 	public HelloCDSService() {
 		super("hello-test");
+		setHook("patient-view");
+		setTitle("Hello Test");
+		setDescription("Returns a simple greeting card for connectivity testing.");
+		setUsageRequirements("Intended as a lightweight smoke test for CDS client integration.");
 	}
 
 	@Override

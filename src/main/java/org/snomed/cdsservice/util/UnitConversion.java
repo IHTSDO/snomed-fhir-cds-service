@@ -31,10 +31,13 @@ public enum UnitConversion {
 
 
     private static final Map<String, Double> BY_UNIT = new HashMap<>();
+    private static final Map<String, Double> BY_NORMALIZED_UNIT = new HashMap<>();
 
     static {
         for (UnitConversion e : values()) {
-            BY_UNIT.put(e.inputUnit + "-" + e.targetUnit, e.getFactor());
+            String exactKey = e.inputUnit + "-" + e.targetUnit;
+            BY_UNIT.put(exactKey, e.getFactor());
+            BY_NORMALIZED_UNIT.put(normalizeUnit(e.inputUnit) + "-" + normalizeUnit(e.targetUnit), e.getFactor());
         }
     }
 
@@ -49,7 +52,23 @@ public enum UnitConversion {
     }
 
     public static Double factorOfConversion(String sourceUnit, String targetUnit) {
-        return BY_UNIT.get(sourceUnit+"-"+targetUnit);
+        if (sourceUnit == null || targetUnit == null) {
+            return null;
+        }
+
+        Double factor = BY_UNIT.get(sourceUnit + "-" + targetUnit);
+        if (factor != null) {
+            return factor;
+        }
+
+        return BY_NORMALIZED_UNIT.get(normalizeUnit(sourceUnit) + "-" + normalizeUnit(targetUnit));
+    }
+
+    private static String normalizeUnit(String unit) {
+        String normalized = unit.trim().toLowerCase();
+        normalized = normalized.replaceAll("\\(.*?\\)", " ");
+        normalized = normalized.replaceAll("[^a-z0-9]+", " ");
+        return normalized.trim().replaceAll("\\s+", " ");
     }
 
     //getter
@@ -65,4 +84,3 @@ public enum UnitConversion {
         return factor;
     }
 }
-

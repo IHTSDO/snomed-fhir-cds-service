@@ -1,7 +1,10 @@
 package org.snomed.cdsservice.service;
 
 import ca.uhn.fhir.context.FhirContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -106,12 +109,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnAlert_WhenDrugAndConditionIsContraindicated() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundle.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundle.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
@@ -128,12 +126,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseWarningAlert_WhenPrescribedDailyDoseExceedsMaximumThresholdFactor() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithWarningExceedsOverDose.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithWarningExceedsOverDose.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -149,12 +142,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseWarningAlert_WhenPrescribedDailyDoseEqualsMaximumThresholdFactor() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithWarningEqualsOverDose.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithWarningEqualsOverDose.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
@@ -170,12 +158,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseInfoAlert_WhenPrescribedDailyDoseExceedsAcceptableThresholdFactor() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithInfoOverDose.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithInfoOverDose.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -190,24 +173,14 @@ class MedicationOrderSelectCDSServiceTest {
 	}
 	@Test
 	public void shouldNotReturnOverDoseAlert_WhenPrescribedDailyDoseIsWithinAcceptableThresholdFactor() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithNoOverDose.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithNoOverDose.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInDays() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithFrequencyPeriodUnitInDays.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithFrequencyPeriodUnitInDays.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -222,12 +195,7 @@ class MedicationOrderSelectCDSServiceTest {
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInHours() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithFrequencyPeriodUnitInHours.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithFrequencyPeriodUnitInHours.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -242,12 +210,7 @@ class MedicationOrderSelectCDSServiceTest {
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInWeeks() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithFrequencyPeriodUnitInWeeks.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithFrequencyPeriodUnitInWeeks.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -262,12 +225,7 @@ class MedicationOrderSelectCDSServiceTest {
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInMonths() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithFrequencyPeriodUnitInMonths.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithFrequencyPeriodUnitInMonths.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -284,12 +242,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForMultipleDrugs_WithDifferentDosageUnits() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithDosageAndUnits.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithDosageAndUnits.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -312,12 +265,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForMultipleDrugsHavingSameSubstance_WithDifferentRouteOfAdministration() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithDifferentManufacturedDosageFormAndDifferentRouteOfAdministration.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithDifferentManufacturedDosageFormAndDifferentRouteOfAdministration.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
@@ -336,12 +284,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForMultipleDrugsHavingSameSubstance_WithDifferentManufacturedDoseForms() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithDifferentManufacturedDosageFormAndDifferentRouteOfAdministration.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithDifferentManufacturedDosageFormAndDifferentRouteOfAdministration.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
@@ -360,12 +303,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForSingleDrugHavingMultipleSubstances() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithCombinatorialDrug.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithCombinatorialDrug.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -392,12 +330,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldCreateInvalidDosageCdssAlerts_WhenRequestBundleContainsMismatchedDoseUnitsAndRoutes() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithMismatchedDoseUnitsAndRoutes.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithMismatchedDoseUnitsAndRoutes.json");
 		List<CDSCard> cards = service.call(cdsRequest);
 		CDSCard cdsCard1 = cards.get(0);
 		CDSCard cdsCard2 = cards.get(1);
@@ -409,14 +342,19 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue(cdsCard2.getDetail().contains("dose unit"));
 		assertTrue(cdsCard3.getDetail().contains("dose route"));
 	}
+
+	@Test
+	public void shouldAcceptRouteCodingDisplayWithoutRouteText_WhenRouteMatchesExpectedAdministrationPath() throws IOException {
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithRouteCodingDisplayOnly.json");
+		List<CDSCard> cards = service.call(cdsRequest);
+
+		assertEquals(1, cards.size());
+		assertEquals(CONTRAINDICATION_ALERT_TYPE, cards.get(0).getAlertType());
+	}
+
 	@Test
 	public void shouldThrowException_WhenRequestBundleContainsInvalidMedicationCode() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithInvalidMedicationCode.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithInvalidMedicationCode.json");
 		assertThrows(ResponseStatusException.class, () ->service.call(cdsRequest) );
 	}
 
@@ -579,13 +517,7 @@ class MedicationOrderSelectCDSServiceTest {
         String allergyBundle = createAllergyBundle("372661004", "Substance with beta-1 adrenergic receptor antagonist mechanism of action");
         String medicationBundle = StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithAtenolol.json"), StandardCharsets.UTF_8);
         
-        CDSRequest cdsRequest = new CDSRequest();
-        cdsRequest.setPrefetchStrings(Map.of(
-                "patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-                "conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-                "draftMedicationRequests", medicationBundle,
-                "allergies", allergyBundle
-        ));
+        CDSRequest cdsRequest = createOrderSelectRequestFromPayloads(medicationBundle, allergyBundle);
 
         // Call the service - should detect allergy via subsumption
         List<CDSCard> cards = service.call(cdsRequest);
@@ -637,13 +569,7 @@ class MedicationOrderSelectCDSServiceTest {
         String allergyBundle = createAllergyBundle("372806008", "Penicillin");
         String medicationBundle = createMedicationBundle("27658006", "Amoxicillin 500 mg oral capsule");
         
-        CDSRequest cdsRequest = new CDSRequest();
-        cdsRequest.setPrefetchStrings(Map.of(
-                "patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-                "conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-                "draftMedicationRequests", medicationBundle,
-                "allergies", allergyBundle
-        ));
+        CDSRequest cdsRequest = createOrderSelectRequestFromPayloads(medicationBundle, allergyBundle);
 
         // Call the service - should detect allergy via subsumption
         List<CDSCard> cards = service.call(cdsRequest);
@@ -692,13 +618,7 @@ class MedicationOrderSelectCDSServiceTest {
 		String allergyBundle = createAllergyBundle("372806008", "Penicillin");
 		String medicationBundle = createMedicationBundle("27658006", "Amoxicillin 500 mg oral capsule");
 		
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", medicationBundle,
-				"allergies", allergyBundle
-		));
+		CDSRequest cdsRequest = createOrderSelectRequestFromPayloads(medicationBundle, allergyBundle);
 		
 		// Call the service - should not fail with NullPointerException
 		List<CDSCard> cards = service.call(cdsRequest);
@@ -733,13 +653,7 @@ class MedicationOrderSelectCDSServiceTest {
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387506000"))).thenReturn(getConceptParamsForSubstanceAtenolol());
         
         // Create a request with direct substance allergy code and medication
-        CDSRequest cdsRequest = new CDSRequest();
-        cdsRequest.setPrefetchStrings(Map.of(
-                "patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-                "conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-                "draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithAtenolol.json"), StandardCharsets.UTF_8),
-                "allergies", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/AllergyIntoleranceBundle.json"), StandardCharsets.UTF_8)
-        ));
+        CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithAtenolol.json", "AllergyIntoleranceBundle.json");
 
         // Call the service - should detect allergy and generate alert
         List<CDSCard> cards = service.call(cdsRequest);
@@ -773,13 +687,7 @@ class MedicationOrderSelectCDSServiceTest {
         when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387506000"))).thenReturn(getConceptParamsForSubstanceAtenolol());
         
         // Create a request with allergy propensity and medication
-        CDSRequest cdsRequest = new CDSRequest();
-        cdsRequest.setPrefetchStrings(Map.of(
-                "patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-                "conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-                "draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithAtenolol.json"), StandardCharsets.UTF_8),
-                "allergies", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/AllergyIntoleranceBundleWithPropensity.json"), StandardCharsets.UTF_8)
-        ));
+        CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithAtenolol.json", "AllergyIntoleranceBundleWithPropensity.json");
 
         // Call the service - should detect allergy and generate alert
         List<CDSCard> cards = service.call(cdsRequest);
@@ -801,6 +709,55 @@ class MedicationOrderSelectCDSServiceTest {
                 "Summary should mention Atenolol");
     }
     
+    private CDSRequest createOrderSelectRequest(String medicationBundleResource) throws IOException {
+        return createOrderSelectRequestFromPayloads(
+                StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/" + medicationBundleResource), StandardCharsets.UTF_8),
+                null
+        );
+    }
+
+    private CDSRequest createOrderSelectRequest(String medicationBundleResource, String allergyBundleResource) throws IOException {
+        return createOrderSelectRequestFromPayloads(
+                StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/" + medicationBundleResource), StandardCharsets.UTF_8),
+                allergyBundleResource == null ? null : StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/" + allergyBundleResource), StandardCharsets.UTF_8)
+        );
+    }
+
+    private CDSRequest createOrderSelectRequestFromPayloads(String medicationBundle, String allergyBundle) throws IOException {
+        CDSRequest cdsRequest = new CDSRequest();
+        cdsRequest.setHook("order-select");
+        cdsRequest.setContext(Map.of(
+                "patientId", "test-patient",
+                "userId", "Practitioner/test-user",
+                "draftOrders", new ObjectMapper().readValue(medicationBundle, Object.class),
+                "selections", getSelections(medicationBundle)
+        ));
+
+        if (allergyBundle == null) {
+            cdsRequest.setPrefetchStrings(Map.of(
+                    "patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
+                    "conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8)
+            ));
+        } else {
+            cdsRequest.setPrefetchStrings(Map.of(
+                    "patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
+                    "conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
+                    "allergies", allergyBundle
+            ));
+        }
+        return cdsRequest;
+    }
+
+    private List<String> getSelections(String medicationBundle) {
+        Bundle bundle = FhirContext.forR4().newJsonParser().parseResource(Bundle.class, medicationBundle);
+        return bundle.getEntry().stream()
+                .map(Bundle.BundleEntryComponent::getResource)
+                .filter(MedicationRequest.class::isInstance)
+                .map(MedicationRequest.class::cast)
+                .map(request -> "MedicationRequest/" + request.getIdElement().getIdPart())
+                .collect(Collectors.toList());
+    }
+
     private ConceptParameters getConceptParamsForDrugAtenololTablet() {
         // Atenolol 25 mg oral tablet (318434003)
         // Contains Atenolol (387506000) as Has basis of strength substance (732943007)

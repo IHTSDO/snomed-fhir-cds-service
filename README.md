@@ -32,8 +32,11 @@ of a tenth of a second.
 This service implements the [discovery endpoint](https://cds-hooks.hl7.org/2.0/#discovery) that describes the available CDS Services.
 
 ### "Medication Order Select" Service
-This service can be called when creating a medication order. The service will return user alerts if there are any know contraindications 
-between the drug being ordered and the existing conditions on the patient record.
+This service is intended for the CDS Hooks `order-select` hook during medication prescribing. It returns user alerts if there are known contraindications,
+interactions, allergy conflicts, or excessive dosage concerns related to the draft medication orders being selected.
+The request should provide draft medication orders in `context.draftOrders`, selected draft order references in `context.selections`,
+and prefetch data for the patient, conditions, and optional allergies.
+
 #### Spreadsheet Driven Rules
 The business logic for the medication order select CDS service are driven by rules authored in a spreadsheet, see 'CDS_Medication-Condition_Cards.xlsx'. 
 
@@ -64,6 +67,21 @@ java -Xms2g -jar snomed-fhir-cds-service.jar \
 ```
 Where:
 - `FHIR_TR` is a Terminology Server FHIR API URL.
+
+### Local Development CORS
+For local frontend testing, a permissive CORS configuration is available through the `local` Spring profile.
+
+Run with:
+```
+mvn spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+or:
+```
+java -jar target/snomed-fhir-cds-service-1.1.1.jar --spring.profiles.active=local
+```
+
+With the `local` profile active, the service allows cross-origin requests from any origin. By default, CORS remains disabled.
 
 ### Testing the Service
 Download and import the [Postman Collection](Postman_collection.json) for API examples.

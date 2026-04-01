@@ -2,6 +2,8 @@ package org.snomed.cdsservice.service.medication;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.hl7.fhir.r4.model.*;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +43,9 @@ public class MedicationOrderSelectCDSService extends CDSService {
 	private FhirContext fhirContext;
 
 	@Autowired
+	private ObjectMapper objectMapper;
+
+	@Autowired
 	private MedicationConditionRuleLoaderService ruleLoaderService;
 
 	@Autowired
@@ -58,9 +63,13 @@ public class MedicationOrderSelectCDSService extends CDSService {
 
 	public MedicationOrderSelectCDSService() {
 		super("medication-order-select");
+		setHook("order-select");
+		setTitle("Medication Order Select");
+		setDescription("Returns medication prescribing alerts for contraindications, interactions, excessive dosage, and allergy conflicts.");
+		setUsageRequirements("Supports medication prescribing workflows using CDS Hooks order-select with draft MedicationRequest orders.");
 		setPrefetch(Map.of(
+				"patient", "Patient/{{context.patientId}}",
 				"conditions", "Condition?patient={{context.patientId}}&category=problem-list-item&status=active",
-				"draftMedicationRequests", "MedicationRequest?patient={{context.patientId}}&status=draft",
 				"allergies", "AllergyIntolerance?patient={{context.patientId}}&clinical-status=active"
 		));
 	}
@@ -73,14 +82,12 @@ public class MedicationOrderSelectCDSService extends CDSService {
 
 	@Override
 	public List<CDSCard> call(CDSRequest cdsRequest) {
-		Map<String, String> prefetch = cdsRequest.getPrefetchStrings();
-		if (prefetch == null || prefetch.get("patient") == null || prefetch.get("conditions") == null || prefetch.get("draftMedicationRequests") == null) {
-			throw new ResponseStatusException(412, "Request does not include required prefetch information: patient, diagnosis and medications.", null);
-		}
+		validateRequest(cdsRequest);
 
+		Map<String, String> prefetch = cdsRequest.getPrefetchStrings();
 		IParser parser = fhirContext.newJsonParser();
 		List<Condition> activeDiagnoses = getPrefetchResourcesFromBundle(prefetch, "conditions", Condition.class, parser);
-		List<MedicationRequest> medicationRequests = getPrefetchResourcesFromBundle(prefetch, "draftMedicationRequests", MedicationRequest.class, parser);
+		List<MedicationRequest> medicationRequests = getSelectedMedicationRequests(cdsRequest, parser);
 		
 		// Read allergies from prefetch (if available)
 		List<AllergyIntolerance> activeAllergies = new ArrayList<>();
@@ -129,6 +136,83 @@ public class MedicationOrderSelectCDSService extends CDSService {
 		}
 
 		return cards;
+	}
+
+	private void validateRequest(CDSRequest cdsRequest) {
+		if (!"order-select".equals(cdsRequest.getHook())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This service supports CDS Hooks order-select requests only.");
+		}
+
+		Map<String, String> prefetch = cdsRequest.getPrefetchStrings();
+		if (prefetch == null || prefetch.get("patient") == null || prefetch.get("conditions") == null) {
+			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "Request does not include required prefetch information: patient and conditions.");
+		}
+
+		if (cdsRequest.getContext() == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request does not include required context.");
+		}
+
+		try {
+			String draftOrdersJson = cdsRequest.getContextValueAsJson("draftOrders", objectMapper);
+			if (draftOrdersJson == null) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request context must include draftOrders.");
+			}
+
+			List<String> selections = cdsRequest.getContextStringList("selections");
+			if (selections == null || selections.isEmpty()) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request context must include one or more selections.");
+			}
+
+			Bundle draftOrders = fhirContext.newJsonParser().parseResource(Bundle.class, draftOrdersJson);
+			if (draftOrders == null || draftOrders.getResourceType() != ResourceType.Bundle) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request context draftOrders must be a FHIR Bundle.");
+			}
+
+			List<MedicationRequest> selectedMedicationRequests = getSelectedMedicationRequests(cdsRequest, fhirContext.newJsonParser());
+			if (selectedMedicationRequests.isEmpty()) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selections must resolve to MedicationRequest resources in context.draftOrders.");
+			}
+		} catch (JsonProcessingException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request context draftOrders could not be parsed as JSON.", e);
+		}
+	}
+
+	private List<MedicationRequest> getSelectedMedicationRequests(CDSRequest cdsRequest, IParser parser) {
+		String draftOrdersJson;
+		try {
+			draftOrdersJson = cdsRequest.getContextValueAsJson("draftOrders", objectMapper);
+		} catch (JsonProcessingException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request context draftOrders could not be parsed as JSON.", e);
+		}
+
+		if (draftOrdersJson == null) {
+			return List.of();
+		}
+
+		Bundle draftOrders = parser.parseResource(Bundle.class, draftOrdersJson);
+		List<String> selections = cdsRequest.getContextStringList("selections");
+		if (selections == null || selections.isEmpty()) {
+			return List.of();
+		}
+
+		Set<String> selectedValues = new HashSet<>(selections);
+		List<MedicationRequest> selectedMedicationRequests = new ArrayList<>();
+		for (Bundle.BundleEntryComponent component : draftOrders.getEntry()) {
+			Resource resource = component.getResource();
+			if (!(resource instanceof MedicationRequest medicationRequest)) {
+				continue;
+			}
+
+			String id = medicationRequest.getIdElement().getIdPart();
+			String relativeReference = id == null ? null : "MedicationRequest/" + id;
+			String fullUrl = component.getFullUrl();
+			if ((id != null && selectedValues.contains(id))
+					|| (relativeReference != null && selectedValues.contains(relativeReference))
+					|| (fullUrl != null && selectedValues.contains(fullUrl))) {
+				selectedMedicationRequests.add(medicationRequest);
+			}
+		}
+		return selectedMedicationRequests;
 	}
 
 	private void addCodesFromOtherCodingSystemsForConditions(List<CDSReference> referenceConditions, List<Condition> activeDiagnoses) {
