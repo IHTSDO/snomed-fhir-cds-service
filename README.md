@@ -31,11 +31,29 @@ of a tenth of a second.
 ### Service Discovery
 This service implements the [discovery endpoint](https://cds-hooks.hl7.org/2.0/#discovery) that describes the available CDS Services.
 
-### "Medication Order Select" Service
-This service is intended for the CDS Hooks `order-select` hook during medication prescribing. It returns user alerts if there are known contraindications,
-interactions, allergy conflicts, or excessive dosage concerns related to the draft medication orders being selected.
-The request should provide draft medication orders in `context.draftOrders`, selected draft order references in `context.selections`,
-and prefetch data for the patient, conditions, and optional allergies.
+### Standard CDS Hooks Services
+The discovery endpoint publishes multiple standard CDS Hooks services so the demo can be exercised against different
+workflow events using standard hook names only.
+
+#### "Medication Order Select" Service
+This service is intended for the CDS Hooks `order-select` hook during medication prescribing. It returns user alerts if
+there are known contraindications, interactions, allergy conflicts, or excessive dosage concerns related to the draft
+medication orders being selected. The request should provide draft medication orders in `context.draftOrders`,
+selected draft order references in `context.selections`, and prefetch data for the patient, conditions, active
+medications, and optional allergies.
+
+#### "Medication Order Sign" Service
+This service is intended for the CDS Hooks `order-sign` hook just before draft medication orders are finalized. It
+evaluates the full draft order bundle in `context.draftOrders` and returns final prescribing alerts for contraindications,
+interactions, allergy conflicts, and excessive dosage concerns.
+
+#### "Problem List Item Create Medication Check" Service
+This service is intended for the CDS Hooks `problem-list-item-create` hook. It evaluates newly created Condition
+resources supplied in `context.conditions` against the patient's existing medication list provided in prefetch.
+
+#### "Patient View Medication Summary Check" Service
+This service is intended for the CDS Hooks `patient-view` hook. It provides summary medication safety alerts for a
+patient chart using prefetch data for conditions, medications, and allergies.
 
 #### Spreadsheet Driven Rules
 The business logic for the medication order select CDS service are driven by rules authored in a spreadsheet, see 'CDS_Medication-Condition_Cards.xlsx'. 
@@ -45,10 +63,6 @@ This spreadsheet uses a simple template format for the user messages where:
 - `{{RuleMedication}}` is the medication label from the rule sheet
 - `{{ActualCondition}}` is the condition from the patient record that triggered the rule
 - `{{ActualMedication}}` is the medication from the medication order that triggered the rule
-
-### "Hello Test" Service
-There is a simple hello-test service that takes no inputs, does not require a terminology server, and responds with a simple CDS Card with a greeting. 
-This is intended to provide an early test point while integrating the service. 
 
 ## Running the Service
 ### Prerequisites
