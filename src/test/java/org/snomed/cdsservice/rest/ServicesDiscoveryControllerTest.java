@@ -50,4 +50,15 @@ class ServicesDiscoveryControllerTest {
 						"allergyintolerance-create"
 				)));
 	}
+
+	@Test
+	void shouldPublishDataDrivenDiagnosticServices() throws Exception {
+		// The diabetes and hypertension domains are discovered from their TSV files and registered dynamically.
+		mockMvc.perform(get("/cds-services"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.services[*].id").value(hasItems(
+						"diagnostic-support-diabetes",
+						"diagnostic-support-hypertension"
+				)));
+	}
 }
