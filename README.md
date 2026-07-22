@@ -76,6 +76,25 @@ pathways. Each fires CDS Hooks cards on the `patient-view` hook.
 
 > This is a demonstration, not a production clinical rules engine. See *First-version limitations* below.
 
+### Triggering and the `patient-view` hook
+All diagnostic services are invoked on the standard CDS Hooks `patient-view` hook. This is a deliberate
+choice, not only a simplification:
+
+- **There is no standard "observation created / new result" hook** in the CDS Hooks 2.0 catalogue. A custom
+  hook could be defined, but it would only work with the EHR that implements it.
+- **`patient-view` provides the full observation history** through prefetch (`Observation?patient={{context.patientId}}`).
+  Several rules need that history rather than a single new value — for example *two-hour OGTT ≥ 11.1 mmol/L on
+  two separate occasions* (`distinct_by = calendar_day`) or *clinic systolic ≥ 140 mmHg on two visits*
+  (`distinct_by = encounter`). An event carrying only the newly entered observation could not satisfy these.
+- **When the hook fires is an EHR concern.** `patient-view` means "the patient chart was opened"; exactly
+  when it is (re)invoked — on open, or on refresh after a new observation is saved — is configured in the EHR,
+  not in this service. Handle the "re-run after a new result" behaviour on the EHR side.
+
+The engine is **hook-agnostic**: if a specific EHR offers a results/observation hook (custom or via a
+national profile), switching a service to it is a one-column change (`hook`) plus its prefetch template — no
+engine code changes, because services are registered from the TSV content. The `trigger_event` column is
+descriptive documentation of the pathway only; it is not evaluated and does not trigger anything.
+
 ### The two-file rule model
 Each clinical domain is defined by two tab-separated files in the rules directory (`rules.diagnostic.directory`,
 default `knowledge-bases/`):
