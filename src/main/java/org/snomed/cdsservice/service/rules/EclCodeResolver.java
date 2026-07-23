@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -70,16 +71,41 @@ public class EclCodeResolver implements CodeResolver {
 		}
 	}
 
+	/**
+	 * Best-effort resolution of an ECL to codes, used for optional refinements (such as subtype-aware
+	 * suppression) that must not fail the request. A locally-resolvable ECL is returned directly; an
+	 * operator ECL is expanded against the terminology server and cached. If it cannot be expanded (for
+	 * example no terminology server is available) this returns empty rather than throwing, so the caller
+	 * can fall back.
+	 */
+	public Optional<Set<CodeKey>> tryExpand(String ecl) {
+		EclSelector.Resolution resolution = EclSelector.parse(ecl);
+		if (resolution.resolvableLocally()) {
+			return Optional.of(resolution.codes());
+		}
+		Set<CodeKey> cached = serverExpansionCache.get(resolution.ecl());
+		if (cached != null) {
+			return Optional.of(cached);
+		}
+		try {
+			Set<CodeKey> codes = callServer(resolution.ecl());
+			if (codes.isEmpty()) {
+				return Optional.empty();
+			}
+			serverExpansionCache.put(resolution.ecl(), codes);
+			return Optional.of(codes);
+		} catch (Exception e) {
+			logger.warn("Could not expand ECL '{}' against the terminology server ({}); optional refinement will fall back.", resolution.ecl(), e.getMessage());
+			return Optional.empty();
+		}
+	}
+
 	private void expandAndCache(String ecl, Criterion criterion) throws ServiceException {
 		if (serverExpansionCache.containsKey(ecl)) {
 			return;
 		}
 		try {
-			Collection<Coding> codings = terminologyServerClient.expandValueSet(SnomedValueSetUtil.getSnomedECLValueSetURI(ecl));
-			Set<CodeKey> codes = new LinkedHashSet<>();
-			for (Coding coding : codings) {
-				codes.add(CodeKey.of(coding));
-			}
+			Set<CodeKey> codes = callServer(ecl);
 			if (codes.isEmpty()) {
 				throw new ServiceException("ECL '%s' for criterion '%s' expanded to no concepts.".formatted(ecl, criterion.criterionId()));
 			}
@@ -90,5 +116,14 @@ public class EclCodeResolver implements CodeResolver {
 		} catch (Exception e) {
 			throw new ServiceException("Failed to expand ECL '%s' for criterion '%s' against the terminology server.".formatted(ecl, criterion.criterionId()), e);
 		}
+	}
+
+	private Set<CodeKey> callServer(String ecl) {
+		Collection<Coding> codings = terminologyServerClient.expandValueSet(SnomedValueSetUtil.getSnomedECLValueSetURI(ecl));
+		Set<CodeKey> codes = new LinkedHashSet<>();
+		for (Coding coding : codings) {
+			codes.add(CodeKey.of(coding));
+		}
+		return codes;
 	}
 }

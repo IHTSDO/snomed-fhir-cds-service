@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A data-driven CDS service backed by one diagnostic {@link RuleSet}. One instance is registered per
@@ -35,6 +36,8 @@ import java.util.Map;
  * carries, and returns a card per fired rule.
  */
 public class RuleBasedCDSService extends CDSService {
+
+	private static final String SNOMED_SYSTEM = "http://snomed.info/sct";
 
 	private final String domain;
 	private final String criteriaTsvPath;
@@ -89,14 +92,45 @@ public class RuleBasedCDSService extends CDSService {
 		Map<String, Object> hookContext = cdsRequest.getContext() == null ? Map.of() : cdsRequest.getContext();
 		RuleEvaluationContext context = new RuleEvaluationContext(patient, resources, hookContext);
 
+		logRequest(resources, hookContext);
+
 		List<CDSCard> cards = new ArrayList<>();
 		for (Rule rule : ruleSet.enabledRules()) {
 			RuleEvaluationResult result = ruleEngine.evaluateRule(rule, ruleSet.criteria(), context);
-			if (result.fired() && !isSuppressed(rule, resources)) {
-				cards.add(ruleCardFactory.createCard(result));
+			if (result.fired()) {
+				boolean suppressed = isSuppressed(rule, resources);
+				logger.debug("[{}] rule '{}' FIRED (outcome {}), suppressed={}", getId(), rule.ruleId(), rule.outcomeCode(), suppressed);
+				if (!suppressed) {
+					cards.add(ruleCardFactory.createCard(result));
+				}
 			}
 		}
 		return cards;
+	}
+
+	/** Debug dump of what the service received, to diagnose prefetch/suppression issues. Enable with
+	 * logging.level.org.snomed.cdsservice.service.rules=DEBUG. */
+	private void logRequest(List<Resource> resources, Map<String, Object> hookContext) {
+		if (!logger.isDebugEnabled()) {
+			return;
+		}
+		Map<String, Long> byType = new java.util.TreeMap<>();
+		for (Resource resource : resources) {
+			byType.merge(resource.getResourceType().name(), 1L, Long::sum);
+		}
+		logger.debug("[{}] received {} resource(s) {}; context keys {}", getId(), resources.size(), byType, hookContext.keySet());
+		for (Resource resource : resources) {
+			if (resource instanceof Condition condition) {
+				String codes = condition.getCode().getCoding().stream()
+						.map(c -> c.getSystem() + "|" + c.getCode()).collect(java.util.stream.Collectors.joining(", "));
+				String clinical = condition.hasClinicalStatus() ? condition.getClinicalStatus().getCoding().stream()
+						.map(Coding::getCode).collect(java.util.stream.Collectors.joining(",")) : "(none)";
+				String verification = condition.hasVerificationStatus() ? condition.getVerificationStatus().getCoding().stream()
+						.map(Coding::getCode).collect(java.util.stream.Collectors.joining(",")) : "(none)";
+				logger.debug("[{}]   Condition codes=[{}] clinicalStatus=[{}] verificationStatus=[{}] relevantForSuppression={}",
+						getId(), codes, clinical, verification, isActive(condition));
+			}
+		}
 	}
 
 	private List<Resource> parsePrefetchResources(CDSRequest cdsRequest) {
@@ -125,27 +159,44 @@ public class RuleBasedCDSService extends CDSService {
 
 	/**
 	 * Suppresses a fired rule when the patient already carries the rule's outcome as an active condition.
-	 * Matching is exact on {@code outcome_code_system + outcome_code}; entered-in-error or inactive
-	 * conditions do not suppress a current recommendation.
+	 * When the outcome is a SNOMED concept and a terminology server is available, matching is
+	 * subtype-aware ({@code << outcome_code}), so a recorded <em>subtype</em> of the proposed diagnosis
+	 * also suppresses the recommendation; otherwise it falls back to exact
+	 * {@code outcome_code_system + outcome_code} matching. Entered-in-error or inactive conditions never
+	 * suppress a current recommendation.
 	 */
 	private boolean isSuppressed(Rule rule, List<Resource> resources) {
 		if (!rule.suppressIfOutcomePresent() || rule.outcomeCode() == null || rule.outcomeCode().isBlank()) {
 			return false;
 		}
+		Set<CodeKey> suppressingCodes = suppressionCodes(rule);
 		for (Resource resource : resources) {
-			if (resource instanceof Condition condition && isActive(condition) && hasCode(condition.getCode(), rule.outcomeCodeSystem(), rule.outcomeCode())) {
+			if (resource instanceof Condition condition && isActive(condition) && hasAnyCode(condition.getCode(), suppressingCodes)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private boolean hasCode(CodeableConcept concept, String system, String code) {
+	/**
+	 * The codes whose presence as an active condition suppresses the rule: the outcome concept plus, when
+	 * it is a SNOMED concept and a terminology server can resolve it, all of its subtypes. Expansion is
+	 * cached; if it cannot be resolved the set is just the exact outcome code.
+	 */
+	private Set<CodeKey> suppressionCodes(Rule rule) {
+		CodeKey exact = new CodeKey(rule.outcomeCodeSystem(), rule.outcomeCode());
+		if (SNOMED_SYSTEM.equals(rule.outcomeCodeSystem())) {
+			return codeResolver.tryExpand("<< " + rule.outcomeCode()).orElseGet(() -> Set.of(exact));
+		}
+		return Set.of(exact);
+	}
+
+	private boolean hasAnyCode(CodeableConcept concept, Set<CodeKey> codes) {
 		if (concept == null) {
 			return false;
 		}
 		for (Coding coding : concept.getCoding()) {
-			if (code.equals(coding.getCode()) && (system == null || system.equals(coding.getSystem()))) {
+			if (codes.contains(new CodeKey(coding.getSystem(), coding.getCode()))) {
 				return true;
 			}
 		}

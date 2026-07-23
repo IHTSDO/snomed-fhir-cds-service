@@ -207,7 +207,9 @@ Three columns express the clinical meaning of a firing rule:
   - `recommend_confirmation` — recommend confirming before diagnosing (use with `likely`).
   - `recommend_confirmatory_test` — recommend a specific confirmatory test (use with `suspected`).
 - `suppress_if_outcome_present` — set `true` so the alert does not repeat once the patient already has the
-  outcome recorded as an active condition (matched on `outcome_code_system` + `outcome_code`).
+  outcome recorded as an active condition. For SNOMED outcomes this is subtype-aware when a terminology
+  server is available (a recorded *subtype* of the diagnosis also suppresses); otherwise it matches the
+  exact `outcome_code_system` + `outcome_code`.
 
 A `likely` or `suspected` rule should **not** use `create_condition`; recommend confirmation instead. Choose
 `card_indicator` to match: `info` for informational, `warning` to draw attention, `critical` for urgent.

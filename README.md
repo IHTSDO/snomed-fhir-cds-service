@@ -150,7 +150,9 @@ Card `summary`/`detail` support `{{MatchedCriteria}}` and `{{OutcomeDisplay}}` p
 an `outcome_status` (`suspected`/`likely`/`diagnostic`) and an `action_type` (`create_condition`,
 `recommend_confirmation`, `recommend_confirmatory_test`); a `likely` or `suspected` result recommends
 confirmation rather than asserting a diagnosis. When `suppress_if_outcome_present = true`, the card is
-withheld if the patient already has an active `Condition` matching `outcome_code_system + outcome_code`.
+withheld if the patient already has an active `Condition` for the outcome. Matching is subtype-aware for
+SNOMED outcomes when a terminology server is available (`<< outcome_code`, so a recorded subtype of the
+diagnosis also suppresses); it falls back to exact `outcome_code_system + outcome_code` matching otherwise.
 
 ### Expected FHIR representation
 - Observation numeric values in `valueQuantity` (or `component.valueQuantity`) with a UCUM `system`/`code`.

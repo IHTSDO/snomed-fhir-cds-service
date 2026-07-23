@@ -33,7 +33,6 @@ import static org.snomed.cdsservice.service.rules.evaluator.EvaluatorTestSupport
 import static org.snomed.cdsservice.service.rules.evaluator.EvaluatorTestSupport.condition;
 import static org.snomed.cdsservice.service.rules.evaluator.EvaluatorTestSupport.observation;
 import static org.snomed.cdsservice.service.rules.evaluator.EvaluatorTestSupport.withCoding;
-import static org.snomed.cdsservice.service.rules.evaluator.EvaluatorTestSupport.withEncounter;
 
 /**
  * End-to-end engine test over the real diabetes and hypertension rule content, exercising the full
@@ -133,18 +132,31 @@ class DiagnosticEnginePipelineTest {
 
 	@Test
 	void repeatClinicRequiresExplicitContext() {
-		Observation visit1 = withEncounter(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150"), "Encounter/1");
-		Observation visit2 = withEncounter(addComponent(bpObservation("75367002", "2024-06-01"), "271649006", "148"), "Encounter/2");
+		// Two qualifying readings on different calendar days, with no Encounter references (many systems do
+		// not link observations to encounters). Distinctness is now by date, not encounter.
+		Observation day1 = addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150");
+		Observation day2 = addComponent(bpObservation("75367002", "2024-06-01"), "271649006", "148");
 
 		// Without the explicit context value the rule must not fire (missing context -> UNKNOWN).
-		RuleEvaluationResult withoutContext = evaluate(hypertension, "HTN-2024-REPEAT-CLINIC-01", context(Map.of(), visit1, visit2));
+		RuleEvaluationResult withoutContext = evaluate(hypertension, "HTN-2024-REPEAT-CLINIC-01", context(Map.of(), day1, day2));
 		assertEquals(TruthValue.UNKNOWN, withoutContext.truthValue());
 
 		// With the explicit context value the diagnostic fallback fires.
 		RuleEvaluationResult withContext = evaluate(hypertension, "HTN-2024-REPEAT-CLINIC-01",
-				context(Map.of("abpmHbpUnavailableOrImpractical", true), visit1, visit2));
+				context(Map.of("abpmHbpUnavailableOrImpractical", true), day1, day2));
 		assertEquals(TruthValue.TRUE, withContext.truthValue());
 		assertEquals(OutcomeStatus.DIAGNOSTIC, withContext.rule().outcomeStatus());
+	}
+
+	@Test
+	void repeatClinicOnSameDayDoesNotReachTwoOccasions() {
+		// Two readings on the same day count as one occasion, so the two-day requirement is not met.
+		// Both systolic and diastolic are supplied and elevated, so both branches evaluate to FALSE.
+		Observation readingA = addComponent(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150"), "271650006", "95");
+		Observation readingB = addComponent(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "148"), "271650006", "96");
+		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-REPEAT-CLINIC-01",
+				context(Map.of("abpmHbpUnavailableOrImpractical", true), readingA, readingB));
+		assertEquals(TruthValue.FALSE, result.truthValue());
 	}
 
 	private RuleEvaluationResult evaluate(RuleSet ruleSet, String ruleId, RuleEvaluationContext context) {
