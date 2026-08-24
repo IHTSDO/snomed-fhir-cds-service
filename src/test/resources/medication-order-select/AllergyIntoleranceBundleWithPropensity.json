@@ -1,0 +1,102 @@
+{
+  "resourceType": "Bundle",
+  "id": "b7acc5a3-2c36-452a-9492-d595fe641ece",
+  "meta": {
+    "lastUpdated": "2025-11-11T15:02:00.686Z"
+  },
+  "type": "searchset",
+  "total": 1,
+  "link": [
+    {
+      "relation": "self",
+      "url": "https://r4.smarthealthit.org/AllergyIntolerance?patient=patient-1762872818666-z716qc"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://r4.smarthealthit.org/AllergyIntolerance/allergy-1762873320177-eqe7drf3a",
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "allergy-1762873320177-eqe7drf3a",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+              "code": "unconfirmed",
+              "display": "Unconfirmed"
+            }
+          ]
+        },
+        "type": "allergy",
+        "category": [
+          "medication"
+        ],
+        "criticality": "high",
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "293965006",
+              "display": "Allergy to atenolol"
+            }
+          ],
+          "text": "Allergy"
+        },
+        "patient": {
+          "reference": "Patient/patient-1762872818666-z716qc"
+        },
+        "recordedDate": "2025-11-11T15:02:00.177Z",
+        "reaction": [
+          {
+            "substance": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "387506000",
+                  "display": "Atenolol"
+                }
+              ]
+            },
+            "manifestation": [
+              {
+                "coding": [
+                  {
+                    "code": "111278002",
+                    "display": "Edema of glottis",
+                    "system": "http://snomed.info/sct"
+                  }
+                ]
+              }
+            ],
+            "exposureRoute": {
+              "coding": [
+                {
+                  "code": "26643006",
+                  "display": "Oral route",
+                  "system": "http://snomed.info/sct"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      },
+      "response": {
+        "status": "200 OK",
+        "etag": "W/\"5\""
+      }
+    }
+  ]
+}
+

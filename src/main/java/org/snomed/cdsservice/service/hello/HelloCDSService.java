@@ -5,17 +5,19 @@ import org.snomed.cdsservice.model.CDSIndicator;
 import org.snomed.cdsservice.model.CDSSource;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
 import org.snomed.cdsservice.service.CDSService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class HelloCDSService extends CDSService {
 	private static final String CONTRAINDICATION_ALERT_TYPE = "Contraindication";
 
 
 	public HelloCDSService() {
 		super("hello-test");
+		setHook("patient-view");
+		setTitle("Hello Test");
+		setDescription("Returns a simple greeting card for connectivity testing.");
+		setUsageRequirements("Intended as a lightweight smoke test for CDS client integration.");
 	}
 
 	@Override

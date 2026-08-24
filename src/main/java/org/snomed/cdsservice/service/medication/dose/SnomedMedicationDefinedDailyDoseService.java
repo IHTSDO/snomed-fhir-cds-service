@@ -5,6 +5,7 @@ import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.list.UnorderedListItem;
 import net.steppschuh.markdowngenerator.text.Text;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Dosage;
 import org.hl7.fhir.r4.model.MedicationRequest;
@@ -43,9 +44,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -189,7 +192,7 @@ public class SnomedMedicationDefinedDailyDoseService {
                     logger.info("SNOMED dose form {} is not covered by the route of administration dynamic map, skipping", manufacturedDoseForm);
                     continue;
                 }
-                if (!(dosage.getRoute() != null && atcRouteOfAdministrationCode.equals(dosage.getRoute().getText()))) {
+                if (!isCompatibleWithExpectedRoute(dosage, atcRouteOfAdministrationCode, routeOfAdministrationLabel)) {
                     String expectedUnit = atcRouteOfAdministrationCode + (routeOfAdministrationLabel.equals(atcRouteOfAdministrationCode) ? "" : " (" + routeOfAdministrationLabel.trim() + ")" );
                     logger.info("Expected route {} for medication {}", expectedUnit, snomedMedicationLabel);
                     composeCdssCardForDosageMismatch(cards, snomedMedicationLabel, codingList, expectedUnit, false);
@@ -417,6 +420,60 @@ public class SnomedMedicationDefinedDailyDoseService {
     private String getSnomedParameterValue(String snomedCode, String parameterName) {
         ConceptParameters conceptParameters = tsClient.lookup(SNOMEDCT_SYSTEM, snomedCode);
         return conceptParameters.getParameter(parameterName).getValue().toString();
+    }
+
+    private boolean isCompatibleWithExpectedRoute(Dosage dosage, String expectedRouteCode, String expectedRouteLabel) {
+        Set<String> normalizedRouteValues = getNormalizedRouteValues(dosage);
+        if (normalizedRouteValues.isEmpty()) {
+            // IPS medication statements may omit route text/coding while dose form still implies route.
+            return true;
+        }
+
+        String normalizedExpectedCode = normalizeRouteToken(expectedRouteCode);
+        String normalizedExpectedLabel = normalizeRouteToken(expectedRouteLabel);
+        for (String routeValue : normalizedRouteValues) {
+            if (routeValue.equals(normalizedExpectedCode) || routeValue.equals(normalizedExpectedLabel)) {
+                return true;
+            }
+            if (!normalizedExpectedLabel.isEmpty() &&
+                    (routeValue.contains(normalizedExpectedLabel) || normalizedExpectedLabel.contains(routeValue))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<String> getNormalizedRouteValues(Dosage dosage) {
+        Set<String> routeValues = new HashSet<>();
+        CodeableConcept route = dosage.getRoute();
+        if (route == null) {
+            return routeValues;
+        }
+
+        addNormalizedRouteValue(routeValues, route.getText());
+        for (Coding coding : route.getCoding()) {
+            addNormalizedRouteValue(routeValues, coding.getCode());
+            addNormalizedRouteValue(routeValues, coding.getDisplay());
+        }
+        return routeValues;
+    }
+
+    private void addNormalizedRouteValue(Set<String> routeValues, String value) {
+        String normalized = normalizeRouteToken(value);
+        if (!normalized.isEmpty()) {
+            routeValues.add(normalized);
+        }
+    }
+
+    private String normalizeRouteToken(String value) {
+        if (value == null) {
+            return "";
+        }
+        String normalized = value.trim().toLowerCase();
+        normalized = normalized.replaceAll("\\(.*?\\)", " ");
+        normalized = normalized.replaceAll("[^a-z0-9]+", " ");
+        normalized = normalized.trim().replaceAll("\\s+", " ");
+        return normalized;
     }
 
     private PrescribedDailyDose getPrescribedDailyDoseInUnitOfDDD(BigDecimal inputStrengthValue, String inputStrengthUnit, String targetStrengthUnit, List<CDSCard> cards, String medicationLabel, List<Coding> codingList) {

@@ -1,0 +1,93 @@
+{
+  "resourceType": "Bundle",
+  "id": "67b19911-5f2f-4d4e-8073-8c71f6b6ee03",
+  "meta": {
+    "lastUpdated": "2025-11-11T14:57:52.940Z"
+  },
+  "type": "searchset",
+  "total": 1,
+  "link": [
+    {
+      "relation": "self",
+      "url": "https://r4.smarthealthit.org/MedicationRequest?patient=patient-1762872818666-z716qc"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://r4.smarthealthit.org/MedicationRequest/medication-1762873072435",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medication-1762873072435",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "318434003",
+              "display": "Atenolol 25 mg oral tablet"
+            }
+          ],
+          "text": "Atenolol 25 mg oral tablet"
+        },
+        "subject": {
+          "reference": "Patient/patient-1762872818666-z716qc"
+        },
+        "encounter": {
+          "reference": "Encounter/5000fff4-005f-4670-9a74-c7c33d54ca0b"
+        },
+        "authoredOn": "2025-11-11T14:57:52.435Z",
+        "requester": {
+          "reference": "Practitioner/1dca0bc9-1a4c-43ca-ab62-535ca8c1f955"
+        },
+        "dosageInstruction": [
+          {
+            "sequence": 1,
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "asNeededBoolean": false,
+            "route": {
+              "coding": [
+                {
+                  "code": "",
+                  "display": "O"
+                }
+              ],
+              "text": "O"
+            },
+            "doseAndRate": [
+              {
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/dose-rate-type",
+                      "code": "ordered",
+                      "display": "Ordered"
+                    }
+                  ]
+                },
+                "doseQuantity": {
+                  "value": 1,
+                  "unit": "Tablet"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      },
+      "response": {
+        "status": "200 OK",
+        "etag": "W/\"4\""
+      }
+    }
+  ]
+}
+

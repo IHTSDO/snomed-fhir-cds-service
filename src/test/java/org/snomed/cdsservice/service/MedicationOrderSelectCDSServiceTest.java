@@ -1,7 +1,10 @@
 package org.snomed.cdsservice.service;
 
 import ca.uhn.fhir.context.FhirContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +42,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
@@ -105,12 +109,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnAlert_WhenDrugAndConditionIsContraindicated() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundle.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundle.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
@@ -127,12 +126,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseWarningAlert_WhenPrescribedDailyDoseExceedsMaximumThresholdFactor() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithWarningExceedsOverDose.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithWarningExceedsOverDose.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -148,12 +142,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseWarningAlert_WhenPrescribedDailyDoseEqualsMaximumThresholdFactor() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithWarningEqualsOverDose.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithWarningEqualsOverDose.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
@@ -169,12 +158,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseInfoAlert_WhenPrescribedDailyDoseExceedsAcceptableThresholdFactor() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithInfoOverDose.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithInfoOverDose.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -189,24 +173,14 @@ class MedicationOrderSelectCDSServiceTest {
 	}
 	@Test
 	public void shouldNotReturnOverDoseAlert_WhenPrescribedDailyDoseIsWithinAcceptableThresholdFactor() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithNoOverDose.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithNoOverDose.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInDays() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithFrequencyPeriodUnitInDays.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithFrequencyPeriodUnitInDays.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -221,12 +195,7 @@ class MedicationOrderSelectCDSServiceTest {
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInHours() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithFrequencyPeriodUnitInHours.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithFrequencyPeriodUnitInHours.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -241,12 +210,7 @@ class MedicationOrderSelectCDSServiceTest {
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInWeeks() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithFrequencyPeriodUnitInWeeks.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithFrequencyPeriodUnitInWeeks.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -261,12 +225,7 @@ class MedicationOrderSelectCDSServiceTest {
 	}
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForFrequencyPeriodUnitInMonths() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithFrequencyPeriodUnitInMonths.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithFrequencyPeriodUnitInMonths.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -283,12 +242,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForMultipleDrugs_WithDifferentDosageUnits() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithDosageAndUnits.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithDosageAndUnits.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -311,12 +265,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForMultipleDrugsHavingSameSubstance_WithDifferentRouteOfAdministration() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithDifferentManufacturedDosageFormAndDifferentRouteOfAdministration.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithDifferentManufacturedDosageFormAndDifferentRouteOfAdministration.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
@@ -335,12 +284,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForMultipleDrugsHavingSameSubstance_WithDifferentManufacturedDoseForms() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithDifferentManufacturedDosageFormAndDifferentRouteOfAdministration.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithDifferentManufacturedDosageFormAndDifferentRouteOfAdministration.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(1, cards.size());
@@ -359,12 +303,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldReturnOverDoseAlert_WhenPrescribedDailyDoseExceedsThresholdFactor_ForSingleDrugHavingMultipleSubstances() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithCombinatorialDrug.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithCombinatorialDrug.json");
 
 		List<CDSCard> cards = service.call(cdsRequest);
 		assertEquals(2, cards.size());
@@ -391,12 +330,7 @@ class MedicationOrderSelectCDSServiceTest {
 
 	@Test
 	public void shouldCreateInvalidDosageCdssAlerts_WhenRequestBundleContainsMismatchedDoseUnitsAndRoutes() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithMismatchedDoseUnitsAndRoutes.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithMismatchedDoseUnitsAndRoutes.json");
 		List<CDSCard> cards = service.call(cdsRequest);
 		CDSCard cdsCard1 = cards.get(0);
 		CDSCard cdsCard2 = cards.get(1);
@@ -408,14 +342,19 @@ class MedicationOrderSelectCDSServiceTest {
 		assertTrue(cdsCard2.getDetail().contains("dose unit"));
 		assertTrue(cdsCard3.getDetail().contains("dose route"));
 	}
+
+	@Test
+	public void shouldAcceptRouteCodingDisplayWithoutRouteText_WhenRouteMatchesExpectedAdministrationPath() throws IOException {
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithRouteCodingDisplayOnly.json");
+		List<CDSCard> cards = service.call(cdsRequest);
+
+		assertEquals(1, cards.size());
+		assertEquals(CONTRAINDICATION_ALERT_TYPE, cards.get(0).getAlertType());
+	}
+
 	@Test
 	public void shouldThrowException_WhenRequestBundleContainsInvalidMedicationCode() throws IOException {
-		CDSRequest cdsRequest = new CDSRequest();
-		cdsRequest.setPrefetchStrings(Map.of(
-				"patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
-				"conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
-				"draftMedicationRequests", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithInvalidMedicationCode.json"), StandardCharsets.UTF_8)
-		));
+		CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithInvalidMedicationCode.json");
 		assertThrows(ResponseStatusException.class, () ->service.call(cdsRequest) );
 	}
 
@@ -543,6 +482,398 @@ class MedicationOrderSelectCDSServiceTest {
         mapEntryList.add(oral);
         mapEntryList.add(parenteral);
         return mapEntryList;
+    }
+
+    @Test
+    public void shouldDetectAllergyToBetaBlockerClassMatchingAtenolol() throws IOException {
+        // Real-world test case: Allergy to beta-blocker class should detect Atenolol
+        // Allergy: 372661004 |Substance with beta-1 adrenergic receptor antagonist mechanism of action|
+        // Medication: Atenolol (which is a beta-blocker)
+        // This is clinically significant - allergy to beta-blocker class should trigger on any beta-blocker
+        
+        // Mock: ECL << 372661004 expands to include Atenolol (387506000) and other beta-blockers
+        String betaBlockerECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372661004";
+        List<Coding> betaBlockerDescendants = List.of(
+                new Coding("http://snomed.info/sct", "372661004", "Substance with beta-1 adrenergic receptor antagonist mechanism of action"),
+                new Coding("http://snomed.info/sct", "387506000", "Atenolol"),
+                new Coding("http://snomed.info/sct", "372772003", "Metoprolol"),
+                new Coding("http://snomed.info/sct", "386864001", "Bisoprolol"),
+                new Coding("http://snomed.info/sct", "386868003", "Carvedilol")
+        );
+        when(mockTsClient.expandValueSet(eq(betaBlockerECL))).thenReturn(betaBlockerDescendants);
+        
+        // Mock: ECL for getting causative agent from beta-blocker allergy returns empty (it's already a substance class)
+        String allergyECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372661004%20.%20246075003";
+        when(mockTsClient.expandValueSet(eq(allergyECL))).thenReturn(Collections.emptyList());
+        
+        // Mock lookup for allergy code - 372661004 is a substance class, not a propensity, so no normalForm with causative agent
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372661004"))).thenReturn(getConceptParamsForSubstanceClassBetaBlocker());
+        
+        // Mock medication lookup - Atenolol tablet contains Atenolol (387506000)
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("318434003"))).thenReturn(getConceptParamsForDrugAtenololTablet());
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387506000"))).thenReturn(getConceptParamsForSubstanceAtenolol());
+        
+        // Create test data
+        String allergyBundle = createAllergyBundle("372661004", "Substance with beta-1 adrenergic receptor antagonist mechanism of action");
+        String medicationBundle = StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/MedicationRequestBundleWithAtenolol.json"), StandardCharsets.UTF_8);
+        
+        CDSRequest cdsRequest = createOrderSelectRequestFromPayloads(medicationBundle, allergyBundle);
+
+        // Call the service - should detect allergy via subsumption
+        List<CDSCard> cards = service.call(cdsRequest);
+        
+        // Should have at least one allergy alert card
+        assertTrue(cards.size() >= 1, "Should generate allergy alert via subsumption");
+        
+        // Find the allergy alert card
+        CDSCard allergyCard = cards.stream()
+                .filter(card -> "Allergy Contraindication".equals(card.getAlertType()))
+                .findFirst()
+                .orElse(null);
+        
+        // Verify allergy alert was generated via subsumption
+        assertTrue(allergyCard != null, "Allergy to beta-blocker class should detect Atenolol via subsumption");
+        assertEquals(CDSIndicator.critical, allergyCard.getIndicator(), "Allergy alerts should be critical");
+        assertTrue(allergyCard.getSummary().toLowerCase().contains("allergy"), "Summary should mention allergy");
+        assertTrue(allergyCard.getDetail().contains("Atenolol"), "Detail should mention the specific medication");
+    }
+    
+    @Test
+    public void shouldDetectAllergyUsingSubsumption() throws IOException {
+        // Test case where allergy is to a parent substance class (e.g., Penicillin)
+        // and medication contains a child substance (e.g., Amoxicillin)
+        // This requires SNOMED subsumption checking
+        
+        // Mock: Allergy to Penicillin (372806008) should detect Amoxicillin (372687004)
+        // ECL: << 372806008 expands to include 372687004
+        String penicillinECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372806008";
+        List<Coding> penicillinDescendants = List.of(
+                new Coding("http://snomed.info/sct", "372806008", "Penicillin"),
+                new Coding("http://snomed.info/sct", "372687004", "Amoxicillin"),
+                new Coding("http://snomed.info/sct", "373270004", "Ampicillin")
+        );
+        when(mockTsClient.expandValueSet(eq(penicillinECL))).thenReturn(penicillinDescendants);
+        
+        // Mock: ECL for getting causative agent from "Allergy to penicillin" returns empty
+        String allergyECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372806008%20.%20246075003";
+        when(mockTsClient.expandValueSet(eq(allergyECL))).thenReturn(Collections.emptyList());
+        
+        // Mock lookup for allergy code - 372806008 is a substance class (Penicillin), not a propensity
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372806008"))).thenReturn(getConceptParamsForSubstanceClassPenicillin());
+        
+        // Mock medication lookup - Amoxicillin tablet contains Amoxicillin (372687004)
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("27658006"))).thenReturn(getConceptParamsForDrugAmoxicillinTablet());
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372687004"))).thenReturn(getConceptParamsForSubstanceAmoxicillin());
+        
+        // Create test data files programmatically for this test
+        String allergyBundle = createAllergyBundle("372806008", "Penicillin");
+        String medicationBundle = createMedicationBundle("27658006", "Amoxicillin 500 mg oral capsule");
+        
+        CDSRequest cdsRequest = createOrderSelectRequestFromPayloads(medicationBundle, allergyBundle);
+
+        // Call the service - should detect allergy via subsumption
+        List<CDSCard> cards = service.call(cdsRequest);
+        
+        // Should have at least one allergy alert card
+        assertTrue(cards.size() >= 1, "Should generate allergy alert via subsumption");
+        
+        // Find the allergy alert card
+        CDSCard allergyCard = cards.stream()
+                .filter(card -> "Allergy Contraindication".equals(card.getAlertType()))
+                .findFirst()
+                .orElse(null);
+        
+        // Verify allergy alert was generated via subsumption
+        assertTrue(allergyCard != null, "Allergy alert should be generated via subsumption (Penicillin subsumes Amoxicillin)");
+        assertEquals(CDSIndicator.critical, allergyCard.getIndicator());
+        assertTrue(allergyCard.getSummary().toLowerCase().contains("allergy"));
+    }
+
+	@Test
+	public void shouldTolerateNullDisplayInCodingsFromServer() throws IOException {
+		// Test that the code is tolerant to display=null (which is what the real server returns)
+		// This test explicitly uses Coding objects with null display values
+		
+		// Mock: Allergy substance with NULL display (like real server)
+		String penicillinECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372806008";
+		List<Coding> penicillinDescendants = List.of(
+				new Coding("http://snomed.info/sct", "372806008", null),  // NULL display
+				new Coding("http://snomed.info/sct", "372687004", null),  // NULL display
+				new Coding("http://snomed.info/sct", "373270004", null)   // NULL display
+		);
+		when(mockTsClient.expandValueSet(eq(penicillinECL))).thenReturn(penicillinDescendants);
+		
+		// Mock: ECL for getting causative agent returns empty with NULL display
+		String allergyECL = "http://snomed.info/sct?fhir_vs=ecl/<<%20372806008%20.%20246075003";
+		when(mockTsClient.expandValueSet(eq(allergyECL))).thenReturn(Collections.emptyList());
+		
+		// Mock lookup for allergy code - 372806008 is a substance class (Penicillin), not a propensity
+		when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372806008"))).thenReturn(getConceptParamsForSubstanceClassPenicillin());
+		
+		// Mock medication lookup with NULL display
+		when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("27658006"))).thenReturn(getConceptParamsForDrugAmoxicillinTablet());
+		when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("372687004"))).thenReturn(getConceptParamsForSubstanceAmoxicillin());
+		
+		// Create test data
+		String allergyBundle = createAllergyBundle("372806008", "Penicillin");
+		String medicationBundle = createMedicationBundle("27658006", "Amoxicillin 500 mg oral capsule");
+		
+		CDSRequest cdsRequest = createOrderSelectRequestFromPayloads(medicationBundle, allergyBundle);
+		
+		// Call the service - should not fail with NullPointerException
+		List<CDSCard> cards = service.call(cdsRequest);
+		
+		// Should generate allergy alert despite null displays
+		assertTrue(cards.size() >= 1, "Should generate allergy alert even with null displays");
+		CDSCard allergyCard = cards.stream()
+				.filter(card -> "Allergy Contraindication".equals(card.getAlertType()))
+				.findFirst()
+				.orElse(null);
+		
+		assertNotNull(allergyCard, "Should detect allergy via subsumption with null displays");
+		assertEquals(CDSIndicator.critical, allergyCard.getIndicator());
+		assertTrue(allergyCard.getSummary().toLowerCase().contains("allergy"));
+	}
+	
+	@Test
+	public void shouldDetectAllergyWithDirectSubstanceCode() throws IOException {
+        // Test case where allergy code is directly the substance (387506000 |Atenolol|)
+        // No ECL resolution needed - code is already the substance
+        
+        // Mock the medication lookup to return concept with Atenolol as substance
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("318434003"))).thenReturn(getConceptParamsForDrugAtenololTablet());
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387506000"))).thenReturn(getConceptParamsForSubstanceAtenolol());
+        
+        // Mock expandValueSet to return empty (no causative agents found, so code is used as-is)
+        String eclValueSetURI = "http://snomed.info/sct?fhir_vs=ecl/<<%20387506000%20.%20246075003";
+        when(mockTsClient.expandValueSet(eq(eclValueSetURI))).thenReturn(Collections.emptyList());
+        
+        // Mock lookup for allergy code - 387506000 is a direct substance (Atenolol), not a propensity
+        // The code will try to lookup this, but since it's a substance, normalForm will be simple
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387506000"))).thenReturn(getConceptParamsForSubstanceAtenolol());
+        
+        // Create a request with direct substance allergy code and medication
+        CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithAtenolol.json", "AllergyIntoleranceBundle.json");
+
+        // Call the service - should detect allergy and generate alert
+        List<CDSCard> cards = service.call(cdsRequest);
+        
+        // Should have at least one allergy alert card
+        assertTrue(cards.size() >= 1, "Should generate at least one allergy alert");
+        
+        // Find the allergy alert card
+        CDSCard allergyCard = cards.stream()
+                .filter(card -> "Allergy Contraindication".equals(card.getAlertType()))
+                .findFirst()
+                .orElse(null);
+        
+        // Verify allergy alert was generated
+        assertTrue(allergyCard != null, "Allergy alert card should be generated for direct substance code");
+        assertEquals(CDSIndicator.critical, allergyCard.getIndicator(), "Allergy alerts should be critical");
+        assertTrue(allergyCard.getSummary().toLowerCase().contains("allergy"), "Summary should mention allergy");
+        assertTrue(allergyCard.getSummary().contains("Atenolol") || allergyCard.getSummary().contains("atenolol"), 
+                "Summary should mention Atenolol");
+    }
+
+    @Test
+    public void shouldResolveAllergyPropensityToCausativeAgent() throws IOException {
+        // Mock the lookup call for "Allergy to atenolol" (293965006) to return normalForm with causative agent
+        // The normalForm should contain attribute 246075003|Causative agent| = 387506000|Atenolol| in an attribute group
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("293965006"))).thenReturn(getConceptParamsForAllergyToAtenolol());
+        
+        // Mock the medication lookup to return concept with Atenolol as substance
+        // Atenolol 25 mg oral tablet (318434003) contains Atenolol (387506000) as ingredient
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("318434003"))).thenReturn(getConceptParamsForDrugAtenololTablet());
+        when(mockTsClient.lookup(eq(SNOMEDCT_SYSTEM), eq("387506000"))).thenReturn(getConceptParamsForSubstanceAtenolol());
+        
+        // Create a request with allergy propensity and medication
+        CDSRequest cdsRequest = createOrderSelectRequest("MedicationRequestBundleWithAtenolol.json", "AllergyIntoleranceBundleWithPropensity.json");
+
+        // Call the service - should detect allergy and generate alert
+        List<CDSCard> cards = service.call(cdsRequest);
+        
+        // Should have at least one allergy alert card
+        assertTrue(cards.size() >= 1, "Should generate at least one allergy alert");
+        
+        // Find the allergy alert card
+        CDSCard allergyCard = cards.stream()
+                .filter(card -> "Allergy Contraindication".equals(card.getAlertType()))
+                .findFirst()
+                .orElse(null);
+        
+        // Verify allergy alert was generated
+        assertTrue(allergyCard != null, "Allergy alert card should be generated");
+        assertEquals(CDSIndicator.critical, allergyCard.getIndicator(), "Allergy alerts should be critical");
+        assertTrue(allergyCard.getSummary().contains("allergy"), "Summary should mention allergy");
+        assertTrue(allergyCard.getSummary().contains("Atenolol") || allergyCard.getSummary().contains("atenolol"), 
+                "Summary should mention Atenolol");
+    }
+    
+    private CDSRequest createOrderSelectRequest(String medicationBundleResource) throws IOException {
+        return createOrderSelectRequestFromPayloads(
+                StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/" + medicationBundleResource), StandardCharsets.UTF_8),
+                null
+        );
+    }
+
+    private CDSRequest createOrderSelectRequest(String medicationBundleResource, String allergyBundleResource) throws IOException {
+        return createOrderSelectRequestFromPayloads(
+                StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/" + medicationBundleResource), StandardCharsets.UTF_8),
+                allergyBundleResource == null ? null : StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/" + allergyBundleResource), StandardCharsets.UTF_8)
+        );
+    }
+
+    private CDSRequest createOrderSelectRequestFromPayloads(String medicationBundle, String allergyBundle) throws IOException {
+        CDSRequest cdsRequest = new CDSRequest();
+        cdsRequest.setHook("order-select");
+        cdsRequest.setContext(Map.of(
+                "patientId", "test-patient",
+                "userId", "Practitioner/test-user",
+                "draftOrders", new ObjectMapper().readValue(medicationBundle, Object.class),
+                "selections", getSelections(medicationBundle)
+        ));
+
+        if (allergyBundle == null) {
+            cdsRequest.setPrefetchStrings(Map.of(
+                    "patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
+                    "conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8)
+            ));
+        } else {
+            cdsRequest.setPrefetchStrings(Map.of(
+                    "patient", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/PatientResource.json"), StandardCharsets.UTF_8),
+                    "conditions", StreamUtils.copyToString(getClass().getResourceAsStream("/medication-order-select/ConditionBundle.json"), StandardCharsets.UTF_8),
+                    "allergies", allergyBundle
+            ));
+        }
+        return cdsRequest;
+    }
+
+    private List<String> getSelections(String medicationBundle) {
+        Bundle bundle = FhirContext.forR4().newJsonParser().parseResource(Bundle.class, medicationBundle);
+        return bundle.getEntry().stream()
+                .map(Bundle.BundleEntryComponent::getResource)
+                .filter(MedicationRequest.class::isInstance)
+                .map(MedicationRequest.class::cast)
+                .map(request -> "MedicationRequest/" + request.getIdElement().getIdPart())
+                .collect(Collectors.toList());
+    }
+
+    private ConceptParameters getConceptParamsForDrugAtenololTablet() {
+        // Atenolol 25 mg oral tablet (318434003)
+        // Contains Atenolol (387506000) as Has basis of strength substance (732943007)
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"318434003\"},{\"name\":\"display\",\"valueString\":\"Atenolol 25 mg oral tablet\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"108537001 : 411116001 = 421026006, 763032000 = 732936001, 1142139005 = #1, { 762949000 = 387506000, 732943007 = 387506000, 1142135004 = #25, 732945000 = 258684004, 1142136003 = #1, 732947008 = 732936001 }\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"108537001|Product containing only atenolol in oral dose form (medicinal product form)| : 411116001|Has manufactured dose form (attribute)| = 421026006|Conventional release oral tablet (dose form)|, 763032000|Has unit of presentation (attribute)| = 732936001|Tablet (unit of presentation)|, 1142139005|Count of base of active ingredient (attribute)| = #1, { 762949000|Has precise active ingredient (attribute)| = 387506000|Atenolol (substance)|, 732943007|Has basis of strength substance (attribute)| = 387506000|Atenolol (substance)|, 1142135004|Has presentation strength numerator value (attribute)| = #25, 732945000|Has presentation strength numerator unit (attribute)| = 258684004|milligram (qualifier value)|, 1142136003|Has presentation strength denominator value (attribute)| = #1, 732947008|Has presentation strength denominator unit (attribute)| = 732936001|Tablet (unit of presentation)| }\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForSubstanceAtenolol() {
+        // Atenolol substance (387506000)
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"387506000\"},{\"name\":\"display\",\"valueString\":\"Atenolol\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"105590001\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"105590001|Substance (substance)|\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForDrugAmoxicillinTablet() {
+        // Amoxicillin 500 mg oral capsule (27658006)
+        // Contains Amoxicillin (372687004) as Has basis of strength substance
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"27658006\"},{\"name\":\"display\",\"valueString\":\"Amoxicillin 500 mg oral capsule\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"108529000 : 411116001 = 385049006, 763032000 = 732937005, 1142139005 = #1, { 762949000 = 372687004, 732943007 = 372687004, 1142135004 = #500, 732945000 = 258684004, 1142136003 = #1, 732947008 = 732937005 }\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"108529000|Product containing only amoxicillin in oral dose form (medicinal product form)| : 411116001|Has manufactured dose form (attribute)| = 385049006|Conventional release oral capsule (dose form)|, 763032000|Has unit of presentation (attribute)| = 732937005|Capsule (unit of presentation)|, 1142139005|Count of base of active ingredient (attribute)| = #1, { 762949000|Has precise active ingredient (attribute)| = 372687004|Amoxicillin (substance)|, 732943007|Has basis of strength substance (attribute)| = 372687004|Amoxicillin (substance)|, 1142135004|Has presentation strength numerator value (attribute)| = #500, 732945000|Has presentation strength numerator unit (attribute)| = 258684004|milligram (qualifier value)|, 1142136003|Has presentation strength denominator value (attribute)| = #1, 732947008|Has presentation strength denominator unit (attribute)| = 732937005|Capsule (unit of presentation)| }\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForSubstanceAmoxicillin() {
+        // Amoxicillin substance (372687004)
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"372687004\"},{\"name\":\"display\",\"valueString\":\"Amoxicillin\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"105590001\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"105590001|Substance (substance)|\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForAllergyToAtenolol() {
+        // Allergy to atenolol (293965006)
+        // NormalForm contains causative agent attribute (246075003) = Atenolol (387506000) in an attribute group
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"293965006\"},{\"name\":\"display\",\"valueString\":\"Allergy to atenolol\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"293610009 + 293585002 : { 719722006 = 472964009, 246075003 = 387506000 }\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"293610009|Allergy to non-steroidal anti-inflammatory agent (finding)| + 293585002|Allergy to salicylate (finding)| : { 719722006|Has realization (attribute)| = 472964009|Allergic process (qualifier value)|, 246075003|Causative agent (attribute)| = 387506000|Atenolol (substance)| }\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForSubstanceClassBetaBlocker() {
+        // Substance with beta-1 adrenergic receptor antagonist mechanism of action (372661004)
+        // This is a substance class, not a propensity, so normalForm is simple (no causative agent)
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"372661004\"},{\"name\":\"display\",\"valueString\":\"Substance with beta-1 adrenergic receptor antagonist mechanism of action\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"105590001\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"105590001|Substance (substance)|\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private ConceptParameters getConceptParamsForSubstanceClassPenicillin() {
+        // Penicillin (372806008)
+        // This is a substance class, not a propensity, so normalForm is simple (no causative agent)
+        String response = "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"code\",\"valueString\":\"372806008\"},{\"name\":\"display\",\"valueString\":\"Penicillin\"},{\"name\":\"name\",\"valueString\":\"SNOMED CT release 2023-05-31\"},{\"name\":\"system\",\"valueString\":\"http://snomed.info/sct\"},{\"name\":\"version\",\"valueString\":\"http://snomed.info/sct/900000000000207008/version/20230531\"},{\"name\":\"inactive\",\"valueBoolean\":false},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalFormTerse\"},{\"name\":\"valueString\",\"valueString\":\"105590001\"}]},{\"name\":\"property\",\"part\":[{\"name\":\"code\",\"valueString\":\"normalForm\"},{\"name\":\"valueString\",\"valueString\":\"105590001|Substance (substance)|\"}]}]}";
+        Parameters parameters = FhirContext.forR4().newJsonParser().parseResource(Parameters.class, response);
+        ConceptParameters conceptParameters = new ConceptParameters();
+        conceptParameters.setParameter(parameters.getParameter());
+        return conceptParameters;
+    }
+    
+    private String createAllergyBundle(String allergyCode, String allergyDisplay) {
+        return String.format("""
+            {
+              "resourceType": "Bundle",
+              "type": "searchset",
+              "entry": [{
+                "resource": {
+                  "resourceType": "AllergyIntolerance",
+                  "id": "test-allergy",
+                  "clinicalStatus": {
+                    "coding": [{"system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "code": "active"}]
+                  },
+                  "code": {
+                    "coding": [{"system": "http://snomed.info/sct", "code": "%s", "display": "%s"}]
+                  },
+                  "patient": {"reference": "Patient/test"}
+                }
+              }]
+            }
+            """, allergyCode, allergyDisplay);
+    }
+    
+    private String createMedicationBundle(String medicationCode, String medicationDisplay) {
+        return String.format("""
+            {
+              "resourceType": "Bundle",
+              "type": "searchset",
+              "entry": [{
+                "resource": {
+                  "resourceType": "MedicationRequest",
+                  "id": "test-medication",
+                  "status": "active",
+                  "intent": "order",
+                  "medicationCodeableConcept": {
+                    "coding": [{"system": "http://snomed.info/sct", "code": "%s", "display": "%s"}]
+                  },
+                  "subject": {"reference": "Patient/test"},
+                  "dosageInstruction": [{
+                    "timing": {"repeat": {"frequency": 1, "period": 1, "periodUnit": "d"}},
+                    "route": {"text": "O"},
+                    "doseAndRate": [{
+                      "doseQuantity": {"value": 1, "unit": "Capsule"}
+                    }]
+                  }]
+                }
+              }]
+            }
+            """, medicationCode, medicationDisplay);
     }
 
 }

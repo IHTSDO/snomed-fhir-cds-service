@@ -32,10 +32,19 @@ public class SnomedValueSetUtil {
 
 	@NotNull
 	public static String getSnomedECLValueSetURI(String ecl) {
+		// Encode the ECL using URL encoding
 		String encodedECL = URLEncoder.encode(ecl, StandardCharsets.UTF_8);
+		
+		// Decode certain characters for ECL readability (< > ( ) | !)
 		for (Map.Entry<String, String> decodeEntry : eclDecodeForReadabililtyMap.entrySet()) {
 			encodedECL = encodedECL.replace(decodeEntry.getKey(), decodeEntry.getValue());
 		}
+		
+		// Replace + with %20 for proper URI encoding (RFC 3986)
+		// URLEncoder uses + for spaces (application/x-www-form-urlencoded format)
+		// but URI paths should use %20 for spaces
+		encodedECL = encodedECL.replace("+", "%20");
+		
 		return "http://snomed.info/sct?fhir_vs=ecl/" + encodedECL;
 	}
 
