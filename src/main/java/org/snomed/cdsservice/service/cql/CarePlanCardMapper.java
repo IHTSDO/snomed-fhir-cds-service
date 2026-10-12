@@ -33,7 +33,9 @@ import java.util.UUID;
  * the requests it generated) into CDS Hooks cards.
  * <ul>
  *     <li>Each {@link CommunicationRequest} (the guidance for the clinician) becomes a card: the first line of the
- *     message is the summary, the full message is the detail, and the request priority sets the indicator.</li>
+ *     message is the summary, the full message is the detail, and the request priority sets the indicator. A card
+ *     that proposes an order is actionable and is raised to at least {@code warning}, so the EHR can tell "vaccinate
+ *     now" from "not due yet" (WHO tables give both {@code routine} priority).</li>
  *     <li>Proposed requests ({@link MedicationRequest}, {@link ServiceRequest}) are attached to those cards as
  *     references. If there is no guidance, each proposal gets a card of its own.</li>
  * </ul>
@@ -94,7 +96,7 @@ public class CarePlanCardMapper {
 				}
 				String detail = proposalLabels.isEmpty() ? message : message + "\n\n**Proposed:** " + String.join(", ", proposalLabels);
 				cards.add(new CDSCard(cardUuid(planDefinition, resource, message), summary(message), detail,
-						indicator(communicationRequest.getPriority()), source,
+						indicator(communicationRequest.getPriority(), !proposals.isEmpty()), source,
 						proposals.isEmpty() ? null : proposals, null, ALERT_TYPE));
 			}
 		}
@@ -140,15 +142,13 @@ public class CarePlanCardMapper {
 		return distinct;
 	}
 
-	private CDSIndicator indicator(CommunicationRequest.CommunicationPriority priority) {
-		if (priority == null) {
-			return CDSIndicator.info;
-		}
-		return switch (priority) {
+	private CDSIndicator indicator(CommunicationRequest.CommunicationPriority priority, boolean proposesOrder) {
+		CDSIndicator fromPriority = priority == null ? CDSIndicator.info : switch (priority) {
 			case URGENT, ASAP -> CDSIndicator.warning;
 			case STAT -> CDSIndicator.critical;
 			default -> CDSIndicator.info;
 		};
+		return proposesOrder && fromPriority == CDSIndicator.info ? CDSIndicator.warning : fromPriority;
 	}
 
 	private String summary(String message) {

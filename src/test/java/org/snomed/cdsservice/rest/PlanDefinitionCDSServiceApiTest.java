@@ -125,7 +125,10 @@ class PlanDefinitionCDSServiceApiTest {
 				// One card per WHO decision table of the Jamaica schedule that gives guidance at this age.
 				.andExpect(jsonPath("$.cards[*].source.label").value(hasItem("IMMZ.D2.DT.Hepatitis B.Birth dose")))
 				.andExpect(jsonPath(BCG_CARD + ".summary").value(contains(startsWith("Should vaccinate client with first BCG dose"))))
-				.andExpect(jsonPath(BCG_CARD + ".indicator").value(contains("info")))
+				// Proposing a vaccine makes a card actionable (warning); "not due yet" stays informational, and actionable cards come first.
+				.andExpect(jsonPath(BCG_CARD + ".indicator").value(contains("warning")))
+				.andExpect(jsonPath("$.cards[?(@.source.label == 'IMMZ.D2.DT.Measles.Low transmission')].indicator").value(contains("info")))
+				.andExpect(jsonPath("$.cards[0].indicator").value("warning"))
 				.andExpect(jsonPath(BCG_CARD + ".referenceMedications[0].coding[*].code").value(hasItem("DE1")))
 				// View Source: the rule's page in the WHO implementation guide; links: its CQL and the national schedule.
 				.andExpect(jsonPath(BCG_CARD + ".source.url").value(contains("https://smart.who.int/immunizations/PlanDefinition-IMMZD2DTBCG.html")))

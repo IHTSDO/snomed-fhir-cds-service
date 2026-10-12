@@ -2,7 +2,8 @@
 
 FHIR Clinical Reasoning content served by the embedded CQL engine as the CDS Hooks service `JMImmunizationSchedule`
 (`patient-view`). It returns one card per decision table that has guidance for the patient: due, not due yet,
-further evaluation, or schedule complete.
+further evaluation, or schedule complete. Cards that propose a vaccine are `warning` and come first; the others
+keep WHO's `routine` priority (`info`).
 
 ## Content
 

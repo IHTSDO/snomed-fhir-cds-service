@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -126,6 +127,8 @@ public class PlanDefinitionCDSService extends CDSService {
 			CarePlan carePlan = (CarePlan) engine.apply(rule.getIdPart(), patientId, resources, null);
 			cards.addAll(cardMapper.toCards(carePlan, rule, strategy, engine.getTerminologyVersions()));
 		}
+		// Most severe first (critical, warning, info); otherwise keep the strategy's order.
+		cards.sort(Comparator.comparing((CDSCard card) -> card.getIndicator().ordinal()).reversed());
 		return cards;
 	}
 }
