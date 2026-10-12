@@ -6,7 +6,10 @@ import org.snomed.cdsservice.service.medication.MedicationConditionRuleLoaderSer
 import org.snomed.cdsservice.service.medication.dose.SnomedMedicationDefinedDailyDoseService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.snomed.cdsservice.testsupport.DiagnosticTerminologyFixture;
+import org.springframework.context.annotation.Import;
 
+@Import(DiagnosticTerminologyFixture.SpringConfig.class)
 @SpringBootTest
 class CdsServiceApplicationTests {
 

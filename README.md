@@ -128,7 +128,9 @@ The `code_selector` column is **SNOMED CT ECL**, resolved uniformly:
 - Any ECL that uses **operators** (`<`, `<<`, refinements `:`, reference sets `^`, wildcard `*`) is expanded
   once against the configured FHIR terminology server at startup and cached.
 
-Because the supplied content uses only enumerated concepts, **the demo runs without a terminology server**.
+The hypertension content uses only enumerated concepts and runs without a terminology server. The diabetes
+content uses subtype expressions (`<<`) for hyperglycaemic crisis and classic symptoms, so **the diabetes
+service needs the terminology server at startup**.
 An enabled rule that requires an expansion which cannot be resolved fails the application fast at startup
 (it is never silently ignored). Exact Observation codes are **not** expanded to their descendants.
 

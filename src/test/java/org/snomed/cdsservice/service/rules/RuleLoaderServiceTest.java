@@ -9,6 +9,7 @@ import org.snomed.cdsservice.model.rules.Rule;
 import org.snomed.cdsservice.model.rules.RuleSet;
 import org.snomed.cdsservice.model.rules.OutcomeStatus;
 import org.snomed.cdsservice.service.ServiceException;
+import org.snomed.cdsservice.testsupport.DiagnosticTerminologyFixture;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -61,6 +62,23 @@ class RuleLoaderServiceTest {
 		// The OGTT expression must reference the criteria it names.
 		assertTrue(ogtt.expression().referencedCriterionIds().contains("DM_OGTT_2H_GE_11_1_TWO_OCCASIONS"));
 		assertTrue(ruleSet.criteria().keySet().containsAll(ogtt.expression().referencedCriterionIds()));
+	}
+
+	@Test
+	void terminologyFixtureMatchesOperatorEclSelectors() throws ServiceException {
+		// Every operator-based selector in the shipped and test content must have an offline expansion.
+		for (String dir : List.of("knowledge-bases/", "src/test/resources/diagnostic-rules/")) {
+			for (String domain : List.of("diabetes", "hypertension")) {
+				RuleSet ruleSet = loader.loadRuleSet(domain, dir + domain + "_criteria.tsv", dir + domain + "_rules.tsv");
+				for (Criterion criterion : ruleSet.criteria().values()) {
+					String selector = criterion.codeSelector();
+					if (selector != null && !selector.isBlank() && !EclSelector.parse(selector).resolvableLocally()) {
+						assertTrue(DiagnosticTerminologyFixture.EXPANSIONS.containsKey(EclSelector.parse(selector).ecl()),
+								"No fixture expansion for %s in %s".formatted(criterion.criterionId(), dir));
+					}
+				}
+			}
+		}
 	}
 
 	@Test

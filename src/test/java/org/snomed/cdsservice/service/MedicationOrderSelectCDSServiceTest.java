@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.snomed.cdsservice.testsupport.DiagnosticTerminologyFixture;
+import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,6 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+@Import(DiagnosticTerminologyFixture.SpringConfig.class)
 @SpringBootTest
 class MedicationOrderSelectCDSServiceTest {
 

@@ -1,0 +1,892 @@
+{
+ "source": "https://implementation-demo.snomedtools.org/fhir",
+ "codeSystemVersion": "http://snomed.info/sct/900000000000207008/version/20260701",
+ "expansions": [
+  {
+   "ecl": "(<< 420422005 |Ketoacidosis due to diabetes mellitus| OR << 310505005 |Hyperosmolar non-ketotic state due to diabetes mellitus| OR << 441656006 |Hyperglycemic crisis due to diabetes mellitus|) MINUS ((<< 420422005 OR << 310505005 OR << 441656006) : 42752001 |Due to| = (<< 46635009 |Type 1 diabetes mellitus| OR << 75524006 |Malnutrition related diabetes mellitus|))",
+   "codes": [
+    {
+     "code": "111556005",
+     "display": "Diabetic ketoacidosis without coma"
+    },
+    {
+     "code": "26298008",
+     "display": "Ketoacidotic coma due to diabetes mellitus"
+    },
+    {
+     "code": "310505005",
+     "display": "Hyperosmolar non-ketotic state due to diabetes mellitus"
+    },
+    {
+     "code": "395204000",
+     "display": "Hyperosmolar non-ketotic state due to type 2 diabetes mellitus"
+    },
+    {
+     "code": "420422005",
+     "display": "Diabetic ketoacidosis"
+    },
+    {
+     "code": "421750000",
+     "display": "Ketoacidosis due to type 2 diabetes mellitus"
+    },
+    {
+     "code": "421847006",
+     "display": "Ketoacidotic coma due to type 2 diabetes mellitus"
+    },
+    {
+     "code": "441656006",
+     "display": "Hyperglycemic crisis due to diabetes mellitus"
+    },
+    {
+     "code": "735537007",
+     "display": "Hyperosmolar hyperglycemic coma due to diabetes mellitus without ketoacidosis"
+    }
+   ]
+  },
+  {
+   "ecl": "<< 249477003 |Increased thirst (finding)| OR << 17173007 |Excessive thirst (finding)| OR << 72405004 |Increased appetite (finding)| OR << 267023007 |Excessive eating (finding)| OR << 28442001 |Polyuria (finding)| OR << 708126004 |Recurrent candidiasis of vagina (disorder)| OR << 72934000 |Candidiasis of vagina (disorder)| OR << 789507005 |Delayed healing of wound (finding)| OR << 111516008 |Blurring of visual image (finding)| OR << 84229001 |Fatigue (finding)| OR << 16932000 |Nausea and vomiting (disorder)| OR << 422587007 |Nausea (finding)| OR << 422400008 |Vomiting (disorder)| OR << 262285001 |Weight decreased (finding)| OR << 262286000 |Weight increased (finding)| OR << 860914002 |Erectile dysfunction (disorder)| OR << 309521004 |Numbness of hand (finding)| OR << 309538000 |Numbness of foot (finding)| OR << 441656006 |Hyperglycemic crisis due to diabetes mellitus (disorder)|",
+   "codes": [
+    {
+     "code": "102607009",
+     "display": "Carbohydrate craving"
+    },
+    {
+     "code": "10752171000119101",
+     "display": "Postpartum candidiasis of vagina"
+    },
+    {
+     "code": "110091000119107",
+     "display": "Candidiasis of vagina during pregnancy"
+    },
+    {
+     "code": "11047881000119101",
+     "display": "Cannabis hyperemesis syndrome due to Cannabis abuse"
+    },
+    {
+     "code": "11048011000119103",
+     "display": "Cannabis hyperemesis syndrome due to Cannabis dependence"
+    },
+    {
+     "code": "111395007",
+     "display": "Vasopressin resistance"
+    },
+    {
+     "code": "111516008",
+     "display": "Blurring of visual image"
+    },
+    {
+     "code": "1119528007",
+     "display": "Transient blurring of vision"
+    },
+    {
+     "code": "1119529004",
+     "display": "Transient blurring of vision of one eye"
+    },
+    {
+     "code": "1144949006",
+     "display": "Erectile dysfunction due to venous disorder"
+    },
+    {
+     "code": "1144952003",
+     "display": "Erectile dysfunction due to injury"
+    },
+    {
+     "code": "1144954002",
+     "display": "Erectile dysfunction due to fibrosis of corpus cavernosum"
+    },
+    {
+     "code": "1148694009",
+     "display": "Postoperative vasopressin deficiency"
+    },
+    {
+     "code": "1149160000",
+     "display": "Reduced level of fatigue"
+    },
+    {
+     "code": "1149345007",
+     "display": "Excessive weight gain during pregnancy"
+    },
+    {
+     "code": "11717701000119108",
+     "display": "Slow weight gain"
+    },
+    {
+     "code": "11767005",
+     "display": "Bilious vomiting following gastrointestinal surgery"
+    },
+    {
+     "code": "1186863001",
+     "display": "Vasopressin deficiency due to trauma"
+    },
+    {
+     "code": "1197717008",
+     "display": "Functional vomiting in childhood"
+    },
+    {
+     "code": "1260096003",
+     "display": "AIDS (acquired immunodeficiency syndrome) wasting syndrome"
+    },
+    {
+     "code": "1260191006",
+     "display": "Acute radiation syndrome"
+    },
+    {
+     "code": "129597002",
+     "display": "Moderate hyperemesis gravidarum"
+    },
+    {
+     "code": "129598007",
+     "display": "Severe hyperemesis gravidarum"
+    },
+    {
+     "code": "1296685008",
+     "display": "Nausea and vomiting in pregnancy"
+    },
+    {
+     "code": "1296758008",
+     "display": "Vasopressin-related polyuria"
+    },
+    {
+     "code": "1296897006",
+     "display": "Autosomal hereditary vasopressin resistance"
+    },
+    {
+     "code": "1296898001",
+     "display": "Hereditary vasopressin resistance"
+    },
+    {
+     "code": "1296908006",
+     "display": "Autosomal dominant vasopressin resistance"
+    },
+    {
+     "code": "1296909003",
+     "display": "Autosomal recessive vasopressin resistance"
+    },
+    {
+     "code": "1296910008",
+     "display": "X-linked hereditary vasopressin resistance"
+    },
+    {
+     "code": "1296911007",
+     "display": "Hereditary vasopressin-related polyuria"
+    },
+    {
+     "code": "1296914004",
+     "display": "Autosomal dominant hereditary vasopressin deficiency"
+    },
+    {
+     "code": "1296915003",
+     "display": "Autosomal recessive hereditary arginine vasopressin deficiency"
+    },
+    {
+     "code": "1296920003",
+     "display": "Secondary vasopressin deficiency"
+    },
+    {
+     "code": "1296921004",
+     "display": "Secondary vasopressin resistance"
+    },
+    {
+     "code": "1297073009",
+     "display": "Adipsic vasopressin-related polyuria"
+    },
+    {
+     "code": "1297075002",
+     "display": "Organic primary polydipsia"
+    },
+    {
+     "code": "12979003",
+     "display": "Transient heat fatigue"
+    },
+    {
+     "code": "1303867005",
+     "display": "Early-onset obesity, hyperphagia, severe developmental delay syndrome"
+    },
+    {
+     "code": "13196008",
+     "display": "Secondary vasopressin-related polyuria"
+    },
+    {
+     "code": "1335730007",
+     "display": "Radiation sickness following radiation therapy"
+    },
+    {
+     "code": "134021000119105",
+     "display": "Vomiting fecal matter"
+    },
+    {
+     "code": "1365942003",
+     "display": "Delayed onset arginine vasopressin deficiency due to and following traumatic brain injury"
+    },
+    {
+     "code": "138841771000119103",
+     "display": "Chronic candidiasis of vagina during pregnancy"
+    },
+    {
+     "code": "14094001",
+     "display": "Hyperemesis gravidarum"
+    },
+    {
+     "code": "146291000119108",
+     "display": "Vomiting without nausea"
+    },
+    {
+     "code": "1488000",
+     "display": "Postoperative nausea and vomiting"
+    },
+    {
+     "code": "159139031000119104",
+     "display": "Candidal vulvovaginitis during pregnancy"
+    },
+    {
+     "code": "15923071000119108",
+     "display": "Delayed healing of wound following trauma"
+    },
+    {
+     "code": "15945005",
+     "display": "Psychogenic polydipsia"
+    },
+    {
+     "code": "161833006",
+     "display": "Abnormal weight gain"
+    },
+    {
+     "code": "16469821000119106",
+     "display": "Fatigue due to and following cerebrovascular accident with intracranial haemorrhage"
+    },
+    {
+     "code": "16469881000119105",
+     "display": "Fatigue due to and following embolic cerebrovascular accident"
+    },
+    {
+     "code": "16469931000119100",
+     "display": "Fatigue due to and following ischaemic cerebrovascular accident"
+    },
+    {
+     "code": "16469991000119101",
+     "display": "Fatigue due to and following cerebrovascular accident"
+    },
+    {
+     "code": "16715331000119109",
+     "display": "Erectile dysfunction due to and following interstitial seed therapy"
+    },
+    {
+     "code": "16715371000119107",
+     "display": "Erectile dysfunction due to and following ablation therapy of prostate"
+    },
+    {
+     "code": "16715411000119108",
+     "display": "Erectile dysfunction due to and following radiation therapy"
+    },
+    {
+     "code": "16932000",
+     "display": "Nausea and vomiting"
+    },
+    {
+     "code": "17173007",
+     "display": "Excessive thirst"
+    },
+    {
+     "code": "17783003",
+     "display": "Car sickness"
+    },
+    {
+     "code": "18530007",
+     "display": "Sea sickness"
+    },
+    {
+     "code": "18773000",
+     "display": "Cyclical vomiting syndrome"
+    },
+    {
+     "code": "18846006",
+     "display": "Chemotherapy-induced nausea and vomiting"
+    },
+    {
+     "code": "191970005",
+     "display": "Psychogenic cyclical vomiting"
+    },
+    {
+     "code": "19569008",
+     "display": "Mild hyperemesis gravidarum"
+    },
+    {
+     "code": "196746003",
+     "display": "Persistent vomiting"
+    },
+    {
+     "code": "197130009",
+     "display": "Vomiting after gastrointestinal tract surgery"
+    },
+    {
+     "code": "199025001",
+     "display": "Hyperemesis gravidarum with metabolic disturbance"
+    },
+    {
+     "code": "206406008",
+     "display": "Perinatal hematemesis"
+    },
+    {
+     "code": "206423004",
+     "display": "Neonatal hematemesis"
+    },
+    {
+     "code": "21162009",
+     "display": "Outer space sickness"
+    },
+    {
+     "code": "224960004",
+     "display": "Tired"
+    },
+    {
+     "code": "224994002",
+     "display": "Excessive weight gain"
+    },
+    {
+     "code": "236083006",
+     "display": "Intermittent vomiting"
+    },
+    {
+     "code": "237696003",
+     "display": "Familial vasopressin deficiency"
+    },
+    {
+     "code": "239026002",
+     "display": "Hypohidrosis-diabetes insipidus syndrome"
+    },
+    {
+     "code": "239193002",
+     "display": "Delayed healing of skin donor site"
+    },
+    {
+     "code": "23971007",
+     "display": "Acute vomiting"
+    },
+    {
+     "code": "248269005",
+     "display": "Tired on least exertion"
+    },
+    {
+     "code": "249477003",
+     "display": "Increased thirst"
+    },
+    {
+     "code": "249502005",
+     "display": "Train sickness"
+    },
+    {
+     "code": "262285001",
+     "display": "Weight decreased"
+    },
+    {
+     "code": "262286000",
+     "display": "Weight increased"
+    },
+    {
+     "code": "267023007",
+     "display": "Excessive eating"
+    },
+    {
+     "code": "267024001",
+     "display": "Abnormal weight loss"
+    },
+    {
+     "code": "267032009",
+     "display": "Tired all the time"
+    },
+    {
+     "code": "267051003",
+     "display": "Vomiting blood - fresh"
+    },
+    {
+     "code": "27152008",
+     "display": "Hyperemesis gravidarum before end of 22 week gestation with carbohydrate depletion"
+    },
+    {
+     "code": "271795006",
+     "display": "Malaise and fatigue"
+    },
+    {
+     "code": "282146001000119107",
+     "display": "Acute candidiasis of vagina"
+    },
+    {
+     "code": "28442001",
+     "display": "Polyuria"
+    },
+    {
+     "code": "288199005",
+     "display": "Diarrhoea and vomiting after gastrointestinal tract surgery"
+    },
+    {
+     "code": "2919008",
+     "display": "Nausea, vomiting and diarrhea"
+    },
+    {
+     "code": "294001000119105",
+     "display": "Intractable cyclical vomiting syndrome"
+    },
+    {
+     "code": "308904008",
+     "display": "Haematemesis of unknown cause"
+    },
+    {
+     "code": "309257005",
+     "display": "Excessive weight loss"
+    },
+    {
+     "code": "3094009",
+     "display": "Vomiting in infants AND/OR children"
+    },
+    {
+     "code": "309483341000119107",
+     "display": "Chronic candidiasis of vagina"
+    },
+    {
+     "code": "309521004",
+     "display": "Numbness of hand"
+    },
+    {
+     "code": "309536001",
+     "display": "Numbness of finger"
+    },
+    {
+     "code": "309538000",
+     "display": "Numbness of foot"
+    },
+    {
+     "code": "309539008",
+     "display": "Numbness of toe"
+    },
+    {
+     "code": "310505005",
+     "display": "Hyperosmolar non-ketotic state due to diabetes mellitus"
+    },
+    {
+     "code": "32215002",
+     "display": "Subacute radiation sickness"
+    },
+    {
+     "code": "332982000",
+     "display": "Uncontrollable vomiting"
+    },
+    {
+     "code": "33370009",
+     "display": "Hyperemesis gravidarum before end of 22 week gestation with electrolyte imbalance"
+    },
+    {
+     "code": "33841007",
+     "display": "Decreased nausea and vomiting"
+    },
+    {
+     "code": "33902006",
+     "display": "Air sickness"
+    },
+    {
+     "code": "340370301000119104",
+     "display": "Recurrent candidiasis of vagina during pregnancy"
+    },
+    {
+     "code": "34923007",
+     "display": "Self-induced vomiting"
+    },
+    {
+     "code": "367141000119107",
+     "display": "Male erectile disorder due to corporovenous occlusion"
+    },
+    {
+     "code": "367431000119107",
+     "display": "Erectile dysfunction co-occurrent and due to arterial insufficiency"
+    },
+    {
+     "code": "367441000119103",
+     "display": "Erectile dysfunction following radical cystectomy"
+    },
+    {
+     "code": "367451000119101",
+     "display": "Erectile dysfunction following radical prostatectomy"
+    },
+    {
+     "code": "367471000119105",
+     "display": "Erectile dysfunction due to and following urethral surgery"
+    },
+    {
+     "code": "368961000119107",
+     "display": "Partial vasopressin resistance"
+    },
+    {
+     "code": "369051000119101",
+     "display": "Erectile dysfunction following prostate brachytherapy"
+    },
+    {
+     "code": "37031009",
+     "display": "Motion sickness"
+    },
+    {
+     "code": "370402009",
+     "display": "Radiation sickness"
+    },
+    {
+     "code": "37224001",
+     "display": "Psychogenic vomiting"
+    },
+    {
+     "code": "378483611000119105",
+     "display": "Chronic candidal vulvovaginitis"
+    },
+    {
+     "code": "38685005",
+     "display": "Concealed vomiting"
+    },
+    {
+     "code": "395204000",
+     "display": "Hyperosmolar non-ketotic state due to type 2 diabetes mellitus"
+    },
+    {
+     "code": "40835002",
+     "display": "Coffee ground vomiting"
+    },
+    {
+     "code": "416528001",
+     "display": "Intentional weight loss"
+    },
+    {
+     "code": "419219000",
+     "display": "Nausea and vomiting caused by drug"
+    },
+    {
+     "code": "42021008",
+     "display": "Familial vasopressin-related polyuria"
+    },
+    {
+     "code": "420900006",
+     "display": "Fatigue with AIDS (acquired immunodeficiency syndrome)"
+    },
+    {
+     "code": "421695000",
+     "display": "Abnormal weight loss associated with AIDS"
+    },
+    {
+     "code": "422003001",
+     "display": "Cachexia associated with AIDS"
+    },
+    {
+     "code": "422400008",
+     "display": "Vomiting"
+    },
+    {
+     "code": "422587007",
+     "display": "Nausea"
+    },
+    {
+     "code": "422868009",
+     "display": "Unexplained weight loss"
+    },
+    {
+     "code": "424580008",
+     "display": "Post-tussive vomiting"
+    },
+    {
+     "code": "428007007",
+     "display": "Erectile dysfunction due to type 2 diabetes mellitus"
+    },
+    {
+     "code": "430237002",
+     "display": "Abnormal intentional weight loss"
+    },
+    {
+     "code": "441361000124104",
+     "display": "Unintentional weight gain"
+    },
+    {
+     "code": "441656006",
+     "display": "Hyperglycemic crisis due to diabetes mellitus"
+    },
+    {
+     "code": "442099003",
+     "display": "Psychogenic fatigue"
+    },
+    {
+     "code": "444042007",
+     "display": "Postexertional fatigue"
+    },
+    {
+     "code": "444673007",
+     "display": "Hyperemesis"
+    },
+    {
+     "code": "448194002",
+     "display": "Critical colonization of wound"
+    },
+    {
+     "code": "448765001",
+     "display": "Unintentional weight loss"
+    },
+    {
+     "code": "45369008",
+     "display": "Vasopressin deficiency"
+    },
+    {
+     "code": "45941008",
+     "display": "Chronic radiation sickness"
+    },
+    {
+     "code": "45994004",
+     "display": "Erotic vomiting"
+    },
+    {
+     "code": "473020005",
+     "display": "Primary erectile dysfunction"
+    },
+    {
+     "code": "473021009",
+     "display": "Secondary erectile dysfunction"
+    },
+    {
+     "code": "48000002",
+     "display": "Vomiting in newborn"
+    },
+    {
+     "code": "49206006",
+     "display": "Habit vomiting"
+    },
+    {
+     "code": "50764006",
+     "display": "Vomiting due to organic disease during pregnancy"
+    },
+    {
+     "code": "51885006",
+     "display": "Morning sickness"
+    },
+    {
+     "code": "52702003",
+     "display": "Chronic fatigue syndrome"
+    },
+    {
+     "code": "552461311000119108",
+     "display": "Chronic candidiasis of vagina during maternal postpartum period"
+    },
+    {
+     "code": "63722008",
+     "display": "Chronic vomiting"
+    },
+    {
+     "code": "64581007",
+     "display": "Postoperative nausea"
+    },
+    {
+     "code": "652569491000119108",
+     "display": "Acute candidiasis of vagina in pregnancy"
+    },
+    {
+     "code": "674801491000119102",
+     "display": "Recurrent candidal vulvovaginitis"
+    },
+    {
+     "code": "68061000119109",
+     "display": "Partial vasopressin-related polyuria"
+    },
+    {
+     "code": "686778351000119105",
+     "display": "Acute candidiasis of vagina postpartum"
+    },
+    {
+     "code": "691000119103",
+     "display": "Erectile dysfunction due to type 1 diabetes mellitus"
+    },
+    {
+     "code": "698861005",
+     "display": "Intractable nausea and vomiting"
+    },
+    {
+     "code": "704369007",
+     "display": "Fatigue due to treatment"
+    },
+    {
+     "code": "708126004",
+     "display": "Recurrent candidiasis of vagina"
+    },
+    {
+     "code": "713568000",
+     "display": "Occasionally tired"
+    },
+    {
+     "code": "71419002",
+     "display": "Bilious vomiting"
+    },
+    {
+     "code": "716200002",
+     "display": "Schofer Beetz Bohl syndrome"
+    },
+    {
+     "code": "716749005",
+     "display": "Cancer-related fatigue"
+    },
+    {
+     "code": "72245005",
+     "display": "Postoperative vomiting"
+    },
+    {
+     "code": "722933003",
+     "display": "Neonatal bilious vomiting"
+    },
+    {
+     "code": "723489005",
+     "display": "Haematopoietic subsyndrome of acute radiation syndrome"
+    },
+    {
+     "code": "723975009",
+     "display": "Nausea and vomiting following administration of anaesthetic agent"
+    },
+    {
+     "code": "72405004",
+     "display": "Increased appetite"
+    },
+    {
+     "code": "72605008",
+     "display": "Candidal vulvovaginitis"
+    },
+    {
+     "code": "72934000",
+     "display": "Candidiasis of vagina"
+    },
+    {
+     "code": "732246009",
+     "display": "X-linked intellectual disability, limb spasticity, retinal dystrophy, arginine vasopressin deficiency"
+    },
+    {
+     "code": "73335002",
+     "display": "Increased nausea and vomiting"
+    },
+    {
+     "code": "735537007",
+     "display": "Hyperosmolar hyperglycemic coma due to diabetes mellitus without ketoacidosis"
+    },
+    {
+     "code": "762279002",
+     "display": "Functional nausea"
+    },
+    {
+     "code": "765480005",
+     "display": "Vomiting co-occurrent and due to infectious disease"
+    },
+    {
+     "code": "769087009",
+     "display": "Vomiting during third trimester of pregnancy"
+    },
+    {
+     "code": "770096002",
+     "display": "Erectile dysfunction due to diabetes mellitus"
+    },
+    {
+     "code": "77274005",
+     "display": "Idiopathic vasopressin-related polyuria"
+    },
+    {
+     "code": "781184005",
+     "display": "Delayed healing of surgical wound"
+    },
+    {
+     "code": "783016009",
+     "display": "Panhypophysitis"
+    },
+    {
+     "code": "784317004",
+     "display": "Fatigue due to chemotherapy"
+    },
+    {
+     "code": "784318009",
+     "display": "Fatigue due to radiation therapy"
+    },
+    {
+     "code": "789507005",
+     "display": "Delayed healing of wound"
+    },
+    {
+     "code": "804194991000119103",
+     "display": "Acute candidal vulvovaginitis in pregnancy"
+    },
+    {
+     "code": "8061000119107",
+     "display": "Erectile dysfunction due to disorder of blood vessel"
+    },
+    {
+     "code": "812500731000119109",
+     "display": "Chronic candidal vulvovaginitis during pregnancy"
+    },
+    {
+     "code": "81475007",
+     "display": "Acquired vasopressin resistance"
+    },
+    {
+     "code": "82800008",
+     "display": "Primary polydipsia"
+    },
+    {
+     "code": "84229001",
+     "display": "Fatigue"
+    },
+    {
+     "code": "8579004",
+     "display": "Projectile vomiting"
+    },
+    {
+     "code": "860914002",
+     "display": "Erectile dysfunction"
+    },
+    {
+     "code": "860915001",
+     "display": "Erectile dysfunction caused by drug"
+    },
+    {
+     "code": "860916000",
+     "display": "Relative erectile dysfunction"
+    },
+    {
+     "code": "860917009",
+     "display": "Absolute erectile dysfunction"
+    },
+    {
+     "code": "860918004",
+     "display": "Erectile dysfunction due to psychophysiologic disorder"
+    },
+    {
+     "code": "860920001",
+     "display": "Erectile dysfunction due to disorder of artery"
+    },
+    {
+     "code": "860921002",
+     "display": "Erectile dysfunction due to endocrine disease"
+    },
+    {
+     "code": "860922009",
+     "display": "Erectile dysfunction due to neuropathy"
+    },
+    {
+     "code": "87621000",
+     "display": "Hyperemesis gravidarum before end of 22 week gestation with dehydration"
+    },
+    {
+     "code": "8765009",
+     "display": "Hematemesis"
+    },
+    {
+     "code": "88895004",
+     "display": "Fatigue during pregnancy"
+    },
+    {
+     "code": "90325002",
+     "display": "Vomiting of pregnancy"
+    },
+    {
+     "code": "91173007",
+     "display": "Nausea and vomiting caused by ionising radiation"
+    },
+    {
+     "code": "947861131000119106",
+     "display": "Acute candidal vulvovaginitis"
+    }
+   ]
+  }
+ ]
+}
