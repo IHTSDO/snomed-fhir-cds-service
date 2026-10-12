@@ -23,8 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * Expansion happens at startup via {@link #warmUp}: an enabled criterion whose ECL cannot be resolved
  * locally and cannot be expanded fails the application fast, rather than silently producing no matches.
- * Because the supplied demonstration content uses only enumerated concepts, no expansion is attempted and
- * the service starts without a terminology server.
+ * Content that uses only enumerated concepts needs no expansion and starts without a terminology server.
  */
 @Component
 public class EclCodeResolver implements CodeResolver {

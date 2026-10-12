@@ -24,6 +24,8 @@ import org.snomed.cdsservice.service.rules.evaluator.RuleEvaluationContext;
 import java.util.List;
 import java.util.Map;
 
+import org.snomed.cdsservice.testsupport.DiagnosticTerminologyFixture;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.snomed.cdsservice.service.rules.evaluator.EvaluatorTestSupport.SNOMED;
@@ -37,7 +39,8 @@ import static org.snomed.cdsservice.service.rules.evaluator.EvaluatorTestSupport
 /**
  * End-to-end engine test over the real diabetes and hypertension rule content, exercising the full
  * pipeline (loader -> ECL resolver -> evaluators -> engine -> card factory) with hand-built FHIR
- * resources. Because the content uses only locally-resolvable ECL, no terminology server is contacted.
+ * resources. Operator-based ECL selectors are answered by {@link DiagnosticTerminologyFixture}, so no
+ * terminology server is contacted.
  */
 class DiagnosticEnginePipelineTest {
 
@@ -54,8 +57,8 @@ class DiagnosticEnginePipelineTest {
 		diabetes = loader.loadRuleSet("diabetes", DIR + "diabetes_criteria.tsv", DIR + "diabetes_rules.tsv");
 		hypertension = loader.loadRuleSet("hypertension", DIR + "hypertension_criteria.tsv", DIR + "hypertension_rules.tsv");
 
-		// A null terminology client is safe: all supplied content resolves locally, so warm-up is a no-op.
-		EclCodeResolver resolver = new EclCodeResolver(null);
+		// Operator-based selectors (e.g. the hyperglycaemic crisis subtypes) are expanded from the offline fixture.
+		EclCodeResolver resolver = new EclCodeResolver(DiagnosticTerminologyFixture.mockClient());
 		resolver.warmUp(diabetes.criteria().values());
 		resolver.warmUp(hypertension.criteria().values());
 
@@ -100,6 +103,42 @@ class DiagnosticEnginePipelineTest {
 	void randomGlucoseWithoutSymptomOrCrisisDoesNotFire() {
 		RuleEvaluationResult result = evaluate(diabetes, "DM-2024-RANDOM-01",
 				context(Map.of(), observation("271061004", Observation.ObservationStatus.FINAL, "12.0", UCUM, "mmol/L", "2024-05-01")));
+		assertEquals(TruthValue.UNKNOWN, result.truthValue());
+	}
+
+	@Test
+	void randomGlucoseWithSymptomSubtypeFiresDiagnostic() {
+		// Symptoms include subtypes: Unexplained weight loss is a subtype of Weight decreased.
+		RuleEvaluationResult result = evaluate(diabetes, "DM-2024-RANDOM-01", context(Map.of(),
+				observation("271061004", Observation.ObservationStatus.FINAL, "12.0", UCUM, "mmol/L", "2024-05-01"),
+				condition("422868009", "active", "confirmed"))); // Unexplained weight loss
+		assertEquals(TruthValue.TRUE, result.truthValue());
+	}
+
+	@Test
+	void randomGlucoseWithExcessiveThirstFiresDiagnostic() {
+		// Excessive thirst is listed alongside Increased thirst (they are siblings, not subtypes).
+		RuleEvaluationResult result = evaluate(diabetes, "DM-2024-RANDOM-01", context(Map.of(),
+				observation("271061004", Observation.ObservationStatus.FINAL, "12.0", UCUM, "mmol/L", "2024-05-01"),
+				condition("17173007", "active", "confirmed"))); // Excessive thirst
+		assertEquals(TruthValue.TRUE, result.truthValue());
+	}
+
+	@Test
+	void randomGlucoseWithType2CrisisSubtypeFiresDiagnostic() {
+		// A subtype of the enumerated crisis concepts matches through the << expansion.
+		RuleEvaluationResult result = evaluate(diabetes, "DM-2024-RANDOM-01", context(Map.of(),
+				observation("271061004", Observation.ObservationStatus.FINAL, "12.0", UCUM, "mmol/L", "2024-05-01"),
+				condition("421750000", "active", "confirmed"))); // Ketoacidosis due to type 2 diabetes mellitus
+		assertEquals(TruthValue.TRUE, result.truthValue());
+	}
+
+	@Test
+	void randomGlucoseWithType1CrisisDoesNotFire() {
+		// Crises due to type 1 diabetes are excluded, since the rule concludes type 2 diabetes.
+		RuleEvaluationResult result = evaluate(diabetes, "DM-2024-RANDOM-01", context(Map.of(),
+				observation("271061004", Observation.ObservationStatus.FINAL, "12.0", UCUM, "mmol/L", "2024-05-01"),
+				condition("420270002", "active", "confirmed"))); // Ketoacidosis due to type 1 diabetes mellitus
 		assertEquals(TruthValue.UNKNOWN, result.truthValue());
 	}
 

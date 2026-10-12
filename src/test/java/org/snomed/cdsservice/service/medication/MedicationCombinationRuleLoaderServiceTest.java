@@ -16,11 +16,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collection;
 import java.util.List;
+import org.snomed.cdsservice.testsupport.DiagnosticTerminologyFixture;
+import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+@Import(DiagnosticTerminologyFixture.SpringConfig.class)
 @SpringBootTest
 class MedicationCombinationRuleLoaderServiceTest {
 

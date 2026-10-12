@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import org.snomed.cdsservice.testsupport.DiagnosticTerminologyFixture;
+import org.springframework.context.annotation.Import;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -28,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * carries the outcome diagnosis or any of its subtypes as an active condition. The terminology server is
  * mocked so the {@code << 44054006} expansion is deterministic and no network is used.
  */
+@Import(DiagnosticTerminologyFixture.SpringConfig.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 class DiagnosticSuppressionApiTest {

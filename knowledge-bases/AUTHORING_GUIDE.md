@@ -298,7 +298,8 @@ Both of the above are resolved **without any terminology server** — the servic
 - If you want *a concept and all its subtypes*, prefix with `<<` (e.g. `<< 420422005` = diabetic ketoacidosis
   and all its subtypes). This is more powerful but **requires a terminology server** to expand, and the
   service will refuse to start if it cannot reach one for an enabled rule. Prefer explicit concept lists for
-  offline demos; use subtype expressions when a terminology server is available and maintained.
+  offline demos; use subtype expressions when a terminology server is available and maintained. The shipped
+  diabetes content does this for hyperglycaemic crisis and classic symptoms (§3.3 shows the simpler list form).
 
 > Tip: exact codes are matched exactly — a fasting-glucose criterion will not silently also match a subtype
 > unless you ask for it with `<<`.

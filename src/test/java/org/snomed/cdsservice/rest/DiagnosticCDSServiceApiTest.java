@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.snomed.cdsservice.testsupport.DiagnosticTerminologyFixture;
+import org.springframework.context.annotation.Import;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * with a prefetched fasting-glucose Observation must return a diagnostic card. Uses only locally
  * resolvable ECL, so no terminology server is contacted.
  */
+@Import(DiagnosticTerminologyFixture.SpringConfig.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 class DiagnosticCDSServiceApiTest {
