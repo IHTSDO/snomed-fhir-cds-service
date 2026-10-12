@@ -16,17 +16,25 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Discovers FHIR knowledge content at startup and registers one {@link PlanDefinitionCDSService} bean per
  * PlanDefinition. Each subdirectory of {@code rules.plandefinition.directory} is one content set (e.g. a FHIR
  * package, or a curated subset of one) holding the PlanDefinitions and everything they depend on.
  * <p>
+ * Only entry points are registered: a PlanDefinition composed by another PlanDefinition of the same content set (an
+ * action's {@code definitionCanonical}, e.g. a WHO decision table inside a national schedule) is served through it.
+ * <p>
  * The service id is the PlanDefinition id. The hook is the name of the first {@code named-event} trigger in the
- * PlanDefinition's actions, or {@code rules.plandefinition.default-hook} when it declares none. Only the id and
- * triggers are peeked here; loading and compilation happen in each service's own initialisation.
+ * PlanDefinition's actions, or {@code rules.plandefinition.default-hook} when it declares none. Only ids, urls,
+ * triggers and action definitions are peeked here; loading and compilation happen in each service's own
+ * initialisation.
  */
 @Component
 public class PlanDefinitionServiceRegistrar implements BeanDefinitionRegistryPostProcessor, EnvironmentAware {
@@ -60,10 +68,18 @@ public class PlanDefinitionServiceRegistrar implements BeanDefinitionRegistryPos
 				continue;
 			}
 			Arrays.sort(files, Comparator.comparing(File::getName));
+			List<JsonNode> planDefinitions = new ArrayList<>();
+			Set<String> composed = new HashSet<>();
 			for (File file : files) {
 				JsonNode resource = read(file);
 				if ("PlanDefinition".equals(resource.path("resourceType").asText())) {
-					register(registry, contentSet, resource.path("id").asText(), hook(resource, defaultHook));
+					planDefinitions.add(resource);
+					collectComposedPlanDefinitions(resource.path("action"), composed);
+				}
+			}
+			for (JsonNode planDefinition : planDefinitions) {
+				if (!composed.contains(planDefinition.path("url").asText())) {
+					register(registry, contentSet, planDefinition.path("id").asText(), hook(planDefinition, defaultHook));
 				}
 			}
 		}
@@ -81,6 +97,16 @@ public class PlanDefinitionServiceRegistrar implements BeanDefinitionRegistryPos
 				.addConstructorArgValue(hook);
 		registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
 		logger.info("Registered PlanDefinition CDS service definition '{}' (hook '{}') from '{}'.", planDefinitionId, hook, contentSet);
+	}
+
+	private void collectComposedPlanDefinitions(JsonNode actions, Set<String> composed) {
+		for (JsonNode action : actions) {
+			String definition = action.path("definitionCanonical").asText("");
+			if (definition.contains("/PlanDefinition/")) {
+				composed.add(definition.split("\\|")[0]);
+			}
+			collectComposedPlanDefinitions(action.path("action"), composed);
+		}
 	}
 
 	private String hook(JsonNode planDefinition, String defaultHook) {

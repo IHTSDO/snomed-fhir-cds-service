@@ -1,5 +1,6 @@
 package org.snomed.cdsservice.service.cql;
 
+import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.CarePlan;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.CommunicationRequest;
@@ -11,14 +12,19 @@ import org.hl7.fhir.r4.model.ServiceRequest;
 import org.snomed.cdsservice.model.CDSCard;
 import org.snomed.cdsservice.model.CDSCoding;
 import org.snomed.cdsservice.model.CDSIndicator;
+import org.snomed.cdsservice.model.CDSLink;
 import org.snomed.cdsservice.model.CDSReference;
 import org.snomed.cdsservice.model.CDSSource;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,8 +37,14 @@ import java.util.UUID;
  *     <li>Proposed requests ({@link MedicationRequest}, {@link ServiceRequest}) are attached to those cards as
  *     references. If there is no guidance, each proposal gets a card of its own.</li>
  * </ul>
- * Every card carries a {@value #EXTENSION_KEY} extension recording which knowledge artifact produced it and which
- * terminology versions its value sets were expanded with, so a card can be traced to the logic that was active.
+ * Sources and links point at material a clinician can read: the guideline the rule documents, or, for content
+ * published in a FHIR implementation guide (hosts in {@code publishedIgHosts}, e.g. {@code smart.who.int}), the IG
+ * pages of the rule and of its CQL. A rule run as part of a strategy (e.g. a national immunization schedule) also
+ * links to the strategy's documentation.
+ * <p>
+ * Every card carries a {@value #EXTENSION_KEY} extension recording which knowledge artifact (and strategy) produced it
+ * and which terminology versions its value sets were expanded with, so a card can be traced to the logic that was
+ * active.
  */
 public class CarePlanCardMapper {
 
@@ -40,7 +52,17 @@ public class CarePlanCardMapper {
 	static final String EXTENSION_KEY = "org.snomed.cds-service";
 	private static final int MAX_SUMMARY_LENGTH = 140;
 
-	public List<CDSCard> toCards(CarePlan carePlan, PlanDefinition planDefinition, Set<String> terminologyVersions) {
+	private final Set<String> publishedIgHosts;
+
+	public CarePlanCardMapper(Set<String> publishedIgHosts) {
+		this.publishedIgHosts = Set.copyOf(publishedIgHosts);
+	}
+
+	/**
+	 * @param planDefinition the rule whose {@code $apply} produced the CarePlan
+	 * @param strategy       the PlanDefinition that composed the rule (e.g. a national schedule), or null
+	 */
+	public List<CDSCard> toCards(CarePlan carePlan, PlanDefinition planDefinition, PlanDefinition strategy, Set<String> terminologyVersions) {
 		List<Resource> contained = distinctById(carePlan.getContained());
 
 		List<CDSReference> proposals = new ArrayList<>();
@@ -84,21 +106,38 @@ public class CarePlanCardMapper {
 			}
 		}
 		Map<String, Object> provenance = new LinkedHashMap<>();
-		provenance.put("knowledgeArtifact", planDefinition.getUrl() + (planDefinition.hasVersion() ? "|" + planDefinition.getVersion() : ""));
+		provenance.put("knowledgeArtifact", canonical(planDefinition));
+		if (strategy != null) {
+			provenance.put("strategy", canonical(strategy));
+		}
 		if (!terminologyVersions.isEmpty()) {
 			provenance.put("terminologyVersions", List.copyOf(terminologyVersions));
 		}
-		cards.forEach(card -> card.setExtension(Map.of(EXTENSION_KEY, provenance)));
+		List<CDSLink> links = links(planDefinition, strategy, source);
+		cards.forEach(card -> {
+			card.setExtension(Map.of(EXTENSION_KEY, provenance));
+			if (!links.isEmpty()) {
+				card.setLinks(links);
+			}
+		});
 		return cards;
 	}
 
-	/** The engine can add the same request twice with the same id; serialization would collapse them too. */
-	private List<Resource> distinctById(List<Resource> resources) {
-		Map<String, Resource> byId = new LinkedHashMap<>();
+	/**
+	 * Drops repeated copies of the same request. The engine can add a request twice with the same id; and different
+	 * requests built from the same ActivityDefinition can share an id too (e.g. the bOPV and IPV proposals of the WHO
+	 * polio table), so only content-identical resources are treated as duplicates.
+	 */
+	static List<Resource> distinctById(List<Resource> resources) {
+		List<Resource> distinct = new ArrayList<>();
 		for (Resource resource : resources) {
-			byId.putIfAbsent(resource.fhirType() + "/" + resource.getIdPart(), resource);
+			boolean duplicate = distinct.stream().anyMatch(kept -> kept.fhirType().equals(resource.fhirType())
+					&& Objects.equals(kept.getIdPart(), resource.getIdPart()) && kept.equalsDeep(resource));
+			if (!duplicate) {
+				distinct.add(resource);
+			}
 		}
-		return new ArrayList<>(byId.values());
+		return distinct;
 	}
 
 	private CDSIndicator indicator(CommunicationRequest.CommunicationPriority priority) {
@@ -125,13 +164,69 @@ public class CarePlanCardMapper {
 				.findFirst().orElse(concept.getCodingFirstRep().getCode());
 	}
 
-	/** The guideline the PlanDefinition documents itself with, falling back to the PlanDefinition itself. */
+	/**
+	 * The guideline the PlanDefinition documents itself with; otherwise the PlanDefinition's page in its published
+	 * implementation guide; otherwise its canonical URL.
+	 */
 	private CDSSource source(PlanDefinition planDefinition) {
+		String title = planDefinition.hasTitle() ? planDefinition.getTitle() : planDefinition.getName();
 		return planDefinition.getRelatedArtifact().stream()
 				.filter(artifact -> artifact.getType() == RelatedArtifact.RelatedArtifactType.DOCUMENTATION && artifact.hasLabel())
 				.findFirst()
-				.map(artifact -> new CDSSource(artifact.getLabel(), artifact.hasUrl() ? artifact.getUrl() : planDefinition.getUrl()))
-				.orElseGet(() -> new CDSSource(planDefinition.hasTitle() ? planDefinition.getTitle() : planDefinition.getName(), planDefinition.getUrl()));
+				.map(artifact -> new CDSSource(artifact.getLabel(),
+						artifact.hasUrl() ? artifact.getUrl() : igPage(planDefinition.getUrl()).orElse(planDefinition.getUrl())))
+				.orElseGet(() -> new CDSSource(title, igPage(planDefinition.getUrl()).orElse(planDefinition.getUrl())));
+	}
+
+	/** Links to the rule's IG page (when not already the source), its CQL libraries' IG pages, and the strategy's documentation. */
+	private List<CDSLink> links(PlanDefinition planDefinition, PlanDefinition strategy, CDSSource source) {
+		List<CDSLink> links = new ArrayList<>();
+		igPage(planDefinition.getUrl())
+				.filter(page -> !page.equals(source.getUrl()))
+				.ifPresent(page -> links.add(new CDSLink("Rule in the implementation guide", page)));
+		for (CanonicalType library : planDefinition.getLibrary()) {
+			String url = library.getValue();
+			igPage(url).ifPresent(page -> links.add(new CDSLink("Decision logic (CQL): " + url.substring(url.lastIndexOf('/') + 1).split("\\|")[0], page)));
+		}
+		if (strategy != null) {
+			strategy.getRelatedArtifact().stream()
+					.filter(artifact -> artifact.getType() == RelatedArtifact.RelatedArtifactType.DOCUMENTATION && artifact.hasUrl())
+					.forEach(artifact -> links.add(new CDSLink(artifact.hasLabel() ? artifact.getLabel() : "Schedule documentation", artifact.getUrl())));
+		}
+		return links;
+	}
+
+	/**
+	 * The page an IG Publisher build renders for a canonical, e.g. {@code http://smart.who.int/immunizations/PlanDefinition/X}
+	 * → {@code https://smart.who.int/immunizations/PlanDefinition-X.html}; only for hosts known to publish their IG at
+	 * their canonical base.
+	 */
+	Optional<String> igPage(String canonical) {
+		if (canonical == null) {
+			return Optional.empty();
+		}
+		String url = canonical.split("\\|")[0];
+		URI uri;
+		try {
+			uri = URI.create(url);
+		} catch (IllegalArgumentException e) {
+			return Optional.empty();
+		}
+		if (uri.getHost() == null || !publishedIgHosts.contains(uri.getHost())) {
+			return Optional.empty();
+		}
+		String[] segments = uri.getPath().split("/");
+		if (segments.length < 3) {
+			return Optional.empty();
+		}
+		String type = segments[segments.length - 2];
+		String id = segments[segments.length - 1];
+		String base = String.join("/", Arrays.copyOf(segments, segments.length - 2));
+		return Optional.of("https://" + uri.getHost() + base + "/" + type + "-" + id + ".html");
+	}
+
+	private static String canonical(PlanDefinition planDefinition) {
+		return planDefinition.getUrl() + (planDefinition.hasVersion() ? "|" + planDefinition.getVersion() : "");
 	}
 
 	private String cardUuid(PlanDefinition planDefinition, Resource resource, String text) {

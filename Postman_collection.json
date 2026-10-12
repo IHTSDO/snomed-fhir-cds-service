@@ -262,7 +262,7 @@
 			"response": []
 		},
 		{
-			"name": "Call \"IMMZD2DTBCG\" CQL CDS service (WHO SMART BCG)",
+			"name": "Call \"JMImmunizationSchedule\" CQL CDS service (Jamaica schedule, WHO SMART tables)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -273,7 +273,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"hook\": \"patient-view\",\n    \"hookInstance\": \"7a3e9c10-2f4d-4b6a-8c5e-1d9b0f2a6c33\",\n    \"context\": {\n        \"userId\": \"Practitioner/nurse-1\",\n        \"patientId\": \"newborn-1\"\n    },\n    \"prefetch\": {\n        \"patient\": {\n            \"resourceType\": \"Patient\",\n            \"id\": \"newborn-1\",\n            \"gender\": \"female\",\n            \"birthDate\": \"{{bcgNewbornBirthDate}}\"\n        },\n        \"immunization\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        },\n        \"observation\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        }\n    }\n}",
+					"raw": "{\n    \"hook\": \"patient-view\",\n    \"hookInstance\": \"7a3e9c10-2f4d-4b6a-8c5e-1d9b0f2a6c33\",\n    \"context\": {\n        \"userId\": \"Practitioner/nurse-1\",\n        \"patientId\": \"juan\"\n    },\n    \"prefetch\": {\n        \"patient\": {\n            \"resourceType\": \"Patient\",\n            \"id\": \"juan\",\n            \"gender\": \"male\",\n            \"birthDate\": \"{{scheduleInfantBirthDate}}\"\n        },\n        \"immunization\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        },\n        \"observation\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        }\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -281,13 +281,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{cds-url}}/cds-services/IMMZD2DTBCG",
+					"raw": "{{cds-url}}/cds-services/JMImmunizationSchedule",
 					"host": [
 						"{{cds-url}}"
 					],
 					"path": [
 						"cds-services",
-						"IMMZD2DTBCG"
+						"JMImmunizationSchedule"
 					]
 				}
 			},
@@ -298,9 +298,9 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"// The WHO BCG logic evaluates against today's date: make the patient a 2-day-old newborn.",
-							"const birthDate = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10);",
-							"pm.collectionVariables.set(\"bcgNewbornBirthDate\", birthDate);"
+							"// The WHO logic evaluates against today's date: make the patient a 9-month-old infant with no records.",
+							"const d = new Date(); d.setMonth(d.getMonth() - 9);",
+							"pm.collectionVariables.set(\"scheduleInfantBirthDate\", d.toISOString().substring(0, 10));"
 						]
 					}
 				}
@@ -334,7 +334,7 @@
 			"type": "string"
 		},
 		{
-			"key": "bcgNewbornBirthDate",
+			"key": "scheduleInfantBirthDate",
 			"value": "",
 			"type": "string"
 		}

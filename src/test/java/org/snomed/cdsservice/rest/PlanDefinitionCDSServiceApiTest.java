@@ -49,10 +49,12 @@ class PlanDefinitionCDSServiceApiTest {
 	void discoveryAdvertisesPrefetchDerivedFromDataRequirements() throws Exception {
 		mockMvc.perform(get("/cds-services"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')].hook").value(contains("patient-view")))
-				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')].prefetch.patient").value(contains("Patient/{{context.patientId}}")))
-				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')].prefetch.immunization").value(contains("Immunization?patient={{context.patientId}}")))
-				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')].prefetch.observation").value(contains("Observation?patient={{context.patientId}}")));
+				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].hook").value(contains("patient-view")))
+				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.patient").value(contains("Patient/{{context.patientId}}")))
+				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.immunization").value(contains("Immunization?patient={{context.patientId}}")))
+				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.observation").value(contains("Observation?patient={{context.patientId}}")))
+				// WHO decision tables composed by the schedule are served through it, not as services of their own.
+				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')]").isEmpty());
 	}
 
 	@Test
@@ -101,6 +103,8 @@ class PlanDefinitionCDSServiceApiTest {
 				""".formatted(id, date, value);
 	}
 
+	private static final String BCG_CARD = "$.cards[?(@.source.label == 'IMMZ.D2.DT.BCG')]";
+
 	@Test
 	void newbornWithoutBcgIsDue() throws Exception {
 		String request = """
@@ -116,17 +120,23 @@ class PlanDefinitionCDSServiceApiTest {
 				}
 				""".formatted(LocalDate.now().minusDays(2));
 
-		mockMvc.perform(post("/cds-services/IMMZD2DTBCG").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(post("/cds-services/JMImmunizationSchedule").contentType(MediaType.APPLICATION_JSON).content(request))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.cards", hasSize(1)))
-				.andExpect(jsonPath("$.cards[0].summary").value(startsWith("Should vaccinate client with first BCG dose")))
-				.andExpect(jsonPath("$.cards[0].indicator").value("info"))
-				.andExpect(jsonPath("$.cards[0].source.label").value("IMMZ.D2.DT.BCG"))
-				.andExpect(jsonPath("$.cards[0].referenceMedications[0].coding[*].code").value(hasItem("DE1")))
-				.andExpect(jsonPath("$.cards[0].extension['org.snomed.cds-service'].knowledgeArtifact")
-						.value("http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTBCG|1.0.0"))
+				// One card per WHO decision table of the Jamaica schedule that gives guidance at this age.
+				.andExpect(jsonPath("$.cards[*].source.label").value(hasItem("IMMZ.D2.DT.Hepatitis B.Birth dose")))
+				.andExpect(jsonPath(BCG_CARD + ".summary").value(contains(startsWith("Should vaccinate client with first BCG dose"))))
+				.andExpect(jsonPath(BCG_CARD + ".indicator").value(contains("info")))
+				.andExpect(jsonPath(BCG_CARD + ".referenceMedications[0].coding[*].code").value(hasItem("DE1")))
+				// View Source: the rule's page in the WHO implementation guide; links: its CQL and the national schedule.
+				.andExpect(jsonPath(BCG_CARD + ".source.url").value(contains("https://smart.who.int/immunizations/PlanDefinition-IMMZD2DTBCG.html")))
+				.andExpect(jsonPath(BCG_CARD + ".links[*].url").value(hasItem("https://smart.who.int/immunizations/Library-IMMZD2DTBCGLogic.html")))
+				.andExpect(jsonPath(BCG_CARD + ".links[*].label").value(hasItem(startsWith("Jamaica MOHW, EPI Field Guide"))))
+				.andExpect(jsonPath(BCG_CARD + ".extension['org.snomed.cds-service'].knowledgeArtifact")
+						.value(contains("http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTBCG|1.0.0")))
+				.andExpect(jsonPath(BCG_CARD + ".extension['org.snomed.cds-service'].strategy")
+						.value(contains("http://snomed.org/fhir/cds-demo/PlanDefinition/JMImmunizationSchedule|0.1.0")))
 				// The WHO content enumerates its value sets: nothing was expanded, so no terminology version is claimed.
-				.andExpect(jsonPath("$.cards[0].extension['org.snomed.cds-service'].terminologyVersions").doesNotExist());
+				.andExpect(jsonPath(BCG_CARD + ".extension['org.snomed.cds-service'].terminologyVersions").isEmpty());
 	}
 
 	@Test
@@ -157,10 +167,9 @@ class PlanDefinitionCDSServiceApiTest {
 				}
 				""".formatted(LocalDate.now().minusYears(2), LocalDate.now().minusYears(2).plusDays(3));
 
-		mockMvc.perform(post("/cds-services/IMMZD2DTBCG").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(post("/cds-services/JMImmunizationSchedule").contentType(MediaType.APPLICATION_JSON).content(request))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.cards", hasSize(1)))
-				.andExpect(jsonPath("$.cards[0].summary").value("BCG immunization schedule is complete. One BCG primary series dose was administered."))
-				.andExpect(jsonPath("$.cards[0].referenceMedications").doesNotExist());
+				.andExpect(jsonPath(BCG_CARD + ".summary").value(contains("BCG immunization schedule is complete. One BCG primary series dose was administered.")))
+				.andExpect(jsonPath(BCG_CARD + ".referenceMedications").isEmpty());
 	}
 }

@@ -230,7 +230,7 @@ content set: a FHIR package, or a subset of one.
 | Service id | Content set | What it shows |
 |---|---|---|
 | `DM2024OGTT01` | `diabetes-jm` | The diabetes OGTT rule (`DM-2024-OGTT-01`) translated from the TSV model to SMART-style CQL, with SNOMED CT ECL value sets. A differential test checks it against the TSV engine on 26 scenarios. |
-| `IMMZD2DTBCG` | `immunizations-bcg` | WHO SMART Immunizations decision table `IMMZ.D2.DT.BCG`, unmodified from the published package. All 25 of the IG's own test scenarios pass. |
+| `JMImmunizationSchedule` | `immunizations-jm` | Jamaica's routine immunization schedule, built from 11 unmodified WHO SMART Immunizations decision tables (BCG, hepatitis B, DTP, polio, Hib, measles, rubella, mumps, HPV). One card per table. The IG's own 138 test scenarios pass. See the content set's README for the mapping to the national schedule and the known differences. |
 
 ### How a request is handled
 - **Discovery.** The service id is the PlanDefinition id. The hook comes from the PlanDefinition's
@@ -243,6 +243,12 @@ content set: a FHIR package, or a subset of one.
   guideline documented on the PlanDefinition. Every card carries an `extension` entry
   `org.snomed.cds-service` with the PlanDefinition canonical and version, and the SNOMED CT versions its ECL
   value sets were expanded with.
+- **Strategies.** A PlanDefinition whose actions point at other PlanDefinitions (e.g. a national schedule
+  made of WHO decision tables) is one service. Its rules are applied one by one and their cards merged. The
+  composed rules are not registered as services of their own.
+- **Sources and links.** A card's source is the guideline the rule documents. For content published in an IG
+  (`cards.published-ig-hosts`, default `smart.who.int`), the source is the rule's IG page and the card links to
+  its CQL library page; a schedule's documentation is linked too.
 - **Startup.** The CQL is compiled when the service registers, so invalid CQL fails startup and the first
   request pays no compilation.
 
@@ -310,4 +316,4 @@ browsers require this when a frontend served from a public site calls the servic
 
 ### Testing the Service
 Download and import the [Postman Collection](Postman_collection.json) for API examples, including calls to
-the CQL services `DM2024OGTT01` and `IMMZD2DTBCG`.
+the CQL services `DM2024OGTT01` and `JMImmunizationSchedule`.

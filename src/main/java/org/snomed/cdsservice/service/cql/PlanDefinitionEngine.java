@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -204,6 +205,32 @@ public class PlanDefinitionEngine {
 
 	public List<IBaseResource> getKnowledgeArtifacts() {
 		return knowledgeArtifacts;
+	}
+
+	/** Resolves a PlanDefinition canonical ({@code url} or {@code url|version}) among the loaded artifacts. */
+	public Optional<PlanDefinition> findPlanDefinition(String canonical) {
+		int bar = canonical.indexOf('|');
+		String url = bar < 0 ? canonical : canonical.substring(0, bar);
+		String version = bar < 0 ? null : canonical.substring(bar + 1);
+		return knowledgeArtifacts.stream()
+				.filter(PlanDefinition.class::isInstance).map(PlanDefinition.class::cast)
+				.filter(planDefinition -> url.equals(planDefinition.getUrl()) && (version == null || version.equals(planDefinition.getVersion())))
+				.findFirst();
+	}
+
+	/**
+	 * @return the PlanDefinitions that this PlanDefinition composes through its actions' {@code definitionCanonical}
+	 * (a strategy, e.g. a national immunization schedule made of WHO decision tables), in action order; empty for a
+	 * plain rule
+	 */
+	public List<PlanDefinition> composedPlanDefinitions(String planDefinitionId) {
+		List<PlanDefinition> composed = new ArrayList<>();
+		for (PlanDefinition.PlanDefinitionActionComponent action : getPlanDefinition(planDefinitionId).getAction()) {
+			if (action.hasDefinitionCanonicalType()) {
+				findPlanDefinition(action.getDefinitionCanonicalType().getValue()).ifPresent(composed::add);
+			}
+		}
+		return composed;
 	}
 
 	public PlanDefinition getPlanDefinition(String planDefinitionId) {

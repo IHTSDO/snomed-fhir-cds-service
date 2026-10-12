@@ -1,0 +1,118 @@
+{
+  "today": "2025-11-05",
+  "planDefinition": "IMMZD2DTDTPDelayedOrInterruptedSeries",
+  "cases": [
+    {
+      "patient": "DTP33.2",
+      "scenario": "No DTP primary series doses were administered and Client's age is more than 1 year: Client is due for DTP vaccination",
+      "bundle": "tests-DTP33.2-bundle.json",
+      "guidance": "Should vaccinate client with first DTP dose as no DTP doses were administered and client's age is more than 1 year. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "DTP34.2",
+      "scenario": "One DTP primary series dose was administered and The latest DTP dose was administered less than 4 weeks ago: Client is not due for DTP vaccination",
+      "bundle": "tests-DTP34.2-bundle.json",
+      "guidance": "Should not vaccinate client with second DTP dose as the latest DTP dose was administered less than 4 weeks ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for second DTP dose",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "DTP35.2",
+      "scenario": "One DTP primary series dose was administered and The latest DTP dose was administered more than 4 weeks ago: Client is due for DTP vaccination",
+      "bundle": "tests-DTP35.2-bundle.json",
+      "guidance": "Should vaccinate client with second DTP dose as the latest DTP dose was administered more than 4 weeks ago.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "DTP36.2",
+      "scenario": "Two DTP primary series doses were administered and The latest DTP dose was administered less than 6 months ago: Client is not due for DTP vaccination",
+      "bundle": "tests-DTP36.2-bundle.json",
+      "guidance": "Should not vaccinate client with third DTP dose the latest DTP dose was administered less than 6 months ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for third DTP dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "DTP37.2",
+      "scenario": "Two DTP primary series doses were administered and The latest DTP dose was administered more than 6 months ago: Client is due for DTP vaccination",
+      "bundle": "tests-DTP37.2-bundle.json",
+      "guidance": "Should vaccinate client with third DTP dose as the latest DTP dose was administered more than 6 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "DTP38.3",
+      "scenario": "Three DTP primary series doses were administered, No tetanus and diphtheria booster doses were administered, and The latest DTP dose was administered less than 1 year ago: Primary DTP series is complete. Client is not due for tetanus and diphtheria booster dose",
+      "bundle": "tests-DTP38.3-bundle.json",
+      "guidance": "Should not vaccinate client with first tetanus and diphtheria booster dose as the latest DTP dose was administered less than 1 year ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for first tetanus and diphtheria booster dose.\nShould not vaccinate client with pertussis booster dose as the latest DTP dose was administered less than 6 months ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for pertussis booster dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "DTP39.3",
+      "scenario": "Three DTP primary series doses were administered, No tetanus and diphtheria booster doses were administered, and The latest DTP dose was administered more than 1 year ago: Primary DTP series is complete. Client is due for tetanus and diphtheria booster dose",
+      "bundle": "tests-DTP39.3-bundle.json",
+      "guidance": "Should vaccinate client with first tetanus and diphtheria booster dose as the latest DTP dose was administered more than 1 year ago. \nCheck for contraindications.\nShould vaccinate client with pertussis booster dose as no pertussis booster doses were administered, client is within appropriate age range and the latest DTP dose was administered more than 6 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "DTP40.3",
+      "scenario": "Three DTP primary series doses were administered, One tetanus and diphtheria booster dose was administered, and The latest tetanus and diphtheria dose was administered less than 1 year ago: Client is not due for tetanus and diphtheria booster dose",
+      "bundle": "tests-DTP40.3-bundle.json",
+      "guidance": "Should not vaccinate client with second tetanus and diphtheria booster dose as the latest tetanus and diphtheria dose was administered less than 1 year ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for second tetanus and diphtheria booster dose.\nShould vaccinate client with pertussis booster dose as no pertussis booster doses were administered, client is within appropriate age range and the latest DTP dose was administered more than 6 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "DTP41.3",
+      "scenario": "Three DTP primary series doses were administered, One tetanus and diphtheria booster dose was administered, and The latest tetanus and diphtheria dose was administered more than 1 year ago: Client is due for tetanus and diphtheria booster dose",
+      "bundle": "tests-DTP41.3-bundle.json",
+      "guidance": "Should vaccinate client with second tetanus and diphtheria booster dose as the latest tetanus and diphtheria dose was administered more than 1 year ago. \nCheck for contraindications.\nShould vaccinate client with pertussis booster dose as no pertussis booster doses were administered, client is within appropriate age range and the latest DTP dose was administered more than 6 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "DTP42.2",
+      "scenario": "Three DTP primary series doses were administered and Two tetanus and diphtheria booster doses were administered: Tetanus and diphtheria immunization schedule is complete",
+      "bundle": "tests-DTP42.2-bundle.json",
+      "guidance": "Tetanus and diphtheria immunization schedule is complete. Three DTP primary series doses and two tetanus and diphtheria booster doses were administered.\nCheck for any other vaccines due.\nShould not vaccinate client with pertussis booster dose as the latest DTP dose was administered less than 6 months ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for pertussis booster dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "DTP43.4",
+      "scenario": "Three DTP primary series doses were administered, No pertussis booster doses were administered, Client's age is between 1 year and 6 years, and The latest DTP dose was administered less than 6 months ago: Primary DTP series is complete. Client is not due for pertussis booster dose",
+      "bundle": "tests-DTP43.4-bundle.json",
+      "guidance": "Should not vaccinate client with first tetanus and diphtheria booster dose as the latest DTP dose was administered less than 1 year ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for first tetanus and diphtheria booster dose.\nShould not vaccinate client with pertussis booster dose as the latest DTP dose was administered less than 6 months ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for pertussis booster dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "DTP44.4",
+      "scenario": "Three DTP primary series doses were administered, No pertussis booster doses were administered, Client's age is between 1 year and 6 years, and The latest DTP dose was administered more than 6 months ago: Primary DTP series is complete. Client is due for pertussis booster dose",
+      "bundle": "tests-DTP44.4-bundle.json",
+      "guidance": "Should vaccinate client with first tetanus and diphtheria booster dose as the latest DTP dose was administered more than 1 year ago. \nCheck for contraindications.\nShould vaccinate client with pertussis booster dose as no pertussis booster doses were administered, client is within appropriate age range and the latest DTP dose was administered more than 6 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "DTP45.3",
+      "scenario": "Three DTP primary series doses were administered, No pertussis booster doses were administered, and Client's age is more than 6 years: Pertussis immunization schedule is complete",
+      "bundle": "tests-DTP45.3-bundle.json",
+      "guidance": "Should vaccinate client with first tetanus and diphtheria booster dose as the latest DTP dose was administered more than 1 year ago. \nCheck for contraindications.\nPertussis immunization schedule is complete. Three DTP primary series doses were administered.\nCheck for any other vaccines due.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "DTP46.2",
+      "scenario": "Three DTP primary series doses were administered and One pertussis booster dose was administered: Pertussis immunization schedule is complete",
+      "bundle": "tests-DTP46.2-bundle.json",
+      "guidance": "Should vaccinate client with first tetanus and diphtheria booster dose as the latest DTP dose was administered more than 1 year ago. \nCheck for contraindications.\nPertussis immunization schedule is complete. Three DTP primary series doses and one pertussis booster dose were administered.\nCheck for any other vaccines due.",
+      "containedCount": 3,
+      "proposalCount": 1
+    }
+  ]
+}

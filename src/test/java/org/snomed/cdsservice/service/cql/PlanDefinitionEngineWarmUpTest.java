@@ -20,7 +20,7 @@ class PlanDefinitionEngineWarmUpTest {
 
 	@Test
 	void warmUpCompilesTheWhoContent() throws Exception {
-		PlanDefinitionEngine engine = PlanDefinitionEngine.fromDirectory(FHIR_CONTEXT, Path.of("knowledge-bases/smart/immunizations-bcg"));
+		PlanDefinitionEngine engine = PlanDefinitionEngine.fromDirectory(FHIR_CONTEXT, Path.of("knowledge-bases/smart/immunizations-jm"));
 		assertDoesNotThrow(() -> engine.warmUp("IMMZD2DTBCG"));
 	}
 

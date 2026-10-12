@@ -1,0 +1,254 @@
+{
+  "today": "2025-10-10",
+  "planDefinition": "IMMZD2DTPolioBOPVPlusIPV",
+  "cases": [
+    {
+      "patient": "Polio18.1",
+      "scenario": "Client's age is less than 6 weeks: Client is not due for bOPV vaccination",
+      "bundle": "tests-Polio18.1-bundle.json",
+      "guidance": "Should not vaccinate client with first bOPV dose as client's age is less than 6 weeks. \nCheck for any other vaccines due and inform the caregiver of when to come back for the first bOPV dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio19.2",
+      "scenario": "No poliovirus primary series doses were administered and Client's age is between 6 weeks and 3 months: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio19.2-bundle.json",
+      "guidance": "Should vaccinate client with first bOPV dose as no poliovirus doses were administered and client's age is between 6 weeks and 3 months. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio20.2",
+      "scenario": "No poliovirus primary series doses were administered and Client's age is more than 3 months: Client is due for bOPV and IPV vaccination",
+      "bundle": "tests-Polio20.2-bundle.json",
+      "guidance": "Should vaccinate client with first bOPV dose and first IPV dose as client's age is more than 3 months and no poliovirus doses were administered.\nCheck for contraindications.",
+      "containedCount": 4,
+      "proposalCount": 2
+    },
+    {
+      "patient": "Polio21.3",
+      "scenario": "One poliovirus primary series dose was administered, Client's age is between 6 weeks and 14 weeks, and The latest bOPV dose was administered less than 4 weeks ago: Client is not due for polio vaccination",
+      "bundle": "tests-Polio21.3-bundle.json",
+      "guidance": "Should not vaccinate client with poliovirus dose as the latest bOPV dose was administered less than 4 weeks ago.\nCheck for any other vaccines due and inform the caregiver of when to come back for the next poliovirus dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio22.3",
+      "scenario": "One poliovirus primary series dose was administered, Client's age is between 6 weeks and 14 weeks, and The latest bOPV dose was administered more than 4 weeks ago: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio22.3-bundle.json",
+      "guidance": "Should vaccinate client with second bOPV dose as the latest bOPV dose was administered more than 4 weeks ago.\nCheck for contraindications",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio23.4",
+      "scenario": "One poliovirus primary series dose was administered, The poliovirus dose administered is bOPV, Client's age is more than or equal to 14 weeks, and The latest bOPV dose was administered less than 4 weeks ago: Client is due for IPV vaccination",
+      "bundle": "tests-Polio23.4-bundle.json",
+      "guidance": "Should vaccinate client with first IPV dose as client's age is more than 14 weeks and the latest bOPV was administered less than 4 weeks ago.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio24.4",
+      "scenario": "One poliovirus primary series dose was administered, The poliovirus dose administered is bOPV, Client's age is more than or equal to 14 weeks, and The latest bOPV dose was administered more than 4 weeks ago: Client is due for bOPV and IPV vaccination",
+      "bundle": "tests-Polio24.4-bundle.json",
+      "guidance": "Should vaccinate client with first IPV dose and second bOPV dose as client's age is more than 14 weeks and the latest bOPV dose was administered more than 4 weeks ago.\nCheck for contraindications.",
+      "containedCount": 4,
+      "proposalCount": 2
+    },
+    {
+      "patient": "Polio25.4",
+      "scenario": "One poliovirus primary series dose was administered, The poliovirus dose administered is IPV, Client's age is more than or equal to 14 weeks, and The latest IPV dose was administered less than 4 months ago: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio25.4-bundle.json",
+      "guidance": "Should vaccinate client with first bOPV dose as client's age is more than 14 weeks, bOPV dose was not administered and the first IPV dose was administered less than 4 months ago.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio26.4",
+      "scenario": "One poliovirus primary series dose was administered, The poliovirus dose administered is IPV, Client's age is more than or equal to 14 weeks, and The latest IPV dose was administered more than 4 months ago: Client is due for bOPV and IPV vaccination",
+      "bundle": "tests-Polio26.4-bundle.json",
+      "guidance": "Should vaccinate client with first bOPV dose and second IPV dose as client's age is more than 14 weeks, bOPV dose was not administered and the first IPV dose was administered more than 4 months ago.\nCheck for contraindications.",
+      "containedCount": 4,
+      "proposalCount": 2
+    },
+    {
+      "patient": "Polio27.4",
+      "scenario": "Two poliovirus primary series doses were administered, The two doses administered are bOPV, Client's age is between 6 weeks and 14 weeks, and The latest bOPV dose was administered less than 4 weeks ago: Client is not due for polio vaccination",
+      "bundle": "tests-Polio27.4-bundle.json",
+      "guidance": "Should not vaccinate client with poliovirus dose as client's age is between 6 and 14 weeks, two bOPV doses were administered and the latest bOPV dose was administered less than 4 weeks ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for the next poliovirus dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio28.4",
+      "scenario": "Two poliovirus primary series doses were administered, The two doses administered are bOPV, Client's age is between 6 weeks and 14 weeks, and The latest bOPV dose was administered more than 4 weeks ago: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio28.4-bundle.json",
+      "guidance": "Should vaccinate client with third bOPV dose as client's age is between 6 and 14 weeks and the latest bOPV dose was administered more than 4 weeks ago. Check for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio29.4",
+      "scenario": "Two poliovirus primary series doses were administered, The two doses administered are bOPV, Client's age is more than or equal to 14 weeks, and The latest bOPV dose was administered less than 4 weeks ago: Client is due for IPV vaccination",
+      "bundle": "tests-Polio29.4-bundle.json",
+      "guidance": "Should vaccinate client with first IPV dose as client's age is more than 14 weeks, IPV dose was not administered and the latest bOPV dose was administered less than 4 weeks ago.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio30.4",
+      "scenario": "Two poliovirus primary series doses were administered, The two doses administered are bOPV, Client's age is more than or equal to 14 weeks, and The latest bOPV dose was administered more than 4 weeks ago: Client is due for bOPV and IPV vaccination",
+      "bundle": "tests-Polio30.4-bundle.json",
+      "guidance": "Should vaccinate client with first IPV dose and third bOPV dose as client's age is more than 14 weeks, two bOPV doses and no IPV dose were administered and the latest bOPV dose was administered more than 4 weeks ago.\nCheck for contraindications.",
+      "containedCount": 4,
+      "proposalCount": 2
+    },
+    {
+      "patient": "Polio31.4",
+      "scenario": "Two poliovirus primary series doses were administered, From the two doses administered one is bOPV and one is IPV, The latest bOPV dose was administered less than 4 weeks ago, and The latest IPV dose was administered less than 4 months ago: Client is not due for polio vaccination",
+      "bundle": "tests-Polio31.4-bundle.json",
+      "guidance": "Should not vaccinate client with poliovirus dose as the latest bOPV dose was administered less than 4 weeks ago and the latest IPV dose was administered less than 4 months ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for the next poliovirus dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio32.4",
+      "scenario": "Two poliovirus primary series doses were administered, From the two doses administered one is bOPV and one is IPV, The latest bOPV dose was administered less than 4 weeks ago, and The latest IPV dose was administered more than 4 months ago: Client is due for IPV vaccination",
+      "bundle": "tests-Polio32.4-bundle.json",
+      "guidance": "Should vaccinate client with second IPV dose as one bOPV dose and one IPV dose were administered, the latest bOPV dose was administered less than 4 weeks ago and the latest IPV dose was administered more than 4 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio33.4",
+      "scenario": "Two poliovirus primary series doses were administered, From the two doses administered one is bOPV and one is IPV, The latest bOPV dose was administered more than 4 weeks ago, and The latest IPV dose was administered less than 4 months ago: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio33.4-bundle.json",
+      "guidance": "Should vaccinate client with second bOPV dose as one bOPV dose and one IPV dose were administered, the latest bOPV dose was administered more than 4 weeks ago and the latest IPV dose was administered less than 4 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio34.4",
+      "scenario": "Two poliovirus primary series doses were administered, From the two doses administered one is bOPV and one is IPV, The latest bOPV dose was administered more than 4 weeks ago, and The latest IPV dose was administered more than 4 months ago: Client is due for bOPV and IPV vaccination",
+      "bundle": "tests-Polio34.4-bundle.json",
+      "guidance": "Should vaccinate client with second bOPV dose and second IPV dose as one bOPV dose and one IPV dose were administered, the latest bOPV dose was administered more than 4 weeks ago and the latest IPV dose was administered more than 4 months ago. \nCheck for contraindications.",
+      "containedCount": 4,
+      "proposalCount": 2
+    },
+    {
+      "patient": "Polio35.2",
+      "scenario": "Two poliovirus primary series doses were administered and The two doses administered are IPV: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio35.2-bundle.json",
+      "guidance": "Should vaccinate client with first bOPV dose as bOPV dose was not administered and two IPV doses were administered. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio36.3",
+      "scenario": "Three poliovirus primary series doses were administered, The three doses administered are bOPV, and Client's age is less than 14 weeks: Client is not due for polio vaccination",
+      "bundle": "tests-Polio36.3-bundle.json",
+      "guidance": "Should not vaccinate client with poliovirus dose as client's age is less than 14 weeks and three bOPV doses were administered.\nCheck for any other vaccines due and inform the caregiver of when to come back for the next poliovirus dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio37.3",
+      "scenario": "Three poliovirus primary series doses were administered, The three doses administered are bOPV, and Client's age is more than or equal to 14 weeks: Client is due for IPV vaccination",
+      "bundle": "tests-Polio37.3-bundle.json",
+      "guidance": "Should vaccinate client with first IPV dose as client's age is more than 14 weeks, three bOPV doses were administered and IPV dose was not administered. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio38.4",
+      "scenario": "Three poliovirus primary series doses were administered, From the three doses administered, one is IPV and two are bOPV, The latest bOPV dose was administered less than 4 weeks ago, and The latest IPV dose was administered less than 4 months ago: Client is not due for polio vaccination",
+      "bundle": "tests-Polio38.4-bundle.json",
+      "guidance": "Should not vaccinate client with poliovirus dose as two bOPV doses and one IPV dose were administered, the latest bOPV dose was administered less than 4 weeks ago and the latest IPV dose was administered less than 4 months ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for the next poliovirus dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio39.4",
+      "scenario": "Three poliovirus primary series doses were administered, From the three doses administered, one is IPV and two are bOPV, The latest bOPV dose was administered less than 4 weeks ago, and The latest IPV dose was administered more than 4 months ago: Client is due for IPV vaccination",
+      "bundle": "tests-Polio39.4-bundle.json",
+      "guidance": "Should vaccinate client with second IPV dose as two bOPV doses and one IPV dose were administered, the latest bOPV dose was administered less than 4 weeks ago and the latest IPV dose was administered more than 4 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio40.4",
+      "scenario": "Three poliovirus primary series doses were administered, From the three doses administered, one is IPV and two are bOPV, The latest bOPV dose was administered more than 4 weeks ago, and The latest IPV dose was administered less than 4 months ago: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio40.4-bundle.json",
+      "guidance": "Should vaccinate client with third bOPV dose as two bOPV doses and one IPV dose were administered, the latest bOPV dose was administered more than 4 weeks ago and the latest IPV dose was administered less than 4 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio41.4",
+      "scenario": "Three poliovirus primary series doses were administered, From the three doses administered, one is IPV and two are bOPV, The latest bOPV dose was administered more than 4 weeks ago, and The latest IPV dose was administered more than 4 months ago: Client is due for bOPV and IPV vaccination",
+      "bundle": "tests-Polio41.4-bundle.json",
+      "guidance": "Should vaccinate client with third bOPV dose and second IPV dose as two bOPV doses and one IPV dose were administered, the latest bOPV dose was administered more than 4 weeks ago and the latest IPV dose was administered more than 4 months ago. \nCheck for contraindications.",
+      "containedCount": 4,
+      "proposalCount": 2
+    },
+    {
+      "patient": "Polio42.3",
+      "scenario": "Three poliovirus primary series doses were administered, From the three doses administered, one is bOPV and two are IPV, and The latest bOPV dose was administered less than 4 weeks ago: Client is not due for polio vaccination",
+      "bundle": "tests-Polio42.3-bundle.json",
+      "guidance": "Should not vaccinate client with poliovirus dose as one bOPV dose and two IPV doses were administered and the latest bOPV dose was administered less than 4 weeks ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for the next poliovirus dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio43.3",
+      "scenario": "Three poliovirus primary series doses were administered, From the three doses administered, one is bOPV and two are IPV, and The latest bOPV dose was administered more than 4 weeks ago: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio43.3-bundle.json",
+      "guidance": "Should vaccinate client with second bOPV dose as one bOPV dose and two IPV doses were administered and the latest bOPV dose was administered more than 4 weeks ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio44.3",
+      "scenario": "Four poliovirus primary series doses were administered, From the four doses administered, one is IPV and three are bOPV, and The latest IPV dose was administered less than 4 months ago: Client is not due for polio vaccination",
+      "bundle": "tests-Polio44.3-bundle.json",
+      "guidance": "Should not vaccinate client with poliovirus dose as three bOPV doses and one IPV dose were administered and the latest IPV dose was administered less than 4 months ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for the next poliovirus dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio45.3",
+      "scenario": "Four poliovirus primary series doses were administered, From the four doses administered, one is IPV and three are bOPV, and The latest IPV dose was administered more than 4 months ago: Client is due for IPV vaccination",
+      "bundle": "tests-Polio45.3-bundle.json",
+      "guidance": "Should vaccinate client with second IPV dose as three bOPV doses and one IPV dose were administered and the latest IPV dose was administered more than 4 months ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio46.3",
+      "scenario": "Four poliovirus primary series doses were administered, From the four doses administered, two are IPV and two are bOPV, and The latest bOPV dose was administered less than 4 weeks ago: Client is not due for polio vaccination",
+      "bundle": "tests-Polio46.3-bundle.json",
+      "guidance": "Should not vaccinate client with poliovirus dose as two bOPV doses and two IPV doses were administered and the latest bOPV dose was administered less than 4 weeks ago. \nCheck for any other vaccines due and inform the caregiver of when to come back for the next poliovirus dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Polio47.3",
+      "scenario": "Four poliovirus primary series doses were administered, From the four doses administered, two are IPV and two are bOPV, and The latest bOPV dose was administered more than 4 weeks ago: Client is due for bOPV vaccination",
+      "bundle": "tests-Polio47.3-bundle.json",
+      "guidance": "Should vaccinate client with third bOPV dose as two bOPV doses and two IPV doses were administered and the latest bOPV dose was administered more than 4 weeks ago. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Polio48.1",
+      "scenario": "Five poliovirus primary series doses were administered: Polio immunization schedule is complete",
+      "bundle": "tests-Polio48.1-bundle.json",
+      "guidance": "Polio routine immunization schedule is complete. Five poliovirus primary series doses were administered. \nCheck for any vaccines due.",
+      "containedCount": 2,
+      "proposalCount": 0
+    }
+  ]
+}

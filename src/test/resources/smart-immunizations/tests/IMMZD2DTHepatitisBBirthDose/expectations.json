@@ -1,0 +1,30 @@
+{
+  "today": "2025-10-01",
+  "planDefinition": "IMMZD2DTHepatitisBBirthDose",
+  "cases": [
+    {
+      "patient": "HepatitisB08.2",
+      "scenario": "Hepatitis B birth dose was not administered and Client's age is less than {Member States defined upper limit}: Client is due for hepatitis B monovalent vaccine",
+      "bundle": "tests-HepatitisB08.2-bundle.json",
+      "guidance": "Should vaccinate client with hepatitis B birth dose, as a monovalent dose. Check for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HepatitisB09.2",
+      "scenario": "Hepatitis B birth dose was not administered and Client's age is more than {Member States defined upper limit}: Client should follow delayed-start decision logic",
+      "bundle": "tests-HepatitisB09.2-bundle.json",
+      "guidance": "The client has a delayed start. Please follow the delayed start schedule.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HepatitisB10.1",
+      "scenario": "Hepatitis B birth dose was administered: Client is not due for the hepatitis B birth dose",
+      "bundle": "tests-HepatitisB10.1-bundle.json",
+      "guidance": "Hepatitis B birth dose was already administered. Check hepatitis B immunization schedule.",
+      "containedCount": 2,
+      "proposalCount": 0
+    }
+  ]
+}

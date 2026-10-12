@@ -14,11 +14,14 @@ import org.snomed.cdsservice.rest.pojo.CDSRequest;
 import org.snomed.cdsservice.service.CDSService;
 import org.snomed.cdsservice.service.PrefetchResources;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -29,6 +32,11 @@ import java.util.TreeMap;
  * resource type its logic retrieves), and compiles its CQL, so invalid CQL fails startup and the first request
  * pays no compilation. On each request it applies the PlanDefinition to the prefetched resources and maps the
  * result to cards.
+ * <p>
+ * A PlanDefinition whose actions point at other PlanDefinitions (a strategy, e.g. a national immunization schedule
+ * composed of WHO decision tables) is served by applying each composed rule separately and merging the cards, so
+ * every card cites the rule that produced it. The engine's own nested {@code $apply} is not used: rules built from
+ * the same ActivityDefinitions produce requests with the same ids, which collide when merged into one CarePlan.
  */
 public class PlanDefinitionCDSService extends CDSService {
 
@@ -40,10 +48,15 @@ public class PlanDefinitionCDSService extends CDSService {
 	@Autowired
 	private FhirContext fhirContext;
 
-	private final CarePlanCardMapper cardMapper = new CarePlanCardMapper();
+	@Value("${cards.published-ig-hosts:smart.who.int}")
+	private Set<String> publishedIgHosts;
+
+	private CarePlanCardMapper cardMapper;
 
 	private PlanDefinitionEngine engine;
 	private PlanDefinition planDefinition;
+	// The rules this service applies: the PlanDefinition itself, or the rules it composes.
+	private List<PlanDefinition> rules;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -57,18 +70,26 @@ public class PlanDefinitionCDSService extends CDSService {
 	@PostConstruct
 	public void init() {
 		engine = engineProvider.getEngine(contentDirectory);
+		cardMapper = new CarePlanCardMapper(publishedIgHosts);
 		planDefinition = engine.getPlanDefinition(planDefinitionId);
+		List<PlanDefinition> composed = engine.composedPlanDefinitions(planDefinitionId);
+		rules = composed.isEmpty() ? List.of(planDefinition) : composed;
 		setTitle(planDefinition.hasTitle() ? planDefinition.getTitle() : planDefinition.getName());
 		setDescription(planDefinition.hasDescription() ? planDefinition.getDescription().strip() : getTitle());
-		setPrefetch(prefetchFor(engine.dataRequirements(planDefinitionId)));
-		long warmUpMs;
-		try {
-			warmUpMs = engine.warmUp(planDefinitionId);
-		} catch (RuntimeException e) {
-			throw new IllegalStateException("Failed to compile the CQL of PlanDefinition/%s: %s".formatted(planDefinitionId, e.getMessage()), e);
+
+		List<DataRequirement> dataRequirements = new ArrayList<>();
+		long warmUpMs = 0;
+		for (PlanDefinition rule : rules) {
+			dataRequirements.addAll(engine.dataRequirements(rule.getIdPart()));
+			try {
+				warmUpMs += engine.warmUp(rule.getIdPart());
+			} catch (RuntimeException e) {
+				throw new IllegalStateException("Failed to compile the CQL of PlanDefinition/%s: %s".formatted(rule.getIdPart(), e.getMessage()), e);
+			}
 		}
-		logger.info("Registered PlanDefinition CDS service '{}' (PlanDefinition/{}, prefetch {}, CQL compiled in {} ms).",
-				getId(), planDefinitionId, getPrefetch().keySet(), warmUpMs);
+		setPrefetch(prefetchFor(dataRequirements));
+		logger.info("Registered PlanDefinition CDS service '{}' (PlanDefinition/{}, {} rule(s), prefetch {}, CQL compiled in {} ms).",
+				getId(), planDefinitionId, rules.size(), getPrefetch().keySet(), warmUpMs);
 	}
 
 	static Map<String, String> prefetchFor(List<DataRequirement> dataRequirements) {
@@ -99,7 +120,12 @@ public class PlanDefinitionCDSService extends CDSService {
 			throw new ResponseStatusException(412, "Request does not include the required prefetch: Patient/" + patientId + ".", null);
 		}
 
-		CarePlan carePlan = (CarePlan) engine.apply(planDefinitionId, patientId, resources, null);
-		return cardMapper.toCards(carePlan, planDefinition, engine.getTerminologyVersions());
+		PlanDefinition strategy = rules.size() == 1 && rules.get(0) == planDefinition ? null : planDefinition;
+		List<CDSCard> cards = new ArrayList<>();
+		for (PlanDefinition rule : rules) {
+			CarePlan carePlan = (CarePlan) engine.apply(rule.getIdPart(), patientId, resources, null);
+			cards.addAll(cardMapper.toCards(carePlan, rule, strategy, engine.getTerminologyVersions()));
+		}
+		return cards;
 	}
 }

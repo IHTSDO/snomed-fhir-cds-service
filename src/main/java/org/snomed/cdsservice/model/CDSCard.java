@@ -22,6 +22,9 @@ public class CDSCard {
 
 	private final String alertType;
 
+	// CDS Hooks card links: further information for the clinician.
+	private List<CDSLink> links;
+
 	// CDS Hooks card extension: implementation-specific data, keyed by a namespaced name.
 	private Map<String, Object> extension;
 
@@ -83,12 +86,21 @@ public class CDSCard {
 
 	public CDSCard cloneCard() {
 		CDSCard clone = new CDSCard(uuid, summary, detail, indicator, source, referenceMedications, referenceConditions, alertType);
+		clone.setLinks(links);
 		clone.setExtension(extension);
 		return clone;
 	}
 
 	public String getAlertType() {
 		return alertType;
+	}
+
+	public List<CDSLink> getLinks() {
+		return links;
+	}
+
+	public void setLinks(List<CDSLink> links) {
+		this.links = links;
 	}
 
 	public Map<String, Object> getExtension() {
