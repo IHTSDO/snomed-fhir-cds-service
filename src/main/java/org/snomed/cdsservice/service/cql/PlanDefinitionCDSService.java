@@ -24,10 +24,11 @@ import java.util.TreeMap;
 /**
  * A CDS service backed by one FHIR {@code PlanDefinition}, evaluated with the embedded Clinical Reasoning engine.
  * <p>
- * On startup it loads the content directory (shared with the other PlanDefinitions from the same directory) and
- * derives the prefetch from the PlanDefinition's data requirements: the Patient, plus a patient-scoped search per
- * resource type its logic retrieves. On each request it applies the PlanDefinition to the prefetched resources
- * and maps the result to cards.
+ * On startup it loads the content directory (shared with the other PlanDefinitions from the same directory),
+ * derives the prefetch from the PlanDefinition's data requirements (the Patient, plus a patient-scoped search per
+ * resource type its logic retrieves), and compiles its CQL, so invalid CQL fails startup and the first request
+ * pays no compilation. On each request it applies the PlanDefinition to the prefetched resources and maps the
+ * result to cards.
  */
 public class PlanDefinitionCDSService extends CDSService {
 
@@ -60,7 +61,14 @@ public class PlanDefinitionCDSService extends CDSService {
 		setTitle(planDefinition.hasTitle() ? planDefinition.getTitle() : planDefinition.getName());
 		setDescription(planDefinition.hasDescription() ? planDefinition.getDescription().strip() : getTitle());
 		setPrefetch(prefetchFor(engine.dataRequirements(planDefinitionId)));
-		logger.info("Registered PlanDefinition CDS service '{}' (PlanDefinition/{}, prefetch {}).", getId(), planDefinitionId, getPrefetch().keySet());
+		long warmUpMs;
+		try {
+			warmUpMs = engine.warmUp(planDefinitionId);
+		} catch (RuntimeException e) {
+			throw new IllegalStateException("Failed to compile the CQL of PlanDefinition/%s: %s".formatted(planDefinitionId, e.getMessage()), e);
+		}
+		logger.info("Registered PlanDefinition CDS service '{}' (PlanDefinition/{}, prefetch {}, CQL compiled in {} ms).",
+				getId(), planDefinitionId, getPrefetch().keySet(), warmUpMs);
 	}
 
 	static Map<String, String> prefetchFor(List<DataRequirement> dataRequirements) {

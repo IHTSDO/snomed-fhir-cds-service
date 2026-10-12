@@ -5,11 +5,13 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.repository.IRepository;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DataRequirement;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Library;
 import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PlanDefinition;
 import org.hl7.fhir.r4.model.Resource;
 import org.opencds.cqf.cql.engine.runtime.Code;
@@ -48,6 +50,8 @@ import java.util.stream.Stream;
  * {@link PlanDefinitionProcessor} keeps per-call state, so a new processor is created for every call.
  */
 public class PlanDefinitionEngine {
+
+	private static final String WARM_UP_PATIENT_ID = "warm-up";
 
 	private final FhirContext fhirContext;
 	private final List<IBaseResource> knowledgeArtifacts;
@@ -111,6 +115,27 @@ public class PlanDefinitionEngine {
 				null,
 				null,
 				new LibraryEngine(repository, crSettings.getEvaluationSettings()));
+	}
+
+	/**
+	 * Compiles the CQL of a PlanDefinition's libraries (and their includes) to ELM and runs {@code $apply} once
+	 * for an empty patient, so compiled libraries are cached before the first real request and CQL errors surface
+	 * when the content loads rather than at request time.
+	 *
+	 * @return the time taken, in milliseconds
+	 * @throws RuntimeException (typically {@code CqlException}) when a library does not compile or fails to run
+	 */
+	public long warmUp(String planDefinitionId) {
+		long start = System.nanoTime();
+		Patient patient = new Patient();
+		patient.setId(WARM_UP_PATIENT_ID);
+		List<Patient> data = List.of(patient);
+		for (CanonicalType library : getPlanDefinition(planDefinitionId).getLibrary()) {
+			// An empty expression set evaluates every definition: this compiles the library and its includes.
+			evaluate(library.getValue(), WARM_UP_PATIENT_ID, data, Set.of());
+		}
+		apply(planDefinitionId, WARM_UP_PATIENT_ID, data, null);
+		return (System.nanoTime() - start) / 1_000_000;
 	}
 
 	/**
