@@ -280,11 +280,15 @@ _(Alternatively the jar file can be compiled from the source code using
 
 Start the service on the command line:
 ```
-java -Xms2g -jar snomed-fhir-cds-service.jar \
+java -Xmx1g -jar snomed-fhir-cds-service.jar \
   --fhir.terminology-server.url=FHIR_TS
 ```
 Where:
-- `FHIR_TR` is a Terminology Server FHIR API URL.
+- `FHIR_TS` is a Terminology Server FHIR API URL.
+
+A 1 GB heap (`-Xmx1g`) is enough: with all services loaded and under load tests the whole process stayed below
+1.5 GB, so it fits a 2 GB machine or container. Avoid `-Xms` equal to the machine's memory, which leaves no room
+for the JVM's non-heap memory.
 
 ### Local Development CORS
 For local frontend testing, a permissive CORS configuration is available through the `local` Spring profile.
