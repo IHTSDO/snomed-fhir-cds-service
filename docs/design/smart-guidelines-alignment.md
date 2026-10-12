@@ -393,12 +393,11 @@ Success criteria:
 - [x] HAPI model libraries upgraded to the version required by `cqf-fhir-cr`; existing test suite green.
 - [x] BCG `PlanDefinition` executed via an in-memory data repository; the `IMMZD2DTBCG.feature` scenarios
       reproduced as JUnit tests with their bundles.
-- [ ] Engine invoked from a CDS Hooks request (prefetch → data repository, `CarePlan` → cards).
-- [ ] At least one ECL value set resolved through our terminology server via a custom terminology provider.
-- [ ] One diabetes rule (e.g. `DM-2024-OGTT-01`) hand-written in SMART style; it produces the same results as
-      the current engine on existing fixtures, including the `UNKNOWN` cases.
-- [x] Warm-request latency measured for BCG: p95 well below the 300 ms target (see 9.1). To be re-measured
-      with the diabetes content.
+- [x] Engine invoked from a CDS Hooks request (prefetch → data repository, `CarePlan` → cards).
+- [x] ECL value sets resolved through our terminology server: preloaded into the engine's value set cache.
+- [x] One diabetes rule (`DM-2024-OGTT-01`) hand-written in SMART style; it agrees with the current engine on
+      26 scenarios, including the `UNKNOWN` cases.
+- [x] Warm-request latency measured for BCG and the diabetes rule: p95 well below the 300 ms target (see 9.1).
 - [x] Jar size and dependency conflicts documented (Section 4.5).
 
 Outcome: go to Option B, or fall back to Option C.
@@ -424,7 +423,67 @@ Outcome: go to Option B, or fall back to Option C.
 - **Regression:** the full existing suite passes on the new stack (165 tests, including the 26 new ones).
   The packaged service boots and serves discovery as before.
 
+**CDS Hooks adapter** (`PlanDefinitionServiceRegistrar`, `PlanDefinitionCDSService`, `CarePlanCardMapper`)
+
+- Each subdirectory of `rules.plandefinition.directory` (default `knowledge-bases/smart`) is a content set.
+  Each `PlanDefinition` in it becomes a CDS service:
+  - the service id is the PlanDefinition id;
+  - the hook comes from its `named-event` trigger, defaulting to `patient-view`.
+- The **prefetch is derived from `$data-requirements`**. For BCG that gives Patient, Immunization and
+  Observation. It is not a hand-written list.
+- `CarePlan` → cards:
+  - each `CommunicationRequest` (guidance) becomes a card: first line as summary, full text as detail,
+    priority mapped to the indicator;
+  - proposed `MedicationRequest`/`ServiceRequest` codes are attached as references;
+  - the card source is the PlanDefinition's documentation `relatedArtifact` (the guideline).
+- The WHO BCG decision table ships as demo content (`knowledge-bases/smart/immunizations-bcg`). An HTTP test
+  shows a **SNOMED CT-coded immunization** (`774702006`) completing the WHO schedule.
+
+**SNOMED CT ECL** (`EclValueSetPreloader`)
+
+- Two forms are recognised in the content:
+  - intensional ValueSets with the standard SNOMED CT ECL filter (`property = constraint`, `op = =`);
+  - implicit ECL URLs (`http://snomed.info/sct?fhir_vs=ecl/...`) in CQL `valueset` declarations.
+- Both are expanded once through the existing `EclCodeResolver` (terminology server, offline fixture in
+  tests) and preloaded, sorted by code as the engine's binary search requires. As for the TSV rules, an ECL
+  that cannot be expanded fails loading.
+
+**Diabetes rule translated to SMART style** (`knowledge-bases/smart/diabetes-jm`)
+
+- `DM-2024-OGTT-01` is written as:
+  - `JMDiabetesElements` (criteria, three-valued: `null` = unknown);
+  - `JMDiabetesLogic` (rule, suppression, matched criteria, card text);
+  - one ECL ValueSet, one guidance ActivityDefinition and an ECA PlanDefinition.
+- `SmartDiabetesDifferentialTest` runs 26 scenarios through both engines and compares:
+  - all four criterion truth values;
+  - the rule's truth value;
+  - the card summary;
+  - whether a card is produced, including suppression by a recorded type 2 diabetes subtype.
+
+  The scenarios cover thresholds, two occasions on different and same days, missing dates, missing
+  qualifier, wrong unit, missing value, non-Quantity value, preliminary status, entered-in-error and
+  resolved conditions, ECL subtypes, and the ECL `MINUS` exclusion (ketoacidosis due to type 1 diabetes).
+  **All 26 agree.**
+- Warm `$apply` for the diabetes rule: p50 ≈ 4 ms, p95 ≈ 10 ms. The first call takes ≈ 1.7 s, which is
+  CQL translation; it should be moved to load time.
+- The full suite passes: 201 tests.
+
 **Findings to carry forward**
+
+- **The differential test caught a real CQL bug.** `flatten` binds looser than `union`, so
+  `a union flatten (b) union c` silently becomes `a union flatten (b union c)`. The qualifier-on-`method`
+  scenario exposed it. Hand-written CQL needs this kind of oracle; review alone is not enough.
+- **The CQL compiler validates at load time.** A syntax error, such as a list literal used as a query
+  source without parentheses, fails loading with a precise message. TSV content has no equivalent check
+  until evaluation.
+- **Missing data is verbose in CQL.** Each numeric criterion needs explicit classification (qualifying,
+  failing, indeterminate) and a `null`-returning cascade to keep "missing never becomes false". This is the
+  main argument for generating this layer from L2 tables instead of hand-writing it.
+- **Calendar days now follow the record's own offset.** CQL `date from` uses the DateTime's offset, whereas
+  the TSV engine formats the instant in UTC. The two can differ for readings near midnight with a non-UTC
+  offset. The scenarios use UTC; this is a deliberate semantic choice to document, not a regression.
+- The in-memory data repository indexes by id: the engine assigns synthetic ids to id-less prefetch
+  resources.
 
 - `PlanDefinitionProcessor.apply()` reassigns its internal repository on every call, so it is **not
   thread-safe**. Create one processor per call and share `CrSettings`/`EvaluationSettings` (library and value
@@ -432,8 +491,8 @@ Outcome: go to Option B, or fall back to Option C.
 - The in-memory `CarePlan` may contain the same request resource twice, with the same id. Serialization
   collapses them, which is what HTTP clients and the IG tests see. The CDS Hooks adapter must deduplicate
   contained resources by id.
-- `EvaluationSettings.valueSetCache` (`url → codes`) is shared and can be pre-populated. It is the natural
-  hook for ECL value sets expanded through our terminology server at load time.
+- `EvaluationSettings.valueSetCache` (`url → codes`) is shared and can be pre-populated. This is how ECL value
+  sets are supplied (see above).
 
 ### Phase 2 — Migrate content
 
