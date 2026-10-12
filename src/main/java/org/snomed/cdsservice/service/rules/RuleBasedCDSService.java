@@ -2,8 +2,6 @@ package org.snomed.cdsservice.service.rules;
 
 import ca.uhn.fhir.context.FhirContext;
 import jakarta.annotation.PostConstruct;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Condition;
@@ -16,6 +14,7 @@ import org.snomed.cdsservice.model.rules.Rule;
 import org.snomed.cdsservice.model.rules.RuleEvaluationResult;
 import org.snomed.cdsservice.model.rules.RuleSet;
 import org.snomed.cdsservice.service.CDSService;
+import org.snomed.cdsservice.service.PrefetchResources;
 import org.snomed.cdsservice.service.ServiceException;
 import org.snomed.cdsservice.service.rules.evaluator.RuleEvaluationContext;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
@@ -87,7 +86,7 @@ public class RuleBasedCDSService extends CDSService {
 
 	@Override
 	public List<CDSCard> call(CDSRequest cdsRequest) {
-		List<Resource> resources = parsePrefetchResources(cdsRequest);
+		List<Resource> resources = PrefetchResources.parse(fhirContext, cdsRequest);
 		Patient patient = resources.stream().filter(Patient.class::isInstance).map(Patient.class::cast).findFirst().orElse(null);
 		Map<String, Object> hookContext = cdsRequest.getContext() == null ? Map.of() : cdsRequest.getContext();
 		RuleEvaluationContext context = new RuleEvaluationContext(patient, resources, hookContext);
@@ -131,30 +130,6 @@ public class RuleBasedCDSService extends CDSService {
 						getId(), codes, clinical, verification, isActive(condition));
 			}
 		}
-	}
-
-	private List<Resource> parsePrefetchResources(CDSRequest cdsRequest) {
-		List<Resource> resources = new ArrayList<>();
-		Map<String, String> prefetchStrings = cdsRequest.getPrefetchStrings();
-		if (prefetchStrings == null) {
-			return resources;
-		}
-		for (String json : prefetchStrings.values()) {
-			if (json == null || json.isBlank() || json.equals("null")) {
-				continue;
-			}
-			IBaseResource parsed = fhirContext.newJsonParser().parseResource(json);
-			if (parsed instanceof Bundle bundle) {
-				for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-					if (entry.hasResource()) {
-						resources.add(entry.getResource());
-					}
-				}
-			} else if (parsed instanceof Resource resource) {
-				resources.add(resource);
-			}
-		}
-		return resources;
 	}
 
 	/**
