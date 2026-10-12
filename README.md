@@ -305,6 +305,9 @@ java -jar target/snomed-fhir-cds-service-1.1.1.jar --spring.profiles.active=loca
 
 With the `local` profile active, the service allows cross-origin requests from any origin. By default, CORS remains disabled.
 
+The `local` profile also answers Private Network Access preflights (`app.cors.allow-private-network=true`). Chromium
+browsers require this when a frontend served from a public site calls the service on `localhost` or a private network.
+
 ### Testing the Service
 Download and import the [Postman Collection](Postman_collection.json) for API examples, including calls to
 the CQL services `DM2024OGTT01` and `IMMZD2DTBCG`.
