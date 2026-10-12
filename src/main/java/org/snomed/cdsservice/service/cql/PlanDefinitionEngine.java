@@ -1,11 +1,15 @@
 package org.snomed.cdsservice.service.cql;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.repository.IRepository;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DataRequirement;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Library;
 import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.PlanDefinition;
 import org.hl7.fhir.r4.model.Resource;
 import org.opencds.cqf.fhir.cql.EvaluationSettings;
 import org.opencds.cqf.fhir.cql.LibraryEngine;
@@ -17,8 +21,13 @@ import org.opencds.cqf.fhir.utility.monad.Eithers;
 import org.opencds.cqf.fhir.utility.repository.InMemoryFhirRepository;
 import org.opencds.cqf.fhir.utility.repository.Repositories;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Runs FHIR Clinical Reasoning {@code PlanDefinition/$apply} in-process, without a HAPI server.
@@ -56,6 +65,21 @@ public class PlanDefinitionEngine {
 	}
 
 	/**
+	 * Creates an engine from every FHIR JSON resource ({@code *.json}) in a directory, e.g. the {@code package}
+	 * folder of a FHIR NPM package or a curated subset of one.
+	 */
+	public static PlanDefinitionEngine fromDirectory(FhirContext fhirContext, Path directory) throws IOException {
+		IParser parser = fhirContext.newJsonParser();
+		List<IBaseResource> artifacts = new ArrayList<>();
+		try (Stream<Path> files = Files.list(directory)) {
+			for (Path file : files.filter(f -> f.getFileName().toString().endsWith(".json")).sorted().toList()) {
+				artifacts.add(parser.parseResource(Files.readString(file)));
+			}
+		}
+		return new PlanDefinitionEngine(fhirContext, artifacts);
+	}
+
+	/**
 	 * Applies a PlanDefinition for one patient.
 	 *
 	 * @param planDefinitionId logical id of the PlanDefinition in the content repository
@@ -79,6 +103,20 @@ public class PlanDefinitionEngine {
 				null,
 				null,
 				new LibraryEngine(repository, crSettings.getEvaluationSettings()));
+	}
+
+	/**
+	 * @return the patient data the PlanDefinition's logic retrieves ({@code $data-requirements}), used to derive
+	 * the CDS Hooks prefetch.
+	 */
+	public List<DataRequirement> dataRequirements(String planDefinitionId) {
+		Library library = (Library) new PlanDefinitionProcessor(contentRepository, crSettings)
+				.dataRequirements(Eithers.forMiddle3(new IdType("PlanDefinition", planDefinitionId)), null);
+		return library.getDataRequirement();
+	}
+
+	public PlanDefinition getPlanDefinition(String planDefinitionId) {
+		return contentRepository.read(PlanDefinition.class, new IdType("PlanDefinition", planDefinitionId));
 	}
 
 	public FhirContext getFhirContext() {

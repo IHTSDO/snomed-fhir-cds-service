@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CarePlan;
 import org.hl7.fhir.r4.model.CommunicationRequest;
@@ -34,8 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class SmartImmunizationsBcgTest {
 
-	private static final Path ROOT = Path.of("src/test/resources/smart-immunizations");
-	private static final Path TESTS = ROOT.resolve("tests/IMMZD2DTBCG");
+	private static final Path CONTENT = Path.of("knowledge-bases/smart/immunizations-bcg");
+	private static final Path TESTS = Path.of("src/test/resources/smart-immunizations/tests/IMMZD2DTBCG");
 
 	private static final FhirContext FHIR_CONTEXT = FhirContext.forR4Cached();
 
@@ -44,14 +43,7 @@ class SmartImmunizationsBcgTest {
 
 	@BeforeAll
 	static void loadContent() throws IOException {
-		IParser parser = FHIR_CONTEXT.newJsonParser();
-		List<IBaseResource> artifacts = new ArrayList<>();
-		try (Stream<Path> files = Files.list(ROOT.resolve("content"))) {
-			for (Path file : files.filter(f -> f.toString().endsWith(".json")).sorted().toList()) {
-				artifacts.add(parser.parseResource(Files.readString(file)));
-			}
-		}
-		engine = new PlanDefinitionEngine(FHIR_CONTEXT, artifacts);
+		engine = PlanDefinitionEngine.fromDirectory(FHIR_CONTEXT, CONTENT);
 		expectations = new ObjectMapper().readTree(TESTS.resolve("expectations.json").toFile());
 	}
 
