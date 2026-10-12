@@ -587,6 +587,43 @@ Outcome: go to Option B, or fall back to Option C.
 - `EvaluationSettings.valueSetCache` (`url → codes`) is shared and can be pre-populated. This is how ECL value
   sets are supplied (see above).
 
+### 9.2 National schedule from WHO decision tables (Jamaica)
+
+The BCG table was extended to a **Jamaica routine immunization schedule** (`knowledge-bases/smart/immunizations-jm`,
+service `JMImmunizationSchedule`).
+
+- **No master PlanDefinition in the WHO IG.** The 138 PlanDefinitions of the IG are independent `eca-rule`s:
+  59 decision tables, 57 schedules and 22 contraindication tables. Several are alternative "options" per antigen
+  that each country chooses (e.g. measles with low vs. ongoing transmission, polio bOPV+IPV vs. IPV only). The
+  orchestration lives in the DAK's business processes (L2), not in FHIR.
+- **National adaptation as a CPG StrategyDefinition.** Our StrategyDefinition picks one table per antigen,
+  matching the MOHW EPI Field Guide (Vol. 1, January 2024, Table 2.7). It composes 11 unmodified WHO tables:
+  BCG, hepatitis B birth dose and 4 doses, DTP on-time and delayed, polio bOPV+IPV, Hib 3 doses, measles low
+  transmission, rubella low incidence, mumps, and HPV single dose.
+- **Known differences from the national schedule:**
+  - DTP, polio and Hib ages: 6/10/14 weeks in WHO vs. 6 weeks/3/6 months in Jamaica;
+  - second MMR dose: 15 months in WHO vs. 18 months in Jamaica;
+  - Jamaica's boosters are not covered.
+
+  WHO exposes some national parameters as CQL parameters (e.g. `HepBLowerLimitWeeks`, default 4). Ages are
+  otherwise fixed in the CQL, so a real adaptation means editing it, with its own tests.
+- **The engine's nested `$apply` cannot be used.** The WHO tables share ActivityDefinitions, so their requests
+  get the same ids (`#IMMZD2DTCR`, `#IMMZD2DTMR`) and collide in one CarePlan: only one guidance survived out of
+  11. The service applies each composed rule separately and merges the cards instead. The registrar registers
+  only entry points (PlanDefinitions not composed by another in the same content set).
+- **Cards cite their own rule.** The source is the rule's IG page (`https://smart.who.int/immunizations/PlanDefinition-<id>.html`,
+  derived from the canonical for hosts in `cards.published-ig-hosts`); the canonical URL itself returns 404.
+  CDS Hooks `links` point to the CQL library page and the national schedule document. The extension adds the
+  `strategy`.
+- **Validation.** The IG's own 138 test scenarios for the 11 tables pass
+  (`SmartImmunizationsOfficialScenariosTest`). In 6 DTP scenarios the IG's tests expect one vaccine proposal
+  where the guidance asks for two boosters (tetanus-diphtheria and pertussis). On their test server the two
+  requests share an id and one is lost. We keep both and document the deviation.
+- **De-duplication.** Contained resources are now de-duplicated by content, not by id alone: the polio table
+  proposes bOPV and IPV with the same id.
+- **Performance.** A 9-month-old with no records gets 10 cards. Warm requests take ≈ 150–300 ms for all 11
+  tables.
+
 ### Phase 2 — Migrate content
 
 Migrate diabetes, hypertension and medication rules to the SMART style. Write the CDS Hooks adapter and the
