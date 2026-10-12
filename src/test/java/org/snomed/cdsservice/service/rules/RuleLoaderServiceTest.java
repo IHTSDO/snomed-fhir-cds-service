@@ -67,7 +67,7 @@ class RuleLoaderServiceTest {
 	void loadsValidHypertensionFiles() throws ServiceException {
 		RuleSet ruleSet = loader.loadRuleSet("hypertension", HYPERTENSION_CRITERIA, HYPERTENSION_RULES);
 
-		assertEquals(9, ruleSet.criteria().size());
+		assertEquals(11, ruleSet.criteria().size());
 		assertEquals(4, ruleSet.rules().size());
 
 		Criterion clinicSys = ruleSet.criteria().get("HTN_CLINIC_SYS_140_TO_LT_180");
