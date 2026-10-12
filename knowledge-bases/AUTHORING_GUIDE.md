@@ -290,7 +290,7 @@ The `code_selector` is written as a **SNOMED CT expression** and is the single m
 - A **single concept** is just its identifier, optionally with the term for readability:
   `271062006 |Fasting blood glucose measurement|`. This matches exactly that concept.
 - A **list of concepts** is written with `OR`:
-  `28442001 |Polyuria| OR 17173007 |Excessive thirst| OR 267023007 |Excessive eating|`.
+  `28442001 |Polyuria| OR 249477003 |Increased thirst| OR 72405004 |Increased appetite|`.
   This matches any of them. Use it to enumerate accepted symptom or diagnosis concepts (as in §3.3).
 
 Both of the above are resolved **without any terminology server** — the service can run offline.

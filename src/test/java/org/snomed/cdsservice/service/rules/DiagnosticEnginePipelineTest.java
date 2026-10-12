@@ -105,7 +105,8 @@ class DiagnosticEnginePipelineTest {
 
 	@Test
 	void suspectedHypertensionFromSystolicOnly() {
-		Observation clinicBp = addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150");
+		// Systolic in the suspected range, diastolic normal.
+		Observation clinicBp = addComponent(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150"), "271650006", "85");
 		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-CLINIC-SUSPECTED-01", context(Map.of(), clinicBp));
 		assertEquals(TruthValue.TRUE, result.truthValue());
 		assertEquals(OutcomeStatus.SUSPECTED, result.rule().outcomeStatus());
@@ -114,9 +115,26 @@ class DiagnosticEnginePipelineTest {
 
 	@Test
 	void suspectedHypertensionFromDiastolicOnly() {
-		Observation clinicBp = addComponent(bpObservation("75367002", "2024-05-01"), "271650006", "100");
+		// Diastolic in the suspected range, systolic normal.
+		Observation clinicBp = addComponent(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "130"), "271650006", "100");
 		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-CLINIC-SUSPECTED-01", context(Map.of(), clinicBp));
 		assertEquals(TruthValue.TRUE, result.truthValue());
+	}
+
+	@Test
+	void suspectedHypertensionExcludedWhenOtherComponentIsSevere() {
+		// Systolic alone is in the suspected range, but the severe diastolic reading excludes the rule.
+		Observation clinicBp = addComponent(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150"), "271650006", "125");
+		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-CLINIC-SUSPECTED-01", context(Map.of(), clinicBp));
+		assertEquals(TruthValue.FALSE, result.truthValue());
+	}
+
+	@Test
+	void suspectedHypertensionUnknownWhenOneComponentMissing() {
+		// Without a diastolic value the severe-range exclusion cannot be ruled out.
+		Observation clinicBp = addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150");
+		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-CLINIC-SUSPECTED-01", context(Map.of(), clinicBp));
+		assertEquals(TruthValue.UNKNOWN, result.truthValue());
 	}
 
 	@Test
