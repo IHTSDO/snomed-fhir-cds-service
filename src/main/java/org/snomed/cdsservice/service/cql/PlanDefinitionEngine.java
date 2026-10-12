@@ -5,12 +5,14 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.repository.IRepository;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DataRequirement;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Library;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.PlanDefinition;
 import org.hl7.fhir.r4.model.Resource;
+import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.fhir.cql.EvaluationSettings;
 import org.opencds.cqf.fhir.cql.LibraryEngine;
 import org.opencds.cqf.fhir.cql.engine.retrieve.RetrieveSettings;
@@ -26,7 +28,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -42,11 +48,13 @@ import java.util.stream.Stream;
 public class PlanDefinitionEngine {
 
 	private final FhirContext fhirContext;
+	private final List<IBaseResource> knowledgeArtifacts;
 	private final IRepository contentRepository;
 	private final CrSettings crSettings;
 
 	public PlanDefinitionEngine(FhirContext fhirContext, Collection<? extends IBaseResource> knowledgeArtifacts) {
 		this.fhirContext = fhirContext;
+		this.knowledgeArtifacts = List.copyOf(knowledgeArtifacts);
 		this.contentRepository = new InMemoryFhirRepository(fhirContext);
 		for (IBaseResource artifact : knowledgeArtifacts) {
 			contentRepository.update(artifact);
@@ -61,6 +69,7 @@ public class PlanDefinitionEngine {
 				.setValuesetMembershipMode(TerminologySettings.VALUESET_MEMBERSHIP_MODE.USE_EXPANSION)
 				.setValuesetPreExpansionMode(TerminologySettings.VALUESET_PRE_EXPANSION_MODE.USE_IF_PRESENT)
 				.setCodeLookupMode(TerminologySettings.CODE_LOOKUP_MODE.USE_CODESYSTEM_URL));
+		evaluationSettings.setValueSetCache(new ConcurrentHashMap<>());
 		this.crSettings = CrSettings.getDefault().withEvaluationSettings(evaluationSettings);
 	}
 
@@ -89,11 +98,7 @@ public class PlanDefinitionEngine {
 	 * @return the $apply result: a CarePlan with the RequestGroup and the generated requests as contained resources
 	 */
 	public IBaseResource apply(String planDefinitionId, String patientId, List<? extends Resource> patientData, Parameters parameters) {
-		Bundle dataBundle = new Bundle().setType(Bundle.BundleType.COLLECTION);
-		patientData.forEach(resource -> dataBundle.addEntry().setResource(resource));
-		IRepository dataRepository = new InMemoryFhirRepository(fhirContext, dataBundle);
-
-		IRepository repository = Repositories.proxy(dataRepository, contentRepository, contentRepository);
+		IRepository repository = repositoryFor(patientData);
 		PlanDefinitionProcessor processor = new PlanDefinitionProcessor(repository, crSettings);
 		return processor.apply(
 				Eithers.forMiddle3(new IdType("PlanDefinition", planDefinitionId)),
@@ -106,6 +111,33 @@ public class PlanDefinitionEngine {
 	}
 
 	/**
+	 * Evaluates named expressions of a CQL Library for one patient, e.g. to inspect individual criteria.
+	 *
+	 * @return one parameter per expression; a null (unknown) result has no value
+	 */
+	public Parameters evaluate(String libraryUrl, String patientId, List<? extends Resource> patientData, Set<String> expressions) {
+		IRepository repository = repositoryFor(patientData);
+		return (Parameters) new LibraryEngine(repository, crSettings.getEvaluationSettings())
+				.evaluate(libraryUrl, "Patient/" + patientId, null, null, null, null, expressions);
+	}
+
+	private IRepository repositoryFor(List<? extends Resource> patientData) {
+		Bundle dataBundle = new Bundle().setType(Bundle.BundleType.COLLECTION);
+		int anonymous = 0;
+		for (Resource resource : patientData) {
+			// The in-memory repository indexes resources by id; give id-less resources (allowed in a prefetch) one.
+			Resource entry = resource;
+			if (!resource.hasIdElement() || resource.getIdElement().getIdPart() == null) {
+				entry = resource.copy();
+				entry.setId("anonymous-" + ++anonymous);
+			}
+			dataBundle.addEntry().setResource(entry);
+		}
+		IRepository dataRepository = new InMemoryFhirRepository(fhirContext, dataBundle);
+		return Repositories.proxy(dataRepository, contentRepository, contentRepository);
+	}
+
+	/**
 	 * @return the patient data the PlanDefinition's logic retrieves ({@code $data-requirements}), used to derive
 	 * the CDS Hooks prefetch.
 	 */
@@ -113,6 +145,24 @@ public class PlanDefinitionEngine {
 		Library library = (Library) new PlanDefinitionProcessor(contentRepository, crSettings)
 				.dataRequirements(Eithers.forMiddle3(new IdType("PlanDefinition", planDefinitionId)), null);
 		return library.getDataRequirement();
+	}
+
+	/**
+	 * Supplies the expansion of a value set the engine cannot expand by itself, such as a SNOMED CT ECL value set
+	 * expanded by a terminology server. CQL membership tests ({@code in}) against {@code url} then use these codes.
+	 */
+	public void preloadValueSetExpansion(String url, Collection<Coding> codes) {
+		List<Code> expansion = codes.stream()
+				.filter(coding -> coding.hasSystem() && coding.hasCode())
+				.map(coding -> new Code().withSystem(coding.getSystem()).withCode(coding.getCode()).withDisplay(coding.getDisplay()))
+				// The engine's membership test binary-searches the expansion by code.
+				.sorted(Comparator.comparing(Code::getCode))
+				.collect(Collectors.toCollection(ArrayList::new));
+		crSettings.getEvaluationSettings().getValueSetCache().put(url, expansion);
+	}
+
+	public List<IBaseResource> getKnowledgeArtifacts() {
+		return knowledgeArtifacts;
 	}
 
 	public PlanDefinition getPlanDefinition(String planDefinitionId) {
