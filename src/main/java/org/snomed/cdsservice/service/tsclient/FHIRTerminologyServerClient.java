@@ -15,6 +15,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -25,9 +26,10 @@ public class FHIRTerminologyServerClient {
 	private static final String SNOMED_SYSTEM = "http://snomed.info/sct";
 
 	private final RestTemplate restTemplate;
-	private final Map<String, ConceptParameters> lookupCache = new HashMap<>();
-	private final Map<String, Collection<Coding>> valueSetCache = new HashMap<>();
-	private final Map<String, String> expansionVersionCache = new HashMap<>();
+	// Concurrent maps: the caches are also used at request time (e.g. the medication allergy check).
+	private final Map<String, ConceptParameters> lookupCache = new ConcurrentHashMap<>();
+	private final Map<String, Collection<Coding>> valueSetCache = new ConcurrentHashMap<>();
+	private final Map<String, String> expansionVersionCache = new ConcurrentHashMap<>();
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
