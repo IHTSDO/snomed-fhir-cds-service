@@ -228,6 +228,83 @@
 					"body": "{\n    \"cards\": [\n        {\n            \"uuid\": \"7b544b67-fbc7-48af-af95-ddaee09e836b\",\n            \"indicator\": \"warning\",\n            \"summary\": \"Contraindication: \\\"Atorvastatin-containing product\\\" with patient condition \\\"Steatosis of liver\\\".\",\n            \"detail\": \"The use of Atorvastatin is contraindicated when the patient has Disease of liver.\",\n            \"source\": {\n                \"label\": \"Wikipedia\",\n                \"url\": \"https://en.wikipedia.org/wiki/Atorvastatin#Contraindications\"\n            }\n        }\n    ]\n}"
 				}
 			]
+		},
+		{
+			"name": "Call \"DM2024OGTT01\" CQL CDS service (diabetes OGTT)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hook\": \"patient-view\",\n    \"hookInstance\": \"d1f0c7a2-5b8e-4c1e-9a77-3f2b6c1d0e45\",\n    \"context\": {\n        \"userId\": \"Practitioner/dr-1\",\n        \"patientId\": \"patient-1\"\n    },\n    \"prefetch\": {\n        \"patient\": {\n            \"resourceType\": \"Patient\",\n            \"id\": \"patient-1\"\n        },\n        \"observation\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\",\n            \"entry\": [\n                {\n                    \"resource\": {\n                        \"resourceType\": \"Observation\",\n                        \"id\": \"ogtt-1\",\n                        \"status\": \"final\",\n                        \"subject\": {\n                            \"reference\": \"Patient/patient-1\"\n                        },\n                        \"code\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"113076002\",\n                                    \"display\": \"Glucose tolerance test\"\n                                },\n                                {\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"123030002\",\n                                    \"display\": \"2 hours\"\n                                }\n                            ]\n                        },\n                        \"effectiveDateTime\": \"2026-09-01\",\n                        \"valueQuantity\": {\n                            \"value\": 12.0,\n                            \"unit\": \"mmol/L\",\n                            \"system\": \"http://unitsofmeasure.org\",\n                            \"code\": \"mmol/L\"\n                        }\n                    }\n                },\n                {\n                    \"resource\": {\n                        \"resourceType\": \"Observation\",\n                        \"id\": \"ogtt-2\",\n                        \"status\": \"final\",\n                        \"subject\": {\n                            \"reference\": \"Patient/patient-1\"\n                        },\n                        \"code\": {\n                            \"coding\": [\n                                {\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"113076002\",\n                                    \"display\": \"Glucose tolerance test\"\n                                },\n                                {\n                                    \"system\": \"http://snomed.info/sct\",\n                                    \"code\": \"123030002\",\n                                    \"display\": \"2 hours\"\n                                }\n                            ]\n                        },\n                        \"effectiveDateTime\": \"2026-09-08\",\n                        \"valueQuantity\": {\n                            \"value\": 11.5,\n                            \"unit\": \"mmol/L\",\n                            \"system\": \"http://unitsofmeasure.org\",\n                            \"code\": \"mmol/L\"\n                        }\n                    }\n                }\n            ]\n        },\n        \"condition\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cds-url}}/cds-services/DM2024OGTT01",
+					"host": [
+						"{{cds-url}}"
+					],
+					"path": [
+						"cds-services",
+						"DM2024OGTT01"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Call \"IMMZD2DTBCG\" CQL CDS service (WHO SMART BCG)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hook\": \"patient-view\",\n    \"hookInstance\": \"7a3e9c10-2f4d-4b6a-8c5e-1d9b0f2a6c33\",\n    \"context\": {\n        \"userId\": \"Practitioner/nurse-1\",\n        \"patientId\": \"newborn-1\"\n    },\n    \"prefetch\": {\n        \"patient\": {\n            \"resourceType\": \"Patient\",\n            \"id\": \"newborn-1\",\n            \"gender\": \"female\",\n            \"birthDate\": \"{{bcgNewbornBirthDate}}\"\n        },\n        \"immunization\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        },\n        \"observation\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cds-url}}/cds-services/IMMZD2DTBCG",
+					"host": [
+						"{{cds-url}}"
+					],
+					"path": [
+						"cds-services",
+						"IMMZD2DTBCG"
+					]
+				}
+			},
+			"response": [],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// The WHO BCG logic evaluates against today's date: make the patient a 2-day-old newborn.",
+							"const birthDate = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10);",
+							"pm.collectionVariables.set(\"bcgNewbornBirthDate\", birthDate);"
+						]
+					}
+				}
+			]
 		}
 	],
 	"event": [
@@ -254,6 +331,11 @@
 		{
 			"key": "cds-url",
 			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "bcgNewbornBirthDate",
+			"value": "",
 			"type": "string"
 		}
 	]

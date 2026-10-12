@@ -213,12 +213,65 @@ To add a whole new domain, drop a new `<name>_criteria.tsv` + `<name>_rules.tsv`
 7. The engine evaluates only the data provided in the CDS Hooks request; missing data is `UNKNOWN`, not negative.
 8. Supplied thresholds and combinations remain traceable to their source guideline.
 
+## CQL Decision Support (FHIR Clinical Reasoning)
+The service can also run **standard FHIR Clinical Reasoning content**: `PlanDefinition`s with their CQL
+`Library`s, `ValueSet`s and `ActivityDefinition`s, the format used by WHO SMART Guidelines. Each PlanDefinition
+is published as a CDS Hooks service. The CQL is compiled and run in-process with the official cqframework
+compiler and engine ([cqf-fhir-cr](https://github.com/cqframework/clinical-reasoning)), without a HAPI FHIR
+server.
+
+> This is a spike (branch `spike/smart-cql-engine`) exploring convergence with SMART Guidelines. See the
+> [design document](docs/design/smart-guidelines-alignment.md) for the analysis, results and next steps.
+
+### Shipped content
+Content lives in `rules.plandefinition.directory` (default `knowledge-bases/smart/`). Each subdirectory is a
+content set: a FHIR package, or a subset of one.
+
+| Service id | Content set | What it shows |
+|---|---|---|
+| `DM2024OGTT01` | `diabetes-jm` | The diabetes OGTT rule (`DM-2024-OGTT-01`) translated from the TSV model to SMART-style CQL, with SNOMED CT ECL value sets. A differential test checks it against the TSV engine on 26 scenarios. |
+| `IMMZD2DTBCG` | `immunizations-bcg` | WHO SMART Immunizations decision table `IMMZ.D2.DT.BCG`, unmodified from the published package. All 25 of the IG's own test scenarios pass. |
+
+### How a request is handled
+- **Discovery.** The service id is the PlanDefinition id. The hook comes from the PlanDefinition's
+  `named-event` trigger (default `rules.plandefinition.default-hook=patient-view`). The **prefetch is derived
+  from `$data-requirements`**, e.g. Patient, Observation and Condition for `DM2024OGTT01`.
+- **Evaluation.** The prefetched resources become an in-memory data repository for that request.
+  `PlanDefinition/$apply` evaluates the CQL with three-valued logic (`null` = unknown).
+- **Cards.** Each resulting `CommunicationRequest` becomes a card: first line as summary, full text as detail.
+  Proposed `MedicationRequest`/`ServiceRequest` codes are attached as references. The source is the
+  guideline documented on the PlanDefinition. Every card carries an `extension` entry
+  `org.snomed.cds-service` with the PlanDefinition canonical and version, and the SNOMED CT versions its ECL
+  value sets were expanded with.
+- **Startup.** The CQL is compiled when the service registers, so invalid CQL fails startup and the first
+  request pays no compilation.
+
+### SNOMED CT ECL value sets
+ECL can be declared as an intensional `ValueSet` (SNOMED CT `constraint` filter) or as an implicit
+`http://snomed.info/sct?fhir_vs=ecl/...` URL in CQL. Expansions are **stored** in
+`<content set>/expansions/` as FHIR ValueSets with a populated `expansion`: the ECL, the SNOMED CT version, and
+the concepts with displays. They are loaded from there, so this content stays pinned to the release it was
+reviewed with and needs no terminology server.
+
+- Refresh them, e.g. after a new SNOMED CT release or an ECL change, by starting once with
+  `--terminology.expansions.refresh=true`. Then review the diff and commit it.
+- A stored expansion made from a different ECL than the content's fails loading.
+- A value set without a stored expansion is expanded live, with a warning.
+- Expansions larger than `terminology.ecl.max-expansion-size` (default 20,000) fail loading.
+
+### Adding CQL content
+1. Create `knowledge-bases/smart/<content set>/` with the FHIR resources as JSON: PlanDefinition, Libraries
+   (CQL in `content`, `text/cql`), ValueSets and ActivityDefinitions.
+2. Start once with `--terminology.expansions.refresh=true` to store the ECL expansions, then review them.
+3. Restart. Each PlanDefinition appears in discovery.
+
 ## Running the Service
 ### Prerequisites
 - Java 17
 - Access to a FHIR Terminology Server capable of expanding [SNOMED CT Implicit Value Sets using ECL](https://www.hl7.org/fhir/snomedct.html#implicit).
   The diagnostic demo content resolves locally and runs without one; the medication services and any ECL
-  operator selectors require it.
+  operator selectors require it. The CQL content uses its stored ECL expansions and needs it only to refresh
+  them.
 
 ### Starting the Service
 Download the latest jar file from the releases page.  
@@ -249,4 +302,5 @@ java -jar target/snomed-fhir-cds-service-1.1.1.jar --spring.profiles.active=loca
 With the `local` profile active, the service allows cross-origin requests from any origin. By default, CORS remains disabled.
 
 ### Testing the Service
-Download and import the [Postman Collection](Postman_collection.json) for API examples.
+Download and import the [Postman Collection](Postman_collection.json) for API examples, including calls to
+the CQL services `DM2024OGTT01` and `IMMZD2DTBCG`.

@@ -552,8 +552,10 @@ Outcome: go to Option B, or fall back to Option C.
   qualifier, wrong unit, missing value, non-Quantity value, preliminary status, entered-in-error and
   resolved conditions, ECL subtypes, and the ECL `MINUS` exclusion (ketoacidosis due to type 1 diabetes).
   **All 26 agree.**
-- Warm `$apply` for the diabetes rule: p50 ≈ 4 ms, p95 ≈ 10 ms. The first call takes ≈ 1.7 s, which is
-  CQL translation; it should be moved to load time.
+- Warm `$apply` for the diabetes rule: p50 ≈ 4 ms, p95 ≈ 10 ms. The first call used to take ≈ 1.7 s for
+  CQL translation. The CQL is now compiled when each service registers (`PlanDefinitionEngine.warmUp`), and
+  invalid CQL fails startup. With the packaged jar, the first request takes ≈ 46 ms (diabetes) and ≈ 52 ms
+  (BCG). The Postman collection and README cover the CQL services.
 - The full suite passes: 201 tests.
 
 **Findings to carry forward**
