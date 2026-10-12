@@ -401,11 +401,32 @@ bottleneck.
   with a message that points at the ECL, which catches mistakes like `<< 404684003`. Optional refinements
   (the TSV engine's subtype-aware suppression) fall back instead of failing.
 
+**Stored expansions** (implemented). The caches above live in memory only. On their own, a restart after the
+terminology server moves to a new release would silently switch the rules to that release. Expansions are
+therefore stored on disk next to the content, using the FHIR mechanism for this (`ValueSet.expansion`), as
+CRMI manifests and eCQM packages do:
+
+- **Format.** `<content set>/expansions/` holds one ValueSet per ECL value set. `compose` carries the ECL;
+  `expansion` carries the timestamp, the `version` parameter and the concepts, with displays, sorted by code
+  for readable diffs.
+- **Loading.** At load, the stored expansion is used. The terminology server is only needed for a value set
+  without one, which is expanded live with a warning. If the stored ECL differs from the content's ECL,
+  loading fails: the rule was changed without refreshing its expansion.
+- **Refresh.** `terminology.expansions.refresh=true` re-expands everything and rewrites the files, for review
+  and commit.
+- **Result.** The diabetes content loads and runs with no terminology server (`StoredExpansionsTest`).
+  `SmartContentConsistencyTest` requires a stored expansion for every ECL, identical to the reviewed
+  terminology fixture.
+- **Not covered yet.** The TSV diagnostic rules and the medication rules still expand at startup; the service
+  as a whole still needs the terminology server to start. The allergy check in the medication services
+  expands ECL **at request time**, through a non-thread-safe `HashMap` cache. Both should move to the same
+  stored-expansion model.
+
 **To do** (with Phase 3):
 
 1. **Version change detection.** Periodically read the SNOMED CT version from the terminology server. When
    it changes:
-   - re-expand in the background;
+   - re-expand in the background, which is the refresh above, run automatically;
    - re-run the content's tests (including the differential test);
    - swap atomically only if they pass; otherwise alert and keep serving the previous expansion.
 2. **Reload endpoint**, to trigger the same process when the terminology server is upgraded.
