@@ -8,6 +8,7 @@ import org.snomed.cdsservice.model.rules.CriterionType;
 import org.snomed.cdsservice.service.ServiceException;
 import org.snomed.cdsservice.service.tsclient.FHIRTerminologyServerClient;
 import org.snomed.cdsservice.util.SnomedValueSetUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -24,12 +25,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * Expansion happens at startup via {@link #warmUp}: an enabled criterion whose ECL cannot be resolved
  * locally and cannot be expanded fails the application fast, rather than silently producing no matches.
  * Content that uses only enumerated concepts needs no expansion and starts without a terminology server.
+ * <p>
+ * Each server expansion records the SNOMED CT version the server reported, so content can state which release
+ * it was evaluated against. An expansion larger than {@code terminology.ecl.max-expansion-size} is rejected:
+ * rule value sets are normally a few hundred concepts, and a huge one usually means an authoring mistake
+ * (e.g. {@code << 404684003 |Clinical finding|}).
  */
 @Component
 public class EclCodeResolver implements CodeResolver {
 
 	private final FHIRTerminologyServerClient terminologyServerClient;
 	private final ConcurrentHashMap<String, Set<CodeKey>> serverExpansionCache = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, String> serverExpansionVersions = new ConcurrentHashMap<>();
+
+	@Value("${terminology.ecl.max-expansion-size:20000}")
+	private int maxExpansionSize = 20000;
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public EclCodeResolver(FHIRTerminologyServerClient terminologyServerClient) {
@@ -68,6 +78,37 @@ public class EclCodeResolver implements CodeResolver {
 				expandAndCache(resolution.ecl(), criterion);
 			}
 		}
+	}
+
+	/** The codes an ECL resolves to, and the SNOMED CT version they came from (null when resolved locally). */
+	public record EclExpansion(Set<CodeKey> codes, String codeSystemVersion) {
+	}
+
+	/**
+	 * Resolves an ECL that content requires: a locally-resolvable ECL directly, any other through the terminology
+	 * server (cached). Fails with a {@link ServiceException} when the ECL cannot be expanded, expands to nothing,
+	 * or exceeds the configured size limit.
+	 */
+	public EclExpansion expand(String ecl) throws ServiceException {
+		EclSelector.Resolution resolution = EclSelector.parse(ecl);
+		if (resolution.resolvableLocally()) {
+			return new EclExpansion(resolution.codes(), null);
+		}
+		Set<CodeKey> cached = serverExpansionCache.get(resolution.ecl());
+		if (cached == null) {
+			try {
+				cached = callServer(resolution.ecl());
+			} catch (ServiceException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new ServiceException("Failed to expand ECL '%s' against the terminology server.".formatted(resolution.ecl()), e);
+			}
+			if (cached.isEmpty()) {
+				throw new ServiceException("ECL '%s' expanded to no concepts.".formatted(resolution.ecl()));
+			}
+			serverExpansionCache.put(resolution.ecl(), cached);
+		}
+		return new EclExpansion(cached, serverExpansionVersions.get(resolution.ecl()));
 	}
 
 	/**
@@ -109,7 +150,8 @@ public class EclCodeResolver implements CodeResolver {
 				throw new ServiceException("ECL '%s' for criterion '%s' expanded to no concepts.".formatted(ecl, criterion.criterionId()));
 			}
 			serverExpansionCache.put(ecl, codes);
-			logger.info("Expanded ECL '{}' for criterion '{}' to {} concept(s).", ecl, criterion.criterionId(), codes.size());
+			logger.info("Expanded ECL '{}' for criterion '{}' to {} concept(s) (SNOMED CT {}).", ecl, criterion.criterionId(), codes.size(),
+					serverExpansionVersions.getOrDefault(ecl, "version not reported"));
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -117,12 +159,27 @@ public class EclCodeResolver implements CodeResolver {
 		}
 	}
 
-	private Set<CodeKey> callServer(String ecl) {
-		Collection<Coding> codings = terminologyServerClient.expandValueSet(SnomedValueSetUtil.getSnomedECLValueSetURI(ecl));
+	private Set<CodeKey> callServer(String ecl) throws ServiceException {
+		String valueSetUri = SnomedValueSetUtil.getSnomedECLValueSetURI(ecl);
+		Collection<Coding> codings = terminologyServerClient.expandValueSet(valueSetUri);
+		if (codings.size() > maxExpansionSize) {
+			throw new ServiceException(("ECL '%s' expanded to %d concepts, above the limit of %d (terminology.ecl.max-expansion-size). "
+					+ "Rule value sets are usually much smaller; check the ECL.").formatted(ecl, codings.size(), maxExpansionSize));
+		}
 		Set<CodeKey> codes = new LinkedHashSet<>();
 		for (Coding coding : codings) {
 			codes.add(CodeKey.of(coding));
 		}
+		terminologyServerClient.getExpansionVersion(valueSetUri).ifPresent(version -> serverExpansionVersions.put(ecl, version));
 		return codes;
+	}
+
+	/** @return the SNOMED CT version of the cached server expansion of {@code ecl}, if any */
+	public Optional<String> expansionVersion(String ecl) {
+		return Optional.ofNullable(serverExpansionVersions.get(EclSelector.parse(ecl).ecl()));
+	}
+
+	void setMaxExpansionSize(int maxExpansionSize) {
+		this.maxExpansionSize = maxExpansionSize;
 	}
 }

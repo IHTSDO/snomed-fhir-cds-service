@@ -8,6 +8,7 @@ public class ValueSetExpansion {
 
 	private Integer total;
 	private List<CDSCoding> contains;
+	private List<ExpansionParameter> parameter;
 
 	public ValueSetExpansion() {
 	}
@@ -18,5 +19,9 @@ public class ValueSetExpansion {
 
 	public List<CDSCoding> getContains() {
 		return contains;
+	}
+
+	public List<ExpansionParameter> getParameter() {
+		return parameter;
 	}
 }

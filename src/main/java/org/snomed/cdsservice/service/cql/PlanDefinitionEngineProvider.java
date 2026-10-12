@@ -35,7 +35,7 @@ public class PlanDefinitionEngineProvider {
 		return engines.computeIfAbsent(contentDirectory.toAbsolutePath().normalize(), directory -> {
 			try {
 				PlanDefinitionEngine engine = PlanDefinitionEngine.fromDirectory(fhirContext, directory);
-				new EclValueSetPreloader(eclCodeResolver::tryExpand).preload(engine);
+				new EclValueSetPreloader(eclCodeResolver::expand).preload(engine);
 				logger.info("Loaded FHIR knowledge artifacts from '{}'.", directory);
 				return engine;
 			} catch (IOException e) {

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -30,13 +31,16 @@ import java.util.UUID;
  *     <li>Proposed requests ({@link MedicationRequest}, {@link ServiceRequest}) are attached to those cards as
  *     references. If there is no guidance, each proposal gets a card of its own.</li>
  * </ul>
+ * Every card carries a {@value #EXTENSION_KEY} extension recording which knowledge artifact produced it and which
+ * terminology versions its value sets were expanded with, so a card can be traced to the logic that was active.
  */
 public class CarePlanCardMapper {
 
 	static final String ALERT_TYPE = "Recommendation";
+	static final String EXTENSION_KEY = "org.snomed.cds-service";
 	private static final int MAX_SUMMARY_LENGTH = 140;
 
-	public List<CDSCard> toCards(CarePlan carePlan, PlanDefinition planDefinition) {
+	public List<CDSCard> toCards(CarePlan carePlan, PlanDefinition planDefinition, Set<String> terminologyVersions) {
 		List<Resource> contained = distinctById(carePlan.getContained());
 
 		List<CDSReference> proposals = new ArrayList<>();
@@ -79,6 +83,12 @@ public class CarePlanCardMapper {
 						List.of(proposals.get(i)), null, ALERT_TYPE));
 			}
 		}
+		Map<String, Object> provenance = new LinkedHashMap<>();
+		provenance.put("knowledgeArtifact", planDefinition.getUrl() + (planDefinition.hasVersion() ? "|" + planDefinition.getVersion() : ""));
+		if (!terminologyVersions.isEmpty()) {
+			provenance.put("terminologyVersions", List.copyOf(terminologyVersions));
+		}
+		cards.forEach(card -> card.setExtension(Map.of(EXTENSION_KEY, provenance)));
 		return cards;
 	}
 

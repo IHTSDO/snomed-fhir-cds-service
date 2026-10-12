@@ -92,6 +92,6 @@ public class PlanDefinitionCDSService extends CDSService {
 		}
 
 		CarePlan carePlan = (CarePlan) engine.apply(planDefinitionId, patientId, resources, null);
-		return cardMapper.toCards(carePlan, planDefinition);
+		return cardMapper.toCards(carePlan, planDefinition, engine.getTerminologyVersions());
 	}
 }

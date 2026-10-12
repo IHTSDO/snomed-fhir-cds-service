@@ -83,7 +83,11 @@ class PlanDefinitionCDSServiceApiTest {
 				.andExpect(jsonPath("$.cards[0].summary").value("Diagnostic OGTT criterion met: "
 						+ "Two-hour OGTT plasma glucose at or above 11.1 mmol/L on two separate occasions → Type 2 diabetes mellitus."))
 				.andExpect(jsonPath("$.cards[0].indicator").value("info"))
-				.andExpect(jsonPath("$.cards[0].source.label").value(startsWith("Guidelines for the Clinical Management of Type 2 Diabetes in Jamaica")));
+				.andExpect(jsonPath("$.cards[0].source.label").value(startsWith("Guidelines for the Clinical Management of Type 2 Diabetes in Jamaica")))
+				.andExpect(jsonPath("$.cards[0].extension['org.snomed.cds-service'].knowledgeArtifact")
+						.value("http://snomed.org/fhir/cds-demo/PlanDefinition/DM2024OGTT01|0.1.0"))
+				.andExpect(jsonPath("$.cards[0].extension['org.snomed.cds-service'].terminologyVersions")
+						.value(contains(DiagnosticTerminologyFixture.CODE_SYSTEM_VERSION)));
 	}
 
 	private static String ogtt(String id, String value, String date) {
@@ -118,7 +122,11 @@ class PlanDefinitionCDSServiceApiTest {
 				.andExpect(jsonPath("$.cards[0].summary").value(startsWith("Should vaccinate client with first BCG dose")))
 				.andExpect(jsonPath("$.cards[0].indicator").value("info"))
 				.andExpect(jsonPath("$.cards[0].source.label").value("IMMZ.D2.DT.BCG"))
-				.andExpect(jsonPath("$.cards[0].referenceMedications[0].coding[*].code").value(hasItem("DE1")));
+				.andExpect(jsonPath("$.cards[0].referenceMedications[0].coding[*].code").value(hasItem("DE1")))
+				.andExpect(jsonPath("$.cards[0].extension['org.snomed.cds-service'].knowledgeArtifact")
+						.value("http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTBCG|1.0.0"))
+				// The WHO content enumerates its value sets: nothing was expanded, so no terminology version is claimed.
+				.andExpect(jsonPath("$.cards[0].extension['org.snomed.cds-service'].terminologyVersions").doesNotExist());
 	}
 
 	@Test

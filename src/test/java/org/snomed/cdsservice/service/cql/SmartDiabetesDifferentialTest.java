@@ -91,7 +91,7 @@ class SmartDiabetesDifferentialTest {
 				new ContextValueCriterionEvaluator())));
 
 		cqlEngine = PlanDefinitionEngine.fromDirectory(FhirContext.forR4Cached(), Path.of("knowledge-bases/smart/diabetes-jm"));
-		new EclValueSetPreloader(resolver::tryExpand).preload(cqlEngine);
+		new EclValueSetPreloader(resolver::expand).preload(cqlEngine);
 	}
 
 	private record Scenario(String name, boolean type2DiabetesRecorded, List<Resource> resources) {

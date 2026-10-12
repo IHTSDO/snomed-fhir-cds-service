@@ -8,7 +8,7 @@ import org.hl7.fhir.r4.model.ValueSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snomed.cdsservice.service.ServiceException;
-import org.snomed.cdsservice.service.rules.CodeKey;
+import org.snomed.cdsservice.service.rules.EclCodeResolver.EclExpansion;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -16,9 +16,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +29,9 @@ import java.util.regex.Pattern;
  *     <li>implicit ECL value set URLs ({@code http://snomed.info/sct?fhir_vs=ecl/<ECL>}) referenced directly from
  *     CQL {@code valueset} declarations.</li>
  * </ul>
- * Each ECL is expanded once, through the service's terminology server, and preloaded into the engine. As for the
- * TSV rules, an ECL that cannot be expanded fails loading rather than silently matching nothing.
+ * Each ECL is expanded once, through the service's terminology server, and preloaded into the engine together with
+ * the SNOMED CT version of the expansion. As for the TSV rules, an ECL that cannot be expanded (or is empty, or
+ * exceeds the size limit) fails loading rather than silently matching nothing.
  */
 public class EclValueSetPreloader {
 
@@ -42,13 +40,16 @@ public class EclValueSetPreloader {
 
 	private static final Pattern IMPLICIT_ECL_URL = Pattern.compile("'(" + Pattern.quote(IMPLICIT_ECL_PREFIX) + "[^']+)'");
 
-	private final Function<String, Optional<Set<CodeKey>>> eclExpander;
+	/** Expands an ECL expression, failing when it cannot (see {@code EclCodeResolver#expand}). */
+	@FunctionalInterface
+	public interface EclExpander {
+		EclExpansion expand(String ecl) throws ServiceException;
+	}
+
+	private final EclExpander eclExpander;
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	/**
-	 * @param eclExpander expands an ECL expression to codes, or returns empty if it cannot be expanded
-	 */
-	public EclValueSetPreloader(Function<String, Optional<Set<CodeKey>>> eclExpander) {
+	public EclValueSetPreloader(EclExpander eclExpander) {
 		this.eclExpander = eclExpander;
 	}
 
@@ -56,11 +57,17 @@ public class EclValueSetPreloader {
 		for (Map.Entry<String, String> entry : findEclValueSets(engine.getKnowledgeArtifacts()).entrySet()) {
 			String url = entry.getKey();
 			String ecl = entry.getValue();
-			Set<CodeKey> codes = eclExpander.apply(ecl)
-					.filter(expansion -> !expansion.isEmpty())
-					.orElseThrow(() -> new ServiceException("Value set '%s' (ECL '%s') could not be expanded or is empty.".formatted(url, ecl)));
-			engine.preloadValueSetExpansion(url, codes.stream().map(code -> new Coding(code.system(), code.code(), null)).toList());
-			logger.info("Preloaded ECL value set '{}' with {} concept(s).", url, codes.size());
+			EclExpansion expansion;
+			try {
+				expansion = eclExpander.expand(ecl);
+			} catch (ServiceException e) {
+				throw new ServiceException("Value set '%s' could not be prepared: %s".formatted(url, e.getMessage()), e);
+			}
+			engine.preloadValueSetExpansion(url,
+					expansion.codes().stream().map(code -> new Coding(code.system(), code.code(), null)).toList(),
+					expansion.codeSystemVersion());
+			logger.info("Preloaded ECL value set '{}' with {} concept(s) (SNOMED CT {}).", url, expansion.codes().size(),
+					expansion.codeSystemVersion() == null ? "resolved locally" : expansion.codeSystemVersion());
 		}
 	}
 

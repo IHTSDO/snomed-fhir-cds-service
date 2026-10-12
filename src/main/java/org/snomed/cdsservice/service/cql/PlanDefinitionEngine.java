@@ -30,7 +30,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,6 +53,7 @@ public class PlanDefinitionEngine {
 	private final List<IBaseResource> knowledgeArtifacts;
 	private final IRepository contentRepository;
 	private final CrSettings crSettings;
+	private final Map<String, String> valueSetVersions = new ConcurrentHashMap<>();
 
 	public PlanDefinitionEngine(FhirContext fhirContext, Collection<? extends IBaseResource> knowledgeArtifacts) {
 		this.fhirContext = fhirContext;
@@ -150,8 +153,10 @@ public class PlanDefinitionEngine {
 	/**
 	 * Supplies the expansion of a value set the engine cannot expand by itself, such as a SNOMED CT ECL value set
 	 * expanded by a terminology server. CQL membership tests ({@code in}) against {@code url} then use these codes.
+	 *
+	 * @param codeSystemVersion the version the expansion was made with, or null if unknown or not applicable
 	 */
-	public void preloadValueSetExpansion(String url, Collection<Coding> codes) {
+	public void preloadValueSetExpansion(String url, Collection<Coding> codes, String codeSystemVersion) {
 		List<Code> expansion = codes.stream()
 				.filter(coding -> coding.hasSystem() && coding.hasCode())
 				.map(coding -> new Code().withSystem(coding.getSystem()).withCode(coding.getCode()).withDisplay(coding.getDisplay()))
@@ -159,6 +164,17 @@ public class PlanDefinitionEngine {
 				.sorted(Comparator.comparing(Code::getCode))
 				.collect(Collectors.toCollection(ArrayList::new));
 		crSettings.getEvaluationSettings().getValueSetCache().put(url, expansion);
+		if (codeSystemVersion != null) {
+			valueSetVersions.put(url, codeSystemVersion);
+		}
+	}
+
+	/**
+	 * @return the code system versions of the preloaded value set expansions (e.g. the SNOMED CT edition and release
+	 * an ECL was expanded against), so results can say which terminology they were evaluated with
+	 */
+	public Set<String> getTerminologyVersions() {
+		return new TreeSet<>(valueSetVersions.values());
 	}
 
 	public List<IBaseResource> getKnowledgeArtifacts() {

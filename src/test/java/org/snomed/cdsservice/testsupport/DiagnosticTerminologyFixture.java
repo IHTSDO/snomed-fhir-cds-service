@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.mockito.Mockito.doReturn;
 
@@ -40,6 +41,17 @@ public final class DiagnosticTerminologyFixture {
 
 	/** Expansions keyed by ECL, in the order they appear in the fixture file. */
 	public static final Map<String, List<Coding>> EXPANSIONS = load();
+
+	/** The SNOMED CT edition and release the expansions were taken from, as the server reports it. */
+	public static final String CODE_SYSTEM_VERSION = loadCodeSystemVersion();
+
+	private static String loadCodeSystemVersion() {
+		try (InputStream in = DiagnosticTerminologyFixture.class.getResourceAsStream(RESOURCE)) {
+			return new ObjectMapper().readTree(in).get("codeSystemVersion").asText();
+		} catch (IOException | NullPointerException e) {
+			throw new IllegalStateException("Could not read terminology fixture " + RESOURCE, e);
+		}
+	}
 
 	private static Map<String, List<Coding>> load() {
 		try (InputStream in = DiagnosticTerminologyFixture.class.getResourceAsStream(RESOURCE)) {
@@ -68,8 +80,11 @@ public final class DiagnosticTerminologyFixture {
 
 	/** Stubs the diagnostic expansions on a Mockito mock. */
 	public static FHIRTerminologyServerClient stub(FHIRTerminologyServerClient client) {
-		EXPANSIONS.forEach((ecl, codings) ->
-				doReturn(codings).when(client).expandValueSet(SnomedValueSetUtil.getSnomedECLValueSetURI(ecl)));
+		EXPANSIONS.forEach((ecl, codings) -> {
+			String valueSetUri = SnomedValueSetUtil.getSnomedECLValueSetURI(ecl);
+			doReturn(codings).when(client).expandValueSet(valueSetUri);
+			doReturn(Optional.of(CODE_SYSTEM_VERSION)).when(client).getExpansionVersion(valueSetUri);
+		});
 		return client;
 	}
 
