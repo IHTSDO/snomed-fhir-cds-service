@@ -18,7 +18,19 @@ Two SNOMED CT ECL forms are used:
 - an intensional ValueSet resource (classic hyperglycaemic symptoms);
 - implicit ECL value set URLs in CQL (hyperglycaemic crisis, type 2 diabetes mellitus and subtypes).
 
-Both are expanded through the service's terminology server when the content is loaded.
+Their expansions are stored in `expansions/`, as FHIR ValueSets with a populated `expansion`. Each one records:
+
+- the ECL it was expanded from;
+- the SNOMED CT version (international edition 20260701);
+- the concepts, with displays, sorted by code.
+
+The service loads them from disk, pinned to that release, so it needs no terminology server for this content. To
+re-expand them, for example after a new SNOMED CT release or an ECL change, start the service once with
+`--terminology.expansions.refresh=true`. Then review the diff and commit it.
+
+If an ECL in the content no longer matches its stored expansion, loading fails until the expansions are
+refreshed. `SmartContentConsistencyTest` checks that every ECL has a stored expansion that matches the reviewed
+terminology fixture.
 
 `SmartDiabetesDifferentialTest` checks the translation: it runs 26 scenarios through both the TSV engine and this
 content. The two must agree on every criterion's truth value, the rule's truth value, the card text and

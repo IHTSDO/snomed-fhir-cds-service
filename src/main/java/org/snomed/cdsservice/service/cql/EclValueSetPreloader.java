@@ -10,12 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.snomed.cdsservice.service.ServiceException;
 import org.snomed.cdsservice.service.rules.EclCodeResolver.EclExpansion;
 
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,9 +31,10 @@ import java.util.regex.Pattern;
  *     <li>implicit ECL value set URLs ({@code http://snomed.info/sct?fhir_vs=ecl/<ECL>}) referenced directly from
  *     CQL {@code valueset} declarations.</li>
  * </ul>
- * Each ECL is expanded once, through the service's terminology server, and preloaded into the engine together with
- * the SNOMED CT version of the expansion. As for the TSV rules, an ECL that cannot be expanded (or is empty, or
- * exceeds the size limit) fails loading rather than silently matching nothing.
+ * Each ECL is preloaded into the engine together with the SNOMED CT version of its expansion. With
+ * {@link StoredExpansions}, the stored (reviewed, version-pinned) expansion is used and the terminology server is only
+ * needed for value sets that have none, or when refreshing. As for the TSV rules, an ECL that cannot be expanded
+ * (or is empty, or exceeds the size limit) fails loading rather than silently matching nothing.
  */
 public class EclValueSetPreloader {
 
@@ -53,22 +56,58 @@ public class EclValueSetPreloader {
 		this.eclExpander = eclExpander;
 	}
 
+	/** Expands every ECL value set through the terminology server. */
 	public void preload(PlanDefinitionEngine engine) throws ServiceException {
+		for (Map.Entry<String, String> entry : findEclValueSets(engine.getKnowledgeArtifacts()).entrySet()) {
+			EclExpansion expansion = expand(entry.getKey(), entry.getValue());
+			engine.preloadValueSetExpansion(entry.getKey(), expansion.codings(), expansion.codeSystemVersion());
+			log(entry.getKey(), expansion.codings().size(), expansion.codeSystemVersion(), "terminology server");
+		}
+	}
+
+	/**
+	 * Preloads every ECL value set from its stored expansion. A value set without one is expanded through the
+	 * terminology server, with a warning. With {@code refresh}, every value set is expanded through the terminology
+	 * server and its stored expansion rewritten.
+	 */
+	public void preload(PlanDefinitionEngine engine, StoredExpansions stored, boolean refresh) throws ServiceException {
 		for (Map.Entry<String, String> entry : findEclValueSets(engine.getKnowledgeArtifacts()).entrySet()) {
 			String url = entry.getKey();
 			String ecl = entry.getValue();
-			EclExpansion expansion;
-			try {
-				expansion = eclExpander.expand(ecl);
-			} catch (ServiceException e) {
-				throw new ServiceException("Value set '%s' could not be prepared: %s".formatted(url, e.getMessage()), e);
+			Optional<StoredExpansions.Expansion> storedExpansion = refresh ? Optional.empty() : stored.find(url, ecl);
+			if (storedExpansion.isPresent()) {
+				StoredExpansions.Expansion expansion = storedExpansion.get();
+				engine.preloadValueSetExpansion(url, expansion.codings(), expansion.codeSystemVersion());
+				log(url, expansion.codings().size(), expansion.codeSystemVersion(), "stored expansion");
+				continue;
 			}
-			engine.preloadValueSetExpansion(url,
-					expansion.codes().stream().map(code -> new Coding(code.system(), code.code(), null)).toList(),
-					expansion.codeSystemVersion());
-			logger.info("Preloaded ECL value set '{}' with {} concept(s) (SNOMED CT {}).", url, expansion.codes().size(),
-					expansion.codeSystemVersion() == null ? "resolved locally" : expansion.codeSystemVersion());
+			EclExpansion expansion = expand(url, ecl);
+			engine.preloadValueSetExpansion(url, expansion.codings(), expansion.codeSystemVersion());
+			if (refresh) {
+				try {
+					stored.save(url, ecl, expansion.codings(), expansion.codeSystemVersion());
+				} catch (IOException e) {
+					throw new ServiceException("Failed to store the expansion of value set '%s'.".formatted(url), e);
+				}
+				log(url, expansion.codings().size(), expansion.codeSystemVersion(), "terminology server, stored");
+			} else {
+				logger.warn("No stored expansion for value set '{}'; expanded it through the terminology server (SNOMED CT {}). "
+						+ "Run with terminology.expansions.refresh=true to store and pin it.", url, expansion.codeSystemVersion());
+			}
 		}
+	}
+
+	private EclExpansion expand(String url, String ecl) throws ServiceException {
+		try {
+			return eclExpander.expand(ecl);
+		} catch (ServiceException e) {
+			throw new ServiceException("Value set '%s' could not be prepared: %s".formatted(url, e.getMessage()), e);
+		}
+	}
+
+	private void log(String url, int size, String version, String source) {
+		logger.info("Preloaded ECL value set '{}' with {} concept(s) (SNOMED CT {}, from {}).", url, size,
+				version == null ? "not applicable: resolved locally" : version, source);
 	}
 
 	/**

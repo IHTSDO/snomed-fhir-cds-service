@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +38,7 @@ public class EclCodeResolver implements CodeResolver {
 	private final FHIRTerminologyServerClient terminologyServerClient;
 	private final ConcurrentHashMap<String, Set<CodeKey>> serverExpansionCache = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, String> serverExpansionVersions = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, List<Coding>> serverExpansionCodings = new ConcurrentHashMap<>();
 
 	@Value("${terminology.ecl.max-expansion-size:20000}")
 	private int maxExpansionSize = 20000;
@@ -80,8 +82,11 @@ public class EclCodeResolver implements CodeResolver {
 		}
 	}
 
-	/** The codes an ECL resolves to, and the SNOMED CT version they came from (null when resolved locally). */
-	public record EclExpansion(Set<CodeKey> codes, String codeSystemVersion) {
+	/**
+	 * What an ECL resolves to: the codes, the codings (with displays when the server supplied them), and the SNOMED CT
+	 * version they came from (null when resolved locally).
+	 */
+	public record EclExpansion(Set<CodeKey> codes, List<Coding> codings, String codeSystemVersion) {
 	}
 
 	/**
@@ -92,7 +97,8 @@ public class EclCodeResolver implements CodeResolver {
 	public EclExpansion expand(String ecl) throws ServiceException {
 		EclSelector.Resolution resolution = EclSelector.parse(ecl);
 		if (resolution.resolvableLocally()) {
-			return new EclExpansion(resolution.codes(), null);
+			List<Coding> codings = resolution.codes().stream().map(code -> new Coding(code.system(), code.code(), null)).toList();
+			return new EclExpansion(resolution.codes(), codings, null);
 		}
 		Set<CodeKey> cached = serverExpansionCache.get(resolution.ecl());
 		if (cached == null) {
@@ -108,7 +114,8 @@ public class EclCodeResolver implements CodeResolver {
 			}
 			serverExpansionCache.put(resolution.ecl(), cached);
 		}
-		return new EclExpansion(cached, serverExpansionVersions.get(resolution.ecl()));
+		return new EclExpansion(cached, serverExpansionCodings.getOrDefault(resolution.ecl(), List.of()),
+				serverExpansionVersions.get(resolution.ecl()));
 	}
 
 	/**
@@ -171,6 +178,7 @@ public class EclCodeResolver implements CodeResolver {
 			codes.add(CodeKey.of(coding));
 		}
 		terminologyServerClient.getExpansionVersion(valueSetUri).ifPresent(version -> serverExpansionVersions.put(ecl, version));
+		serverExpansionCodings.put(ecl, List.copyOf(codings));
 		return codes;
 	}
 

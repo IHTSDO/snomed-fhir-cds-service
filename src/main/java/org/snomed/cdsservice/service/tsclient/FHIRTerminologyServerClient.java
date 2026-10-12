@@ -81,7 +81,7 @@ public class FHIRTerminologyServerClient {
 					moreToLoad = false;
 				}
 			}
-			valueSetCache.put(valueSetURI, codings.stream().map(cdsCoding -> new Coding(cdsCoding.getSystem(), cdsCoding.getCode(), null)).collect(Collectors.toList()));
+			valueSetCache.put(valueSetURI, codings.stream().map(cdsCoding -> new Coding(cdsCoding.getSystem(), cdsCoding.getCode(), cdsCoding.getDisplay())).collect(Collectors.toList()));
 		}
 		return valueSetCache.get(valueSetURI);
 	}
