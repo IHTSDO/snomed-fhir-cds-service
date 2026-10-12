@@ -85,6 +85,39 @@ class DiagnosticSuppressionApiTest {
 				.andExpect(jsonPath("$.cards", hasSize(1)));
 	}
 
+	@Test
+	void severeBloodPressureIsNotSuppressedByKnownHypertension() throws Exception {
+		// The guideline gives actions for known hypertensives too, so the severe rule never suppresses.
+		String body = """
+				{
+				  "hook": "patient-view",
+				  "context": { "patientId": "p" },
+				  "prefetch": {
+				    "conditions": { "resourceType": "Bundle", "type": "searchset", "entry": [
+				      { "resource": { "resourceType": "Condition",
+				        "clinicalStatus": { "coding": [ { "system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active" } ] },
+				        "code": { "coding": [ { "system": "http://snomed.info/sct", "code": "38341003" } ] } } }
+				    ] },
+				    "observations": { "resourceType": "Bundle", "type": "searchset", "entry": [
+				      { "resource": { "resourceType": "Observation", "status": "final",
+				        "code": { "coding": [ { "system": "http://snomed.info/sct", "code": "75367002" } ] },
+				        "component": [
+				          { "code": { "coding": [ { "system": "http://snomed.info/sct", "code": "271649006" } ] },
+				            "valueQuantity": { "value": 190, "system": "http://unitsofmeasure.org", "code": "mm[Hg]" } },
+				          { "code": { "coding": [ { "system": "http://snomed.info/sct", "code": "271650006" } ] },
+				            "valueQuantity": { "value": 100, "system": "http://unitsofmeasure.org", "code": "mm[Hg]" } } ] } }
+				    ] }
+				  }
+				}
+				""";
+		mockMvc.perform(post("/cds-services/diagnostic-support-hypertension")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(body))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.cards", hasSize(1)))
+				.andExpect(jsonPath("$.cards[0].indicator").value("critical"));
+	}
+
 	private org.springframework.test.web.servlet.ResultActions postFastingGlucoseWithCondition(String conditionCode) throws Exception {
 		String body = """
 				{

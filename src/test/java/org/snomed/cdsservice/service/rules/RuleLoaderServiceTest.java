@@ -86,7 +86,7 @@ class RuleLoaderServiceTest {
 		RuleSet ruleSet = loader.loadRuleSet("hypertension", HYPERTENSION_CRITERIA, HYPERTENSION_RULES);
 
 		assertEquals(11, ruleSet.criteria().size());
-		assertEquals(4, ruleSet.rules().size());
+		assertEquals(5, ruleSet.rules().size());
 
 		Criterion clinicSys = ruleSet.criteria().get("HTN_CLINIC_SYS_140_TO_LT_180");
 		assertNotNull(clinicSys);

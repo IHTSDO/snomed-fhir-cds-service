@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.snomed.cdsservice.model.CDSCard;
+import org.snomed.cdsservice.model.CDSIndicator;
 import org.snomed.cdsservice.model.rules.ActionType;
 import org.snomed.cdsservice.model.rules.OutcomeStatus;
 import org.snomed.cdsservice.model.rules.Rule;
@@ -165,6 +166,31 @@ class DiagnosticEnginePipelineTest {
 		// Systolic alone is in the suspected range, but the severe diastolic reading excludes the rule.
 		Observation clinicBp = addComponent(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150"), "271650006", "125");
 		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-CLINIC-SUSPECTED-01", context(Map.of(), clinicBp));
+		assertEquals(TruthValue.FALSE, result.truthValue());
+	}
+
+	@Test
+	void severeDiastolicFiresSevereRule() {
+		Observation clinicBp = addComponent(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150"), "271650006", "125");
+		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-CLINIC-SEVERE-01", context(Map.of(), clinicBp));
+		assertEquals(TruthValue.TRUE, result.truthValue());
+		assertEquals(OutcomeStatus.SUSPECTED, result.rule().outcomeStatus());
+		assertEquals(ActionType.RECOMMEND_CONFIRMATION, result.rule().actionType());
+		assertEquals(CDSIndicator.critical, result.rule().cardIndicator());
+	}
+
+	@Test
+	void severeSystolicAloneFiresSevereRule() {
+		// One severe component is enough, even if the other is missing.
+		Observation clinicBp = addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "185");
+		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-CLINIC-SEVERE-01", context(Map.of(), clinicBp));
+		assertEquals(TruthValue.TRUE, result.truthValue());
+	}
+
+	@Test
+	void suspectedRangeReadingDoesNotFireSevereRule() {
+		Observation clinicBp = addComponent(addComponent(bpObservation("75367002", "2024-05-01"), "271649006", "150"), "271650006", "85");
+		RuleEvaluationResult result = evaluate(hypertension, "HTN-2024-CLINIC-SEVERE-01", context(Map.of(), clinicBp));
 		assertEquals(TruthValue.FALSE, result.truthValue());
 	}
 
