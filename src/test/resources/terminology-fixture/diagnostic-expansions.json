@@ -887,6 +887,67 @@
      "display": "Acute candidal vulvovaginitis"
     }
    ]
+  },
+  {
+   "ecl": "<< 44054006",
+   "codes": [
+    {
+     "code": "1481000119100",
+     "display": "Diabetes mellitus type 2 without retinopathy"
+    },
+    {
+     "code": "164971000119101",
+     "display": "Type 2 diabetes mellitus controlled by diet"
+    },
+    {
+     "code": "190389009",
+     "display": "Type 2 diabetes mellitus with ulcer"
+    },
+    {
+     "code": "199230006",
+     "display": "Pre-existing type 2 diabetes mellitus"
+    },
+    {
+     "code": "237599002",
+     "display": "Insulin treated type 2 diabetes mellitus"
+    },
+    {
+     "code": "237627000",
+     "display": "Pregnancy and type 2 diabetes mellitus"
+    },
+    {
+     "code": "359642000",
+     "display": "Type 2 diabetes mellitus in nonobese"
+    },
+    {
+     "code": "44054006",
+     "display": "Type 2 diabetes mellitus"
+    },
+    {
+     "code": "443694000",
+     "display": "Uncontrolled type 2 diabetes mellitus"
+    },
+    {
+     "code": "444110003",
+     "display": "Well controlled type 2 diabetes mellitus"
+    },
+    {
+     "code": "445353002",
+     "display": "Brittle type 2 diabetes mellitus"
+    },
+    {
+     "code": "609567009",
+     "display": "Pre-existing type 2 diabetes mellitus in pregnancy"
+    },
+    {
+     "code": "703138006",
+     "display": "Type 2 diabetes mellitus in remission"
+    },
+    {
+     "code": "81531005",
+     "display": "Type 2 diabetes mellitus in obese"
+    }
+   ]
   }
  ]
 }

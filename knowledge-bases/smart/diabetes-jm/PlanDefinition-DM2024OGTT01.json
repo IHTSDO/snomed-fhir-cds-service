@@ -1,0 +1,81 @@
+{
+  "resourceType": "PlanDefinition",
+  "id": "DM2024OGTT01",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/cpg/StructureDefinition/cpg-recommendationdefinition"
+    ]
+  },
+  "url": "http://snomed.org/fhir/cds-demo/PlanDefinition/DM2024OGTT01",
+  "version": "0.1.0",
+  "name": "DM2024OGTT01",
+  "title": "DM-2024-OGTT-01 Oral glucose tolerance test pathway",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/plan-definition-type",
+        "code": "eca-rule"
+      }
+    ]
+  },
+  "status": "draft",
+  "experimental": true,
+  "description": "Makes the repeat-if-asymptomatic footnote executable. Confirm the intended symptom/crisis definition with the guideline authors.",
+  "relatedArtifact": [
+    {
+      "type": "documentation",
+      "label": "Guidelines for the Clinical Management of Type 2 Diabetes in Jamaica, Ministry of Health and Wellness, December 2024 — diagnosis footnote 1",
+      "display": "Guidelines for the Clinical Management of Type 2 Diabetes in Jamaica, Ministry of Health and Wellness, December 2024 — diagnosis footnote 1",
+      "url": "https://ncdip.moh.gov.jm/resources/"
+    }
+  ],
+  "library": [
+    "http://snomed.org/fhir/cds-demo/Library/JMDiabetesLogic"
+  ],
+  "action": [
+    {
+      "id": "DM-2024-OGTT-01",
+      "title": "Oral glucose tolerance test pathway",
+      "description": "The two-hour OGTT criterion is diagnostic when supported by classic hyperglycaemic symptoms or hyperglycaemic crisis, or when an abnormal result is confirmed on a separate occasion.",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "patient-view"
+        }
+      ],
+      "condition": [
+        {
+          "kind": "applicability",
+          "expression": {
+            "language": "text/cql-identifier",
+            "expression": "DM-2024-OGTT-01 Applies"
+          }
+        }
+      ],
+      "definitionCanonical": "http://snomed.org/fhir/cds-demo/ActivityDefinition/JMDiabetesGuidance",
+      "dynamicValue": [
+        {
+          "path": "status",
+          "expression": {
+            "language": "text/cql-expression",
+            "expression": "'active'"
+          }
+        },
+        {
+          "path": "payload.contentString",
+          "expression": {
+            "language": "text/cql-identifier",
+            "expression": "DM-2024-OGTT-01 Message"
+          }
+        },
+        {
+          "path": "priority",
+          "expression": {
+            "language": "text/cql-expression",
+            "expression": "'routine'"
+          }
+        }
+      ]
+    }
+  ]
+}

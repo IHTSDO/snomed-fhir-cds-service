@@ -56,6 +56,48 @@ class PlanDefinitionCDSServiceApiTest {
 	}
 
 	@Test
+	void diabetesOgttRuleConfirmedOnTwoOccasionsReturnsCard() throws Exception {
+		String request = """
+				{
+				  "hook": "patient-view",
+				  "hookInstance": "test-instance",
+				  "context": { "patientId": "patient-1" },
+				  "prefetch": {
+				    "patient": { "resourceType": "Patient", "id": "patient-1" },
+				    "observation": {
+				      "resourceType": "Bundle",
+				      "type": "searchset",
+				      "entry": [
+				        { "resource": %s },
+				        { "resource": %s }
+				      ]
+				    },
+				    "condition": { "resourceType": "Bundle", "type": "searchset" }
+				  }
+				}
+				""".formatted(ogtt("ogtt-1", "12.0", "2024-05-01"), ogtt("ogtt-2", "11.5", "2024-05-08"));
+
+		mockMvc.perform(post("/cds-services/DM2024OGTT01").contentType(MediaType.APPLICATION_JSON).content(request))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.cards", hasSize(1)))
+				.andExpect(jsonPath("$.cards[0].summary").value("Diagnostic OGTT criterion met: "
+						+ "Two-hour OGTT plasma glucose at or above 11.1 mmol/L on two separate occasions → Type 2 diabetes mellitus."))
+				.andExpect(jsonPath("$.cards[0].indicator").value("info"))
+				.andExpect(jsonPath("$.cards[0].source.label").value(startsWith("Guidelines for the Clinical Management of Type 2 Diabetes in Jamaica")));
+	}
+
+	private static String ogtt(String id, String value, String date) {
+		return """
+				{ "resourceType": "Observation", "id": "%s", "status": "final",
+				  "subject": { "reference": "Patient/patient-1" },
+				  "code": { "coding": [ { "system": "http://snomed.info/sct", "code": "113076002" },
+				                        { "system": "http://snomed.info/sct", "code": "123030002" } ] },
+				  "effectiveDateTime": "%s",
+				  "valueQuantity": { "value": %s, "system": "http://unitsofmeasure.org", "code": "mmol/L" } }
+				""".formatted(id, date, value);
+	}
+
+	@Test
 	void newbornWithoutBcgIsDue() throws Exception {
 		String request = """
 				{

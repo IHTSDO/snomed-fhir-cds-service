@@ -115,14 +115,13 @@ public class CarePlanCardMapper {
 				.findFirst().orElse(concept.getCodingFirstRep().getCode());
 	}
 
+	/** The guideline the PlanDefinition documents itself with, falling back to the PlanDefinition itself. */
 	private CDSSource source(PlanDefinition planDefinition) {
-		String label = planDefinition.hasTitle() ? planDefinition.getTitle() : planDefinition.getName();
-		CDSSource source = new CDSSource(label);
-		planDefinition.getRelatedArtifact().stream()
-				.filter(artifact -> artifact.getType() == RelatedArtifact.RelatedArtifactType.DOCUMENTATION && artifact.hasUrl())
+		return planDefinition.getRelatedArtifact().stream()
+				.filter(artifact -> artifact.getType() == RelatedArtifact.RelatedArtifactType.DOCUMENTATION && artifact.hasLabel())
 				.findFirst()
-				.ifPresentOrElse(artifact -> source.setUrl(artifact.getUrl()), () -> source.setUrl(planDefinition.getUrl()));
-		return source;
+				.map(artifact -> new CDSSource(artifact.getLabel(), artifact.hasUrl() ? artifact.getUrl() : planDefinition.getUrl()))
+				.orElseGet(() -> new CDSSource(planDefinition.hasTitle() ? planDefinition.getTitle() : planDefinition.getName(), planDefinition.getUrl()));
 	}
 
 	private String cardUuid(PlanDefinition planDefinition, Resource resource, String text) {
