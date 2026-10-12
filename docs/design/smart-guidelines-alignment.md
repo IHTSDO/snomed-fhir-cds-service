@@ -349,6 +349,73 @@ added, updated and removed without a restart.
 5. **Authentication on write endpoints.** There is no authentication today. Packages exchanged between
    organisations should carry a checksum or signature.
 
+### 6.5 Terminology expansion policy
+
+**Decision: pre-expand ECL value sets and pin them to a SNOMED CT version. Do not expand in real time.**
+
+The alternative, expanding or validating codes against the terminology server on every request, was rejected.
+Measured against the demonstrator's terminology server (international edition 20260701), from a developer
+machine:
+
+| | Pre-expanded (current) | Real time |
+|---|---|---|
+| Latency | In memory; whole rule p50 ≈ 4 ms | `$expand` 0.8–2.2 s, `$validate-code` ≈ 0.6 s per call, times value sets × codes |
+| Availability | Server needed at load time only | Server on the critical path: an outage means rules silently stop firing |
+| Freshness | Stale until re-expanded | Always the server's current release |
+| Reproducibility | Fixed, auditable behaviour | **Rules change behaviour when the server is upgraded, without clinical review** |
+
+For CDS, the last row decides. A rule that starts firing for new subtypes because the terminology server
+moved to a new release is an unreviewed change in clinical behaviour. This is why content distribution
+standards pin code system versions (CRMI manifests and expansion parameters, VSAC-pinned expansions in eCQMs).
+The real concern with caching is staleness, and it is addressed by tying expansions to a version and
+re-validating when the version changes, not by expanding live.
+
+**Expansion sizes.** Rule ECLs are usually small. Measured on the international edition:
+
+| ECL | Concepts |
+|---|---|
+| `<< 44054006` type 2 diabetes mellitus | 14 |
+| `<< 73211009` diabetes mellitus | 120 |
+| `<< 38341003` hypertensive disorder | 132 |
+| `<< 195967001` asthma | 128 |
+| `<< 372665008` NSAID (substance) | 139 |
+| products containing an NSAID (attribute refinement) | 380 |
+| `<< 363346000` malignant neoplastic disease | 6,176 |
+| `<< 64572001` disease | 92,447 |
+| `<< 404684003` clinical finding | 129,013 |
+
+The only realistic large case is medicinal products in national extensions (e.g. dm+d), estimated at
+thousands; this was not measured. Even 100,000 codes take on the order of 10–20 MB, so size is not the
+bottleneck.
+
+**Implemented** (branch `spike/smart-cql-engine`):
+
+- `FHIRTerminologyServerClient` reads the SNOMED CT version the server reports for each expansion (the
+  `version` or `used-codesystem` expansion parameter). `EclCodeResolver` keeps it with the cached expansion.
+- Loading logs the version for every preloaded value set. Every CQL card carries a CDS Hooks `extension`
+  entry `org.snomed.cds-service` with the `knowledgeArtifact` (PlanDefinition canonical and version) and the
+  `terminologyVersions` its ECL value sets were expanded with. Verified against the live server
+  (`…/900000000000207008/version/20260701`). Content that only enumerates codes, such as the WHO BCG
+  table, claims no terminology version.
+- **Size limit** `terminology.ecl.max-expansion-size` (default 20,000). A larger expansion fails loading
+  with a message that points at the ECL, which catches mistakes like `<< 404684003`. Optional refinements
+  (the TSV engine's subtype-aware suppression) fall back instead of failing.
+
+**To do** (with Phase 3):
+
+1. **Version change detection.** Periodically read the SNOMED CT version from the terminology server. When
+   it changes:
+   - re-expand in the background;
+   - re-run the content's tests (including the differential test);
+   - swap atomically only if they pass; otherwise alert and keep serving the previous expansion.
+2. **Reload endpoint**, to trigger the same process when the terminology server is upgraded.
+3. **Packages declare the version they were validated against**, as CRMI expansion parameters / manifest.
+   An instance warns or blocks on mismatch (Section 6.4, item 4).
+4. **Membership instead of expansion for very large ECLs**, only if a real case appears (e.g. national drug
+   extensions). Ask the server whether each patient code is in the ECL, with a cache keyed by
+   (ECL, code, version). The engine supports this (`VALUESET_MEMBERSHIP_MODE.USE_VALIDATE_CODE_OPERATION`)
+   given a remote terminology repository.
+
 ---
 
 ## 7. Importing external SMART content
@@ -484,6 +551,9 @@ Outcome: go to Option B, or fall back to Option C.
   offset. The scenarios use UTC; this is a deliberate semantic choice to document, not a regression.
 - The in-memory data repository indexes by id: the engine assigns synthetic ids to id-less prefetch
   resources.
+- **Terminology pinning and traceability** (Section 6.5): expansions record their SNOMED CT version, cards
+  carry the PlanDefinition version and terminology versions, and oversized expansions fail loading. The
+  full suite passes: 208 tests.
 
 - `PlanDefinitionProcessor.apply()` reassigns its internal repository on every call, so it is **not
   thread-safe**. Create one processor per call and share `CrSettings`/`EvaluationSettings` (library and value
@@ -519,6 +589,8 @@ against tests. Offer SNOMED CT bindings back to the DAK authors.
    or remodel as a recorded Observation for portability.
 5. Authoring source of truth: L2 spreadsheets in Git, or L3 with L2 as documentation.
 6. Store: disk only, or Git-backed from the start.
+7. Terminology refresh: polling interval for version checks, and whether a failed re-validation only alerts
+   or also disables the affected services. Also confirm the 20,000-concept expansion limit.
 
 ---
 
