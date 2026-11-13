@@ -300,9 +300,13 @@ class SmartAncPilotScenariosTest {
 	}
 
 	@Test
-	void strategyComposesThePilotTables() {
-		assertEquals(List.of("ANCDT01", "ANCDT08", "ANCDT11", "ANCDT17", "ANCDT23", "ANCDT25"),
-				engine.composedPlanDefinitions("ANCContactDecisionSupport").stream().map(PlanDefinition::getIdPart).sorted().toList());
+	void startOfContactTriagesAndOrdersTestsAndItsEndCounsels() {
+		// The WHO workflow steps of the tables: ANC.B5 Quick check and ANC.B9 Laboratory tests (test orders) at the
+		// start; ANC.B10.4 Diagnosis and treatment, and the anaemia counselling of ANC.B9, at the end.
+		assertEquals(List.of("ANCDT01", "ANCDT08", "ANCDT11"),
+				engine.composedPlanDefinitions("ANCContactStart").stream().map(PlanDefinition::getIdPart).toList());
+		assertEquals(List.of("ANCDT17", "ANCDT23", "ANCDT25"),
+				engine.composedPlanDefinitions("ANCContactDischarge").stream().map(PlanDefinition::getIdPart).toList());
 	}
 
 	/** The summaries of the cards the rule produces, i.e. the titles of the actions that applied. */

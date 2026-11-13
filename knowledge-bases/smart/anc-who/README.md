@@ -1,23 +1,34 @@
 # Antenatal care contact decision support — WHO SMART ANC (pilot)
 
-FHIR Clinical Reasoning content served by the embedded CQL engine as two CDS Hooks services, one per hook of the
-contact: `ANCContactDecisionSupport-encounter-start` and `ANCContactDecisionSupport-encounter-discharge`. For the
-contact (`context.encounterId`) they return one card per decision that applies: proceed or refer, which tests to
-conduct, which counselling is required.
+FHIR Clinical Reasoning content served by the embedded CQL engine as two CDS Hooks services, one for each end of
+an antenatal contact (`context.encounterId`). Each returns one card per decision that applies.
+
+| Service | Hook | Tables | Decides |
+|---|---|---|---|
+| `ANCContactStart` | `encounter-start` | `ANCDT01`, `ANCDT08`, `ANCDT11` | Proceed with the contact or refer; which tests to order |
+| `ANCContactDischarge` | `encounter-discharge` | `ANCDT17`, `ANCDT23`, `ANCDT25` | Refer urgently; which counselling, with the iron and folic acid doses |
 
 ## Content
 
-`PlanDefinition-ANCContactDecisionSupport.json` is a CPG StrategyDefinition composing six unmodified WHO decision
-tables from the WHO SMART Guidelines ANC implementation guide:
+`PlanDefinition-ANCContactStart.json` and `PlanDefinition-ANCContactDischarge.json` are CPG StrategyDefinitions
+composing six unmodified WHO decision tables from the WHO SMART Guidelines ANC implementation guide:
 
-| Table | Topic | Decisions |
-|---|---|---|
-| `ANCDT01` | Danger signs | Proceed with the contact; or refer (central cyanosis, other danger signs) |
-| `ANCDT08` | HIV testing | Conduct HIV test; not required if HIV positive; optional in low-prevalence settings |
-| `ANCDT11` | Syphilis testing | Conduct syphilis test; not required (but treat) if syphilis positive |
-| `ANCDT17` | Pre-eclampsia, hypertension | Refer urgently to a hospital; hypertension counselling |
-| `ANCDT23` | Gestational diabetes, diabetes | GDM counselling; DM counselling |
-| `ANCDT25` | Anaemia | Anaemia counselling, with the iron and folic acid doses |
+| Table | Topic | Decisions | WHO workflow step | Service |
+|---|---|---|---|---|
+| `ANCDT01` | Danger signs | Proceed with the contact; or refer (central cyanosis, other danger signs) | ANC.B5 Quick check | start |
+| `ANCDT08` | HIV testing | Conduct HIV test; not required if HIV positive; optional in low-prevalence settings | ANC.B9 Laboratory tests | start |
+| `ANCDT11` | Syphilis testing | Conduct syphilis test; not required (but treat) if syphilis positive | ANC.B9 Laboratory tests | start |
+| `ANCDT17` | Pre-eclampsia, hypertension | Refer urgently to a hospital; hypertension counselling | ANC.B10.4 Diagnosis and treatment | discharge |
+| `ANCDT23` | Gestational diabetes, diabetes | GDM counselling; DM counselling | ANC.B10.4 Diagnosis and treatment | discharge |
+| `ANCDT25` | Anaemia | Anaemia counselling, with the iron and folic acid doses | ANC.B9 Laboratory tests | discharge |
+
+The split follows the step each table declares as its trigger in the WHO workflow. The danger-sign triage
+decides whether the contact goes on at all, and the tests are orders, useful before the laboratory work: both
+belong at the start. Diagnosis and counselling need the examination and laboratory results of the contact: they
+belong at its end. The WHO testing tables do not check whether the test was done, so at the end of the contact
+they would repeat "Conduct HIV test". The WHO steps are finer than the two encounter hooks; a client driving the
+Questionnaires can also call `ANCContactStart` again after a form (e.g. after ANC.B6 Profile, once the gestational
+age is known).
 
 The tables and their dependency closure (617 resources: 6 PlanDefinitions, 15 Libraries, 595 ValueSets,
 2 CodeSystems) come from `smart.who.int.anc#0.3.0`, the IG's CI build (CC0-1.0). The ANC IG has no

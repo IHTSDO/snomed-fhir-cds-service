@@ -626,9 +626,9 @@ service `JMImmunizationSchedule`).
 
 ### 9.3 Antenatal care pilot (WHO SMART ANC)
 
-Six WHO SMART ANC decision tables run as one service (`knowledge-bases/smart/anc-who`, service
-`ANCContactDecisionSupport`): danger signs (DT01), HIV testing (DT08), syphilis testing (DT11), hypertension
-(DT17), diabetes (DT23) and anaemia (DT25).
+Six WHO SMART ANC decision tables run as two services (`knowledge-bases/smart/anc-who`): `ANCContactStart`
+(`encounter-start`: danger signs DT01, HIV testing DT08, syphilis testing DT11) and `ANCContactDischarge`
+(`encounter-discharge`: hypertension DT17, diabetes DT23, anaemia DT25).
 
 - **Source.** The ANC IG has no release. Its CI build (`smart.who.int.anc#0.3.0` on `build.fhir.org`) was
   used. The newest branch (`br-changes-2026-07-28`) also compiles and runs, once the CQL namespaces
@@ -638,10 +638,14 @@ Six WHO SMART ANC decision tables run as one service (`knowledge-bases/smart/anc
 - **Contact-scoped logic.** ANC evaluates one contact: every data element is an Observation linked to the
   current Encounter, passed as the CQL parameter `encounter`. The service passes it from
   `context.encounterId`, or from the only in-progress Encounter in the prefetch.
-- **Encounter hooks.** The strategy triggers on `encounter-start` and `encounter-discharge`, whose context names
-  the encounter. A CDS Hooks service has one hook, so the registrar registers a PlanDefinition with several hooks
-  once per hook (`ANCContactDecisionSupport-encounter-start`, `…-encounter-discharge`); the Encounter is
-  prefetched by id.
+- **Encounter hooks, split by workflow step.** Each WHO table declares the step of the ANC workflow it runs in
+  (its `named-event` trigger): DT01 in ANC.B5 Quick check; DT08, DT11 and DT25 in ANC.B9 Laboratory tests; DT17
+  and DT23 in ANC.B10.4 Diagnosis and treatment. Triage and test orders go to `encounter-start`; diagnosis and
+  counselling, which need the contact's results, to `encounter-discharge`. One strategy on both hooks was tried
+  first: at the start the result tables had no data, and at the end the testing tables, which do not check
+  whether the test was done, repeated their orders. Both hooks name the encounter in their context, and the
+  Encounter is prefetched by id. The registrar also supports one PlanDefinition on several hooks (one service per
+  hook, `<id>-<hook>`), unused now.
 - **Questionnaires.** The IG ships 12 Questionnaires, one per workflow activity, using definition-based
   extraction: each item points at the profile of a data element, whose `code` is the element's ANC code. That is
   where the question-and-answer shape of the data comes from. CDS Hooks has no place for forms (discovery's

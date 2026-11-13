@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
@@ -57,11 +58,12 @@ class PlanDefinitionCDSServiceApiTest {
 				// WHO decision tables composed by the schedule are served through it, not as services of their own.
 				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')]").isEmpty())
 				// One PlanDefinition with two hooks is two services; encounter hooks prefetch the encounter itself.
-				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport-encounter-start')].hook").value(contains("encounter-start")))
-				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport-encounter-discharge')].hook").value(contains("encounter-discharge")))
-				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport-encounter-start')].prefetch.encounter").value(contains("Encounter/{{context.encounterId}}")))
-				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport-encounter-start')].prefetch.observation").value(contains("Observation?patient={{context.patientId}}")))
-				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport')]").isEmpty())
+				// ANC: triage and test orders at the start of the contact, diagnosis and counselling at its end.
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactStart')].hook").value(contains("encounter-start")))
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDischarge')].hook").value(contains("encounter-discharge")))
+				// Encounter hooks prefetch the encounter itself.
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactStart')].prefetch.encounter").value(contains("Encounter/{{context.encounterId}}")))
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDischarge')].prefetch.observation").value(contains("Observation?patient={{context.patientId}}")))
 				.andExpect(jsonPath("$.services[?(@.id == 'ANCDT01')]").isEmpty());
 	}
 
@@ -187,7 +189,7 @@ class PlanDefinitionCDSServiceApiTest {
 	private static final String ANC = "http://smart.who.int/anc/CodeSystem/anc-custom-codes";
 
 	@Test
-	void ancContactWithCentralCyanosisIsReferred() throws Exception {
+	void ancContactStartWithCentralCyanosisIsReferred() throws Exception {
 		String request = """
 				{
 				  "hook": "encounter-start",
@@ -216,19 +218,18 @@ class PlanDefinitionCDSServiceApiTest {
 				ancObservation("danger-signs", "ANC.B5.DE48", "\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"http://snomed.info/sct\", \"code\": \"95837007\" } ] }"),
 				ancObservation("ga", "ANC.B6.DE17", "\"valueQuantity\": { \"value\": 14, \"system\": \"http://unitsofmeasure.org\", \"code\": \"wk\" }"));
 
-		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport-encounter-start").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(post("/cds-services/ANCContactStart").contentType(MediaType.APPLICATION_JSON).content(request))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Proceed with ANC contact OR Referral for Central cyanosis")))
 				// First contact: HIV (high prevalence setting) and syphilis testing.
 				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Conduct HIV test")))
 				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Conduct syphilis test")))
-				// Decisions whose data is missing (e.g. no glucose result) give no card.
-				.andExpect(jsonPath("$.cards[?(@.summary =~ /.*diabetes.*/)]").isEmpty())
+				.andExpect(jsonPath("$.cards", hasSize(3)))
 				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].detail").value(contains(containsString("**Why:**"))))
 				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].source.url")
 						.value(contains("https://build.fhir.org/ig/WorldHealthOrganization/smart-anc/PlanDefinition-ANCDT08.html")))
 				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].extension['org.snomed.cds-service'].strategy")
-						.value(contains(startsWith("http://snomed.org/fhir/cds-demo/PlanDefinition/ANCContactDecisionSupport"))))
+						.value(contains("http://snomed.org/fhir/cds-demo/PlanDefinition/ANCContactStart|0.1.0")))
 				// The ANC value sets are bound to SNOMED CT (bindings/), so the cards say which release.
 				.andExpect(jsonPath("$.cards[0].extension['org.snomed.cds-service'].terminologyVersions")
 						.value(contains("http://snomed.info/sct/900000000000207008/version/20260701")));
@@ -238,7 +239,7 @@ class PlanDefinitionCDSServiceApiTest {
 	void ancObservationsOfAnotherContactAreIgnored() throws Exception {
 		String request = """
 				{
-				  "hook": "encounter-discharge",
+				  "hook": "encounter-start",
 				  "hookInstance": "test-instance",
 				  "context": { "userId": "Practitioner/midwife-1", "patientId": "anc-1", "encounterId": "contact-2" },
 				  "prefetch": {
@@ -254,9 +255,46 @@ class PlanDefinitionCDSServiceApiTest {
 				""".formatted(ancObservation("danger-signs", "ANC.B5.DE48",
 				"\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"%s\", \"code\": \"ANC.B5.DE51\" } ] }".formatted(ANC)));
 
-		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport-encounter-discharge").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(post("/cds-services/ANCContactStart").contentType(MediaType.APPLICATION_JSON).content(request))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.cards[?(@.summary =~ /.*cyanosis.*/)]").isEmpty());
+	}
+
+	@Test
+	void ancContactDischargeCounselsOnTheResults() throws Exception {
+		String quantity = "\"valueQuantity\": { \"value\": %s, \"system\": \"http://unitsofmeasure.org\", \"code\": \"%s\" }";
+		String request = """
+				{
+				  "hook": "encounter-discharge",
+				  "hookInstance": "test-instance",
+				  "context": { "userId": "Practitioner/midwife-1", "patientId": "anc-1", "encounterId": "contact-1" },
+				  "prefetch": {
+				    "patient": { "resourceType": "Patient", "id": "anc-1", "gender": "female" },
+				    "encounter": { "resourceType": "Encounter", "id": "contact-1", "status": "in-progress",
+				      "extension": [ { "url": "http://smart.who.int/anc/StructureDefinition/contactNumber", "valueInteger": 1 } ],
+				      "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "AMB" },
+				      "subject": { "reference": "Patient/anc-1" } },
+				    "observation": { "resourceType": "Bundle", "type": "searchset", "entry": [
+				      { "resource": %s }, { "resource": %s }, { "resource": %s }, { "resource": %s }, { "resource": %s },
+				      { "resource": %s }, { "resource": %s }, { "resource": %s } ] }
+				  }
+				}
+				""".formatted(
+				ancObservation("ga", "ANC.B6.DE17", quantity.formatted(30, "wk")),
+				ancObservation("sbp", "ANC.B8.DE17", quantity.formatted(150, "mm[Hg]")),
+				ancObservation("sbp-repeat", "ANC.B8.DE20", quantity.formatted(150, "mm[Hg]")),
+				ancObservation("dbp", "ANC.B8.DE19", quantity.formatted(85, "mm[Hg]")),
+				ancObservation("dbp-repeat", "ANC.B8.DE21", quantity.formatted(85, "mm[Hg]")),
+				ancObservation("urine-protein", "ANC.B9.DE144", "\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"%s\", \"code\": \"ANC.B9.DE145\" } ] }".formatted(ANC)),
+				ancObservation("fpg", "ANC.B9.DE163", quantity.formatted(100, "mg/dL")),
+				ancObservation("hb", "ANC.B9.DE186", quantity.formatted(100, "g/L")));
+
+		mockMvc.perform(post("/cds-services/ANCContactDischarge").contentType(MediaType.APPLICATION_JSON).content(request))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.cards[*].summary").value(containsInAnyOrder("Conduct hypertension counselling",
+						"Conduct REQUIRED gestational diabetes mellitus (GDM) counselling", "Conduct REQUIRED anaemia counselling")))
+				// The test orders of the first contact belong to the start of the contact, not to its end.
+				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')]").isEmpty());
 	}
 
 	/** An ANC data element recorded in contact-1. */
