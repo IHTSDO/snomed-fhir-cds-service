@@ -77,6 +77,9 @@ public class PlanDefinitionCDSService extends CDSService {
 		rules = composed.isEmpty() ? List.of(planDefinition) : composed;
 		setTitle(planDefinition.hasTitle() ? planDefinition.getTitle() : planDefinition.getName());
 		setDescription(planDefinition.hasDescription() ? planDefinition.getDescription().strip() : getTitle());
+		if (planDefinition.hasUsage()) {
+			setUsageRequirements(planDefinition.getUsage().strip());
+		}
 
 		List<DataRequirement> dataRequirements = new ArrayList<>();
 		long warmUpMs = 0;

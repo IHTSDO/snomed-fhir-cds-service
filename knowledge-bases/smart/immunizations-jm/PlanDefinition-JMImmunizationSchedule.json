@@ -9,7 +9,7 @@
   "url": "http://snomed.org/fhir/cds-demo/PlanDefinition/JMImmunizationSchedule",
   "version": "0.1.0",
   "name": "JMImmunizationSchedule",
-  "title": "Jamaica routine immunization schedule (WHO SMART decision tables)",
+  "title": "Immunization schedule: Jamaica (WHO SMART decision tables)",
   "type": {
     "coding": [
       {
@@ -20,7 +20,8 @@
   },
   "status": "draft",
   "experimental": true,
-  "description": "National adaptation of the WHO SMART Immunizations IG for Jamaica: one WHO decision table per antigen, chosen to match Jamaica's routine schedule (MOHW EPI Field Guide Vol. 1, January 2024, Table 2.7). The WHO tables are used unmodified; known differences from the national schedule: DTP, polio and Hib primary doses at 6, 10 and 14 weeks in WHO versus 6 weeks, 3 and 6 months in Jamaica; second MMR dose at 15 months in WHO versus 18 months in Jamaica; Jamaica's polio and DTP boosters are not covered. Pneumococcal and rotavirus vaccines are not in Jamaica's public routine schedule.",
+  "description": "Says which routine vaccines are due now and when the others will be: BCG, hepatitis B, DTP, polio, Hib, measles, rubella, mumps and HPV. Cards that propose a vaccine are warnings. Source: Jamaica MOHW EPI Field Guide (January 2024), implemented with 11 unmodified WHO SMART Immunizations decision tables (CQL).",
+  "usage": "Needs the patient's birth date and Immunization records coded with the codes of the WHO value sets (WHO, ICD-11, ATC or SNOMED CT). Known differences from Jamaica's schedule: DTP, polio and Hib primary doses at 6, 10 and 14 weeks in WHO versus 6 weeks, 3 and 6 months in Jamaica; second MMR dose at 15 months in WHO versus 18 months; Jamaica's polio and DTP boosters are not covered; pneumococcal and rotavirus vaccines are not in Jamaica's public routine schedule.",
   "relatedArtifact": [
     {
       "type": "documentation",

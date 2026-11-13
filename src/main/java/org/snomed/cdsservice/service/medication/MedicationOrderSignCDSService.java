@@ -16,8 +16,8 @@ public class MedicationOrderSignCDSService extends AbstractMedicationSafetyHookC
 	public MedicationOrderSignCDSService() {
 		super("medication-order-sign");
 		setHook("order-sign");
-		setTitle("Medication Order Sign");
-		setDescription("Returns final medication prescribing alerts before draft orders are signed.");
+		setTitle("Medication safety: order signing");
+		setDescription("Final check of the draft medication orders before they are signed, with the same checks as order selection: contraindications with active problems, interactions, allergies and dose against the WHO defined daily dose. Source: curated contraindication and interaction tables (Wikipedia, DrugBank), WHO ATC/DDD index.");
 		setUsageRequirements("Supports medication prescribing workflows using CDS Hooks order-sign with draft MedicationRequest orders.");
 		setPrefetch(Map.of(
 				"patient", "Patient/{{context.patientId}}",

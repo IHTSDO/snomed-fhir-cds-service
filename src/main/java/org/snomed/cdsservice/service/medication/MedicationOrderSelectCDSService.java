@@ -16,8 +16,8 @@ public class MedicationOrderSelectCDSService extends AbstractMedicationSafetyHoo
 	public MedicationOrderSelectCDSService() {
 		super("medication-order-select");
 		setHook("order-select");
-		setTitle("Medication Order Select");
-		setDescription("Returns medication prescribing alerts for contraindications, interactions, excessive dosage, and allergy conflicts.");
+		setTitle("Medication safety: order selection");
+		setDescription("Checks the medications being ordered against the patient's active problems (contraindications), other medications (interactions) and allergies (through the SNOMED CT substance hierarchy), and their dose against the WHO defined daily dose. Source: curated contraindication and interaction tables (Wikipedia, DrugBank), WHO ATC/DDD index.");
 		setUsageRequirements("Supports medication prescribing workflows using CDS Hooks order-select with selected draft MedicationRequest orders.");
 		setPrefetch(Map.of(
 				"patient", "Patient/{{context.patientId}}",

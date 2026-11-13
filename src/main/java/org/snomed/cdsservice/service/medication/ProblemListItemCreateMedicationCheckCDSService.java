@@ -15,8 +15,8 @@ public class ProblemListItemCreateMedicationCheckCDSService extends AbstractMedi
 	public ProblemListItemCreateMedicationCheckCDSService() {
 		super("problem-list-item-create-medication-check");
 		setHook("problem-list-item-create");
-		setTitle("Problem List Item Create Medication Check");
-		setDescription("Checks newly added problem list items against the patient’s existing medications.");
+		setTitle("Medication safety: new problem");
+		setDescription("Checks a newly added problem against the patient's active medications for contraindications. Source: curated contraindication table (Wikipedia).");
 		setUsageRequirements("Supports CDS Hooks problem-list-item-create with newly finalized Condition resources and active medications in prefetch.");
 		setPrefetch(Map.of(
 				"patient", "Patient/{{context.patientId}}",

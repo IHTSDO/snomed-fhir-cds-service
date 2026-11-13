@@ -75,8 +75,8 @@ public class RuleBasedCDSService extends CDSService {
 			throw new IllegalStateException("Failed to initialise diagnostic CDS service '%s'.".formatted(getId()), e);
 		}
 		setHook(hook);
-		setTitle("Diagnostic decision support (%s)".formatted(domain));
-		setDescription("SNOMED CT driven diagnostic decision support for %s, evaluated from editable TSV rules.".formatted(domain));
+		setTitle(title(ruleSet));
+		setDescription(description(ruleSet));
 		setPrefetch(Map.of(
 				"patient", "Patient/{{context.patientId}}",
 				"conditions", "Condition?patient={{context.patientId}}",
@@ -190,6 +190,41 @@ public class RuleBasedCDSService extends CDSService {
 			String code = c.getCode();
 			return "active".equalsIgnoreCase(code) || "recurrence".equalsIgnoreCase(code) || "relapse".equalsIgnoreCase(code);
 		});
+	}
+
+	/** E.g. "Diagnostic support: type 2 diabetes mellitus (TSV rules)", from the outcomes the rules suggest. */
+	static String title(RuleSet ruleSet) {
+		return "Diagnostic support: %s (TSV rules)".formatted(String.join(", ", outcomes(ruleSet)));
+	}
+
+	/** What the rules suggest, through which pathways, from which guideline, and how they are evaluated. */
+	static String description(RuleSet ruleSet) {
+		List<String> pathways = ruleSet.enabledRules().stream()
+				.map(Rule::pathway).filter(pathway -> pathway != null && !pathway.isBlank())
+				.map(pathway -> lowerFirst(pathway.replaceFirst("(?i)\\s+pathway$", "")))
+				.distinct().toList();
+		List<String> sources = ruleSet.enabledRules().stream()
+				.map(Rule::sourceLabel).filter(label -> label != null && !label.isBlank())
+				.map(label -> label.split(" — ")[0].strip())
+				.distinct().toList();
+		return "Suggests or confirms %s from %d pathway%s: %s. Source: %s. Editable TSV rules evaluated by this service's own engine.".formatted(
+				String.join(", ", outcomes(ruleSet)), pathways.size(), pathways.size() == 1 ? "" : "s",
+				String.join("; ", pathways), String.join("; ", sources));
+	}
+
+	private static List<String> outcomes(RuleSet ruleSet) {
+		List<String> outcomes = ruleSet.enabledRules().stream()
+				.map(Rule::outcomeDisplay).filter(display -> display != null && !display.isBlank())
+				.map(RuleBasedCDSService::lowerFirst).distinct().toList();
+		return outcomes.isEmpty() ? List.of(ruleSet.domain()) : outcomes;
+	}
+
+	/** Lower-cases the first letter unless the word is an acronym (e.g. keeps "HIV"). */
+	private static String lowerFirst(String text) {
+		if (text.length() > 1 && Character.isUpperCase(text.charAt(1))) {
+			return text;
+		}
+		return Character.toLowerCase(text.charAt(0)) + text.substring(1);
 	}
 
 	public RuleSet getRuleSet() {

@@ -9,7 +9,7 @@
   "url": "http://snomed.org/fhir/cds-demo/PlanDefinition/DM2024OGTT01",
   "version": "0.1.0",
   "name": "DM2024OGTT01",
-  "title": "DM-2024-OGTT-01 Oral glucose tolerance test pathway",
+  "title": "Diagnostic support: type 2 diabetes mellitus, OGTT pathway (CQL)",
   "type": {
     "coding": [
       {
@@ -20,7 +20,8 @@
   },
   "status": "draft",
   "experimental": true,
-  "description": "Makes the repeat-if-asymptomatic footnote executable. Confirm the intended symptom/crisis definition with the guideline authors.",
+  "description": "Suggests a type 2 diabetes diagnosis when the two-hour plasma glucose after a 75 g oral glucose tolerance test is at or above 11.1 mmol/L on two separate occasions, or once with classic hyperglycaemic symptoms or a hyperglycaemic crisis. Source: Guidelines for the Clinical Management of Type 2 Diabetes in Jamaica, Ministry of Health and Wellness, December 2024. CQL translation of TSV rule DM-2024-OGTT-01, checked against the TSV engine.",
+  "usage": "Needs Observations coded with SNOMED CT (113076002 with the 2 hours qualifier 123030002) and values in mmol/L, and Conditions coded with SNOMED CT. Makes the repeat-if-asymptomatic footnote executable. Confirm the intended symptom/crisis definition with the guideline authors.",
   "relatedArtifact": [
     {
       "type": "documentation",
