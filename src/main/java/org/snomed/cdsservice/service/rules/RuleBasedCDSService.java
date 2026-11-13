@@ -226,8 +226,4 @@ public class RuleBasedCDSService extends CDSService {
 		}
 		return Character.toLowerCase(text.charAt(0)) + text.substring(1);
 	}
-
-	public RuleSet getRuleSet() {
-		return ruleSet;
-	}
 }
