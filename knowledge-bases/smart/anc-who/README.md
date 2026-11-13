@@ -1,8 +1,9 @@
 # Antenatal care contact decision support — WHO SMART ANC (pilot)
 
-FHIR Clinical Reasoning content served by the embedded CQL engine as the CDS Hooks service
-`ANCContactDecisionSupport` (`patient-view`). For the current antenatal contact it returns one card per decision
-that applies: proceed or refer, which tests to conduct, which counselling is required.
+FHIR Clinical Reasoning content served by the embedded CQL engine as two CDS Hooks services, one per hook of the
+contact: `ANCContactDecisionSupport-encounter-start` and `ANCContactDecisionSupport-encounter-discharge`. For the
+contact (`context.encounterId`) they return one card per decision that applies: proceed or refer, which tests to
+conduct, which counselling is required.
 
 ## Content
 
@@ -28,14 +29,20 @@ at startup) and all resources drop their generated narrative. Nothing else is ch
 ## Data model
 
 - **The current contact.** The logic only uses data recorded in the current Encounter, passed as the CQL
-  parameter `encounter`. The service takes it from `context.encounterId`, or else from the only in-progress
-  Encounter in the prefetch. The contact number is the Encounter extension
+  parameter `encounter`. Both hooks give it as `context.encounterId`, and the Encounter is prefetched by id
+  (`Encounter/{{context.encounterId}}`). The contact number is the Encounter extension
   `http://smart.who.int/anc/StructureDefinition/contactNumber` (integer).
 - **Data elements.** Every element is an Observation coded with an ANC code
   (`http://smart.who.int/anc/CodeSystem/anc-custom-codes`, e.g. `ANC.B5.DE48` *Danger signs*, `ANC.B9.DE186`
   *Blood haemoglobin test result*), with status `final`, `amended` or `corrected`, referencing the Encounter.
   The value is a CodeableConcept (an ANC code, e.g. `ANC.B5.DE51` *Central cyanosis*), a Quantity (UCUM, e.g.
   `mm[Hg]`, `mg/dL`, `g/L`, `wk`) or a boolean.
+- **Questionnaires.** This shape (the data element's code, its answer as the value) is what the IG's Questionnaires
+  produce through definition-based extraction: each item points at a profile of the element (e.g.
+  `anc-b5-de48#Observation.value[x]`). The pilot's data come from ANC.B5 Quick check, ANC.B6 Profile, ANC.B8
+  Physical exam and ANC.B9 Lab tests & imaging; the contact number from ANC.A Registration. CDS Hooks has no
+  place for forms, so the client captures the data and sends the Observations; the services' `usageRequirements`
+  name the Questionnaires.
 - **Settings.** `ANCConfig` holds the national settings. It sets the HIV prevalence in pregnant women to 6 %,
   a high-prevalence setting, so women are tested at the first contact and again in the third trimester.
 

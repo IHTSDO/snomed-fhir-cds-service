@@ -231,12 +231,15 @@ content set: a FHIR package, or a subset of one.
 |---|---|---|
 | `DM2024OGTT01` | `diabetes-jm` | The diabetes OGTT rule (`DM-2024-OGTT-01`) translated from the TSV model to SMART-style CQL, with SNOMED CT ECL value sets. A differential test checks it against the TSV engine on 26 scenarios. |
 | `JMImmunizationSchedule` | `immunizations-jm` | Jamaica's routine immunization schedule, built from 11 unmodified WHO SMART Immunizations decision tables (BCG, hepatitis B, DTP, polio, Hib, measles, rubella, mumps, HPV). One card per table. The IG's own 138 test scenarios pass. See the content set's README for the mapping to the national schedule and the known differences. |
-| `ANCContactDecisionSupport` | `anc-who` | Pilot: decision support for one antenatal contact from six unmodified WHO SMART ANC decision tables (danger signs, HIV and syphilis testing, hypertension, diabetes, anaemia). Needs the current Encounter (`context.encounterId`) and Observations coded with ANC codes or, through a curated binding, SNOMED CT. One card per decision that applies. 34 scenarios derived from the WHO decision tables. See the content set's README for the data model, and `bindings/README.md` for the QA of WHO's SNOMED CT map. |
+| `ANCContactDecisionSupport-encounter-start`, `ANCContactDecisionSupport-encounter-discharge` | `anc-who` | Pilot: decision support for one antenatal contact, at its start and at its end from six unmodified WHO SMART ANC decision tables (danger signs, HIV and syphilis testing, hypertension, diabetes, anaemia). Needs the current Encounter (`context.encounterId`) and Observations coded with ANC codes or, through a curated binding, SNOMED CT. One card per decision that applies. 34 scenarios derived from the WHO decision tables. See the content set's README for the data model, and `bindings/README.md` for the QA of WHO's SNOMED CT map. |
 
 ### How a request is handled
-- **Discovery.** The service id is the PlanDefinition id. The hook comes from the PlanDefinition's
-  `named-event` trigger (default `rules.plandefinition.default-hook=patient-view`). The **prefetch is derived
-  from `$data-requirements`**, e.g. Patient, Observation and Condition for `DM2024OGTT01`.
+- **Discovery.** The hooks come from the PlanDefinition's `named-event` triggers (default
+  `rules.plandefinition.default-hook=patient-view`). With one hook the service id is the PlanDefinition id; a
+  PlanDefinition with several hooks is one service per hook, `<PlanDefinition id>-<hook>` (e.g.
+  `ANCContactDecisionSupport-encounter-start`). The **prefetch is derived from `$data-requirements`**, e.g.
+  Patient, Observation and Condition for `DM2024OGTT01`; encounter hooks prefetch the Encounter by
+  `{{context.encounterId}}`.
 - **Evaluation.** The prefetched resources become an in-memory data repository for that request.
   `PlanDefinition/$apply` evaluates the CQL with three-valued logic (`null` = unknown).
 - **Cards.** Each resulting `CommunicationRequest` becomes a card: first line as summary, full text as detail.
@@ -325,4 +328,4 @@ browsers require this when a frontend served from a public site calls the servic
 
 ### Testing the Service
 Download and import the [Postman Collection](Postman_collection.json) for API examples, including calls to
-the CQL services `DM2024OGTT01`, `JMImmunizationSchedule` and `ANCContactDecisionSupport`.
+the CQL services `DM2024OGTT01`, `JMImmunizationSchedule` and `ANCContactDecisionSupport-encounter-start`.

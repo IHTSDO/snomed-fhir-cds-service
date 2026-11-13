@@ -21,7 +21,7 @@
   "status": "draft",
   "experimental": true,
   "description": "Checks the current antenatal care contact for danger signs, pre-eclampsia and hypertension, gestational diabetes, anaemia, and whether HIV and syphilis tests are due, and says what to do: proceed, refer, test or counsel. Source: WHO antenatal care recommendations (2016), Digital Adaptation Kit (2021), implemented with 6 unmodified WHO SMART ANC decision tables (CQL).",
-  "usage": "Pilot. Evaluates the data of one ANC contact: needs the encounter (context.encounterId, or a single in-progress Encounter in the prefetch) and Observations of that encounter coded with the WHO ANC data dictionary codes; the ANC contact number is an Encounter extension. WHO SMART ANC IG 0.3.0 (continuous integration build, not a published release).",
+  "usage": "Pilot. Evaluates the data of one ANC contact, at its start (encounter-start) or at its end (encounter-discharge): the encounter is context.encounterId. Needs the Observations of that encounter, coded with the WHO ANC data dictionary codes or, through a curated binding, SNOMED CT; the ANC contact number is an Encounter extension. The data can be captured with the IG's Questionnaires (ANC.B5 Quick check, ANC.B6 Profile, ANC.B8 Physical exam, ANC.B9 Lab tests & imaging). WHO SMART ANC IG 0.3.0 (continuous integration build, not a published release).",
   "relatedArtifact": [
     {
       "type": "documentation",
@@ -46,7 +46,11 @@
       "trigger": [
         {
           "type": "named-event",
-          "name": "patient-view"
+          "name": "encounter-start"
+        },
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
         }
       ],
       "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT01"
@@ -57,7 +61,11 @@
       "trigger": [
         {
           "type": "named-event",
-          "name": "patient-view"
+          "name": "encounter-start"
+        },
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
         }
       ],
       "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT17"
@@ -68,7 +76,11 @@
       "trigger": [
         {
           "type": "named-event",
-          "name": "patient-view"
+          "name": "encounter-start"
+        },
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
         }
       ],
       "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT23"
@@ -79,7 +91,11 @@
       "trigger": [
         {
           "type": "named-event",
-          "name": "patient-view"
+          "name": "encounter-start"
+        },
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
         }
       ],
       "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT25"
@@ -90,7 +106,11 @@
       "trigger": [
         {
           "type": "named-event",
-          "name": "patient-view"
+          "name": "encounter-start"
+        },
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
         }
       ],
       "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT08"
@@ -101,7 +121,11 @@
       "trigger": [
         {
           "type": "named-event",
-          "name": "patient-view"
+          "name": "encounter-start"
+        },
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
         }
       ],
       "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT11"

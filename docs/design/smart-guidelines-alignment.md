@@ -636,8 +636,18 @@ Six WHO SMART ANC decision tables run as one service (`knowledge-bases/smart/anc
   All 39 ANC PlanDefinitions compile on both. The pilot content keeps only the CQL of the Libraries and drops
   narratives: 3.6 MB instead of 23 MB.
 - **Contact-scoped logic.** ANC evaluates one contact: every data element is an Observation linked to the
-  current Encounter, passed as the CQL parameter `encounter`. The service now passes it from
+  current Encounter, passed as the CQL parameter `encounter`. The service passes it from
   `context.encounterId`, or from the only in-progress Encounter in the prefetch.
+- **Encounter hooks.** The strategy triggers on `encounter-start` and `encounter-discharge`, whose context names
+  the encounter. A CDS Hooks service has one hook, so the registrar registers a PlanDefinition with several hooks
+  once per hook (`ANCContactDecisionSupport-encounter-start`, `…-encounter-discharge`); the Encounter is
+  prefetched by id.
+- **Questionnaires.** The IG ships 12 Questionnaires, one per workflow activity, using definition-based
+  extraction: each item points at the profile of a data element, whose `code` is the element's ANC code. That is
+  where the question-and-answer shape of the data comes from. CDS Hooks has no place for forms (discovery's
+  `prefetch` says which data, not how to capture them), so the client renders the Questionnaires and sends the
+  extracted Observations; `usageRequirements` names them. A card with a SMART app link, or a suggestion creating
+  a Task for a Questionnaire, would be the standard ways for the service to ask for missing data.
 - **Cards from actions.** ANC actions create no resources: they are decisions ("Refer urgently to a hospital",
   "Conduct HIV test") with the L2 logic in the condition's description. Each applicable decision becomes a card,
   with the other outcomes of the decision (e.g. the iron dose) and the L2 logic as **Why:**.

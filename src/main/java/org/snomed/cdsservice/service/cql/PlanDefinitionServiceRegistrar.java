@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,8 +32,10 @@ import java.util.Set;
  * Only entry points are registered: a PlanDefinition composed by another PlanDefinition of the same content set (an
  * action's {@code definitionCanonical}, e.g. a WHO decision table inside a national schedule) is served through it.
  * <p>
- * The service id is the PlanDefinition id. The hook is the name of the first {@code named-event} trigger in the
- * PlanDefinition's actions, or {@code rules.plandefinition.default-hook} when it declares none. Only ids, urls,
+ * The hooks are the names of the {@code named-event} triggers in the PlanDefinition's actions, or
+ * {@code rules.plandefinition.default-hook} when it declares none. A CDS Hooks service has one hook, so a
+ * PlanDefinition with several (e.g. {@code encounter-start} and {@code encounter-discharge}) is registered once per
+ * hook, as {@code <PlanDefinition id>-<hook>}; with one hook the service id is the PlanDefinition id. Only ids, urls,
  * triggers and action definitions are peeked here; loading and compilation happen in each service's own
  * initialisation.
  */
@@ -79,24 +82,30 @@ public class PlanDefinitionServiceRegistrar implements BeanDefinitionRegistryPos
 			}
 			for (JsonNode planDefinition : planDefinitions) {
 				if (!composed.contains(planDefinition.path("url").asText())) {
-					register(registry, contentSet, planDefinition.path("id").asText(), hook(planDefinition, defaultHook));
+					String planDefinitionId = planDefinition.path("id").asText();
+					List<String> hooks = hooks(planDefinition, defaultHook);
+					for (String hook : hooks) {
+						String serviceId = hooks.size() == 1 ? planDefinitionId : planDefinitionId + "-" + hook;
+						register(registry, contentSet, serviceId, planDefinitionId, hook);
+					}
 				}
 			}
 		}
 	}
 
-	private void register(BeanDefinitionRegistry registry, File contentSet, String planDefinitionId, String hook) {
-		String beanName = "planDefinitionCdsService_" + planDefinitionId;
+	private void register(BeanDefinitionRegistry registry, File contentSet, String serviceId, String planDefinitionId, String hook) {
+		String beanName = "planDefinitionCdsService_" + serviceId;
 		if (registry.containsBeanDefinition(beanName)) {
-			throw new IllegalStateException("Two content sets declare PlanDefinition '%s'.".formatted(planDefinitionId));
+			throw new IllegalStateException("Two content sets declare CDS service '%s'.".formatted(serviceId));
 		}
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(PlanDefinitionCDSService.class)
-				.addConstructorArgValue(planDefinitionId)
+				.addConstructorArgValue(serviceId)
 				.addConstructorArgValue(contentSet.getPath())
 				.addConstructorArgValue(planDefinitionId)
 				.addConstructorArgValue(hook);
 		registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
-		logger.info("Registered PlanDefinition CDS service definition '{}' (hook '{}') from '{}'.", planDefinitionId, hook, contentSet);
+		logger.info("Registered PlanDefinition CDS service definition '{}' (PlanDefinition/{}, hook '{}') from '{}'.",
+				serviceId, planDefinitionId, hook, contentSet);
 	}
 
 	private void collectComposedPlanDefinitions(JsonNode actions, Set<String> composed) {
@@ -109,15 +118,16 @@ public class PlanDefinitionServiceRegistrar implements BeanDefinitionRegistryPos
 		}
 	}
 
-	private String hook(JsonNode planDefinition, String defaultHook) {
+	static List<String> hooks(JsonNode planDefinition, String defaultHook) {
+		Set<String> hooks = new LinkedHashSet<>();
 		for (JsonNode action : planDefinition.path("action")) {
 			for (JsonNode trigger : action.path("trigger")) {
 				if ("named-event".equals(trigger.path("type").asText()) && trigger.hasNonNull("name")) {
-					return trigger.get("name").asText();
+					hooks.add(trigger.get("name").asText());
 				}
 			}
 		}
-		return defaultHook;
+		return hooks.isEmpty() ? List.of(defaultHook) : List.copyOf(hooks);
 	}
 
 	private JsonNode read(File file) {

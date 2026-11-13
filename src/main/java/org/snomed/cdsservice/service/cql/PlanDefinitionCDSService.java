@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -44,6 +45,8 @@ import java.util.TreeMap;
 public class PlanDefinitionCDSService extends CDSService {
 
 	static final String ENCOUNTER_PARAMETER = "encounter";
+	// CDS Hooks whose context carries encounterId.
+	static final Set<String> ENCOUNTER_HOOKS = Set.of("encounter-start", "encounter-discharge");
 
 	private final Path contentDirectory;
 	private final String planDefinitionId;
@@ -95,7 +98,7 @@ public class PlanDefinitionCDSService extends CDSService {
 				throw new IllegalStateException("Failed to compile the CQL of PlanDefinition/%s: %s".formatted(rule.getIdPart(), e.getMessage()), e);
 			}
 		}
-		setPrefetch(prefetchFor(dataRequirements));
+		setPrefetch(prefetchFor(dataRequirements, getHook()));
 		logger.info("Registered PlanDefinition CDS service '{}' (PlanDefinition/{}, {} rule(s), prefetch {}, CQL compiled in {} ms).",
 				getId(), planDefinitionId, rules.size(), getPrefetch().keySet(), warmUpMs);
 	}
@@ -122,14 +125,20 @@ public class PlanDefinitionCDSService extends CDSService {
 		return parameters;
 	}
 
-	static Map<String, String> prefetchFor(List<DataRequirement> dataRequirements) {
+	/**
+	 * The Patient, plus a patient-scoped search per other resource type the logic retrieves. Hooks whose context
+	 * names the encounter ({@code encounter-start}, {@code encounter-discharge}) prefetch that Encounter alone.
+	 */
+	static Map<String, String> prefetchFor(List<DataRequirement> dataRequirements, String hook) {
+		boolean encounterContext = ENCOUNTER_HOOKS.contains(hook);
 		Map<String, String> prefetch = new TreeMap<>();
 		prefetch.put("patient", "Patient/{{context.patientId}}");
 		for (DataRequirement requirement : dataRequirements) {
 			String type = requirement.getType();
 			if (type != null && !type.equals("Patient")) {
 				prefetch.putIfAbsent(Character.toLowerCase(type.charAt(0)) + type.substring(1),
-						type + "?patient={{context.patientId}}");
+						encounterContext && type.equals("Encounter") ? "Encounter/{{context.encounterId}}"
+								: type + "?patient={{context.patientId}}");
 			}
 		}
 		return prefetch;

@@ -56,7 +56,12 @@ class PlanDefinitionCDSServiceApiTest {
 				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.observation").value(contains("Observation?patient={{context.patientId}}")))
 				// WHO decision tables composed by the schedule are served through it, not as services of their own.
 				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')]").isEmpty())
-				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport')].prefetch.encounter").value(contains("Encounter?patient={{context.patientId}}")))
+				// One PlanDefinition with two hooks is two services; encounter hooks prefetch the encounter itself.
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport-encounter-start')].hook").value(contains("encounter-start")))
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport-encounter-discharge')].hook").value(contains("encounter-discharge")))
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport-encounter-start')].prefetch.encounter").value(contains("Encounter/{{context.encounterId}}")))
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport-encounter-start')].prefetch.observation").value(contains("Observation?patient={{context.patientId}}")))
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport')]").isEmpty())
 				.andExpect(jsonPath("$.services[?(@.id == 'ANCDT01')]").isEmpty());
 	}
 
@@ -185,20 +190,16 @@ class PlanDefinitionCDSServiceApiTest {
 	void ancContactWithCentralCyanosisIsReferred() throws Exception {
 		String request = """
 				{
-				  "hook": "patient-view",
+				  "hook": "encounter-start",
 				  "hookInstance": "test-instance",
-				  "context": { "patientId": "anc-1", "encounterId": "Encounter/contact-1" },
+				  "context": { "userId": "Practitioner/midwife-1", "patientId": "anc-1", "encounterId": "contact-1" },
 				  "prefetch": {
 				    "patient": { "resourceType": "Patient", "id": "anc-1", "gender": "female", "birthDate": "1998-03-02" },
 				    "encounter": {
-				      "resourceType": "Bundle",
-				      "type": "searchset",
-				      "entry": [ { "resource": {
-				        "resourceType": "Encounter", "id": "contact-1", "status": "in-progress",
-				        "extension": [ { "url": "http://smart.who.int/anc/StructureDefinition/contactNumber", "valueInteger": 1 } ],
-				        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "AMB" },
-				        "subject": { "reference": "Patient/anc-1" }
-				      } } ]
+				      "resourceType": "Encounter", "id": "contact-1", "status": "in-progress",
+				      "extension": [ { "url": "http://smart.who.int/anc/StructureDefinition/contactNumber", "valueInteger": 1 } ],
+				      "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "AMB" },
+				      "subject": { "reference": "Patient/anc-1" }
 				    },
 				    "observation": {
 				      "resourceType": "Bundle",
@@ -215,7 +216,7 @@ class PlanDefinitionCDSServiceApiTest {
 				ancObservation("danger-signs", "ANC.B5.DE48", "\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"http://snomed.info/sct\", \"code\": \"95837007\" } ] }"),
 				ancObservation("ga", "ANC.B6.DE17", "\"valueQuantity\": { \"value\": 14, \"system\": \"http://unitsofmeasure.org\", \"code\": \"wk\" }"));
 
-		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport-encounter-start").contentType(MediaType.APPLICATION_JSON).content(request))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Proceed with ANC contact OR Referral for Central cyanosis")))
 				// First contact: HIV (high prevalence setting) and syphilis testing.
@@ -237,9 +238,9 @@ class PlanDefinitionCDSServiceApiTest {
 	void ancObservationsOfAnotherContactAreIgnored() throws Exception {
 		String request = """
 				{
-				  "hook": "patient-view",
+				  "hook": "encounter-discharge",
 				  "hookInstance": "test-instance",
-				  "context": { "patientId": "anc-1", "encounterId": "contact-2" },
+				  "context": { "userId": "Practitioner/midwife-1", "patientId": "anc-1", "encounterId": "contact-2" },
 				  "prefetch": {
 				    "patient": { "resourceType": "Patient", "id": "anc-1", "gender": "female" },
 				    "encounter": { "resourceType": "Bundle", "type": "searchset", "entry": [ { "resource": {
@@ -253,7 +254,7 @@ class PlanDefinitionCDSServiceApiTest {
 				""".formatted(ancObservation("danger-signs", "ANC.B5.DE48",
 				"\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"%s\", \"code\": \"ANC.B5.DE51\" } ] }".formatted(ANC)));
 
-		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport-encounter-discharge").contentType(MediaType.APPLICATION_JSON).content(request))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.cards[?(@.summary =~ /.*cyanosis.*/)]").isEmpty());
 	}
