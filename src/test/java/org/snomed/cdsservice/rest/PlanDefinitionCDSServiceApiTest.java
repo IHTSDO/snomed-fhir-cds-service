@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.startsWith;
@@ -54,7 +55,9 @@ class PlanDefinitionCDSServiceApiTest {
 				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.immunization").value(contains("Immunization?patient={{context.patientId}}")))
 				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.observation").value(contains("Observation?patient={{context.patientId}}")))
 				// WHO decision tables composed by the schedule are served through it, not as services of their own.
-				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')]").isEmpty());
+				.andExpect(jsonPath("$.services[?(@.id == 'IMMZD2DTBCG')]").isEmpty())
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCContactDecisionSupport')].prefetch.encounter").value(contains("Encounter?patient={{context.patientId}}")))
+				.andExpect(jsonPath("$.services[?(@.id == 'ANCDT01')]").isEmpty());
 	}
 
 	@Test
@@ -174,5 +177,90 @@ class PlanDefinitionCDSServiceApiTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath(BCG_CARD + ".summary").value(contains("BCG immunization schedule is complete. One BCG primary series dose was administered.")))
 				.andExpect(jsonPath(BCG_CARD + ".referenceMedications").isEmpty());
+	}
+
+	private static final String ANC = "http://smart.who.int/anc/CodeSystem/anc-custom-codes";
+
+	@Test
+	void ancContactWithCentralCyanosisIsReferred() throws Exception {
+		String request = """
+				{
+				  "hook": "patient-view",
+				  "hookInstance": "test-instance",
+				  "context": { "patientId": "anc-1", "encounterId": "Encounter/contact-1" },
+				  "prefetch": {
+				    "patient": { "resourceType": "Patient", "id": "anc-1", "gender": "female", "birthDate": "1998-03-02" },
+				    "encounter": {
+				      "resourceType": "Bundle",
+				      "type": "searchset",
+				      "entry": [ { "resource": {
+				        "resourceType": "Encounter", "id": "contact-1", "status": "in-progress",
+				        "extension": [ { "url": "http://smart.who.int/anc/StructureDefinition/contactNumber", "valueInteger": 1 } ],
+				        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "AMB" },
+				        "subject": { "reference": "Patient/anc-1" }
+				      } } ]
+				    },
+				    "observation": {
+				      "resourceType": "Bundle",
+				      "type": "searchset",
+				      "entry": [
+				        { "resource": %s },
+				        { "resource": %s }
+				      ]
+				    }
+				  }
+				}
+				""".formatted(
+				ancObservation("danger-signs", "ANC.B5.DE48", "\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"%s\", \"code\": \"ANC.B5.DE51\" } ] }".formatted(ANC)),
+				ancObservation("ga", "ANC.B6.DE17", "\"valueQuantity\": { \"value\": 14, \"system\": \"http://unitsofmeasure.org\", \"code\": \"wk\" }"));
+
+		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport").contentType(MediaType.APPLICATION_JSON).content(request))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Proceed with ANC contact OR Referral for Central cyanosis")))
+				// First contact: HIV (high prevalence setting) and syphilis testing.
+				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Conduct HIV test")))
+				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Conduct syphilis test")))
+				// Decisions whose data is missing (e.g. no glucose result) give no card.
+				.andExpect(jsonPath("$.cards[?(@.summary =~ /.*diabetes.*/)]").isEmpty())
+				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].detail").value(contains(containsString("**Why:**"))))
+				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].source.url")
+						.value(contains("https://build.fhir.org/ig/WorldHealthOrganization/smart-anc/PlanDefinition-ANCDT08.html")))
+				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].extension['org.snomed.cds-service'].strategy")
+						.value(contains(startsWith("http://snomed.org/fhir/cds-demo/PlanDefinition/ANCContactDecisionSupport"))));
+	}
+
+	@Test
+	void ancObservationsOfAnotherContactAreIgnored() throws Exception {
+		String request = """
+				{
+				  "hook": "patient-view",
+				  "hookInstance": "test-instance",
+				  "context": { "patientId": "anc-1", "encounterId": "contact-2" },
+				  "prefetch": {
+				    "patient": { "resourceType": "Patient", "id": "anc-1", "gender": "female" },
+				    "encounter": { "resourceType": "Bundle", "type": "searchset", "entry": [ { "resource": {
+				      "resourceType": "Encounter", "id": "contact-2", "status": "in-progress",
+				      "extension": [ { "url": "http://smart.who.int/anc/StructureDefinition/contactNumber", "valueInteger": 2 } ],
+				      "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "AMB" },
+				      "subject": { "reference": "Patient/anc-1" } } } ] },
+				    "observation": { "resourceType": "Bundle", "type": "searchset", "entry": [ { "resource": %s } ] }
+				  }
+				}
+				""".formatted(ancObservation("danger-signs", "ANC.B5.DE48",
+				"\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"%s\", \"code\": \"ANC.B5.DE51\" } ] }".formatted(ANC)));
+
+		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport").contentType(MediaType.APPLICATION_JSON).content(request))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.cards[?(@.summary =~ /.*cyanosis.*/)]").isEmpty());
+	}
+
+	/** An ANC data element recorded in contact-1. */
+	private static String ancObservation(String id, String code, String value) {
+		return """
+				{ "resourceType": "Observation", "id": "%s", "status": "final",
+				  "subject": { "reference": "Patient/anc-1" }, "encounter": { "reference": "Encounter/contact-1" },
+				  "code": { "coding": [ { "system": "%s", "code": "%s" } ] },
+				  %s }
+				""".formatted(id, ANC, code, value);
 	}
 }

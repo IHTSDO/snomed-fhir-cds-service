@@ -4,9 +4,12 @@ import ca.uhn.fhir.context.FhirContext;
 import jakarta.annotation.PostConstruct;
 import org.hl7.fhir.r4.model.CarePlan;
 import org.hl7.fhir.r4.model.DataRequirement;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PlanDefinition;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snomed.cdsservice.model.CDSCard;
@@ -22,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -41,6 +43,8 @@ import java.util.TreeMap;
  */
 public class PlanDefinitionCDSService extends CDSService {
 
+	static final String ENCOUNTER_PARAMETER = "encounter";
+
 	private final Path contentDirectory;
 	private final String planDefinitionId;
 
@@ -49,8 +53,8 @@ public class PlanDefinitionCDSService extends CDSService {
 	@Autowired
 	private FhirContext fhirContext;
 
-	@Value("${cards.published-ig-hosts:smart.who.int}")
-	private Set<String> publishedIgHosts;
+	@Value("${cards.ig-page-bases:http://smart.who.int/immunizations=https://smart.who.int/immunizations}")
+	private List<String> igPageBases;
 
 	private CarePlanCardMapper cardMapper;
 
@@ -71,7 +75,7 @@ public class PlanDefinitionCDSService extends CDSService {
 	@PostConstruct
 	public void init() {
 		engine = engineProvider.getEngine(contentDirectory);
-		cardMapper = new CarePlanCardMapper(publishedIgHosts);
+		cardMapper = new CarePlanCardMapper(CarePlanCardMapper.parseIgPageBases(igPageBases));
 		planDefinition = engine.getPlanDefinition(planDefinitionId);
 		List<PlanDefinition> composed = engine.composedPlanDefinitions(planDefinitionId);
 		rules = composed.isEmpty() ? List.of(planDefinition) : composed;
@@ -94,6 +98,28 @@ public class PlanDefinitionCDSService extends CDSService {
 		setPrefetch(prefetchFor(dataRequirements));
 		logger.info("Registered PlanDefinition CDS service '{}' (PlanDefinition/{}, {} rule(s), prefetch {}, CQL compiled in {} ms).",
 				getId(), planDefinitionId, rules.size(), getPrefetch().keySet(), warmUpMs);
+	}
+
+	/**
+	 * The current encounter, for logic that evaluates one contact (e.g. WHO SMART ANC's {@code encounter} CQL
+	 * parameter): the hook's {@code context.encounterId}, or else the only in-progress Encounter in the prefetch.
+	 * Libraries that do not declare the parameter ignore it.
+	 */
+	static Parameters encounterParameter(CDSRequest cdsRequest, List<Resource> resources) {
+		String encounterId = cdsRequest.getContextString("encounterId");
+		if (encounterId == null) {
+			List<String> inProgress = resources.stream()
+					.filter(Encounter.class::isInstance).map(Encounter.class::cast)
+					.filter(encounter -> encounter.getStatus() == Encounter.EncounterStatus.INPROGRESS)
+					.map(Resource::getIdPart).distinct().toList();
+			encounterId = inProgress.size() == 1 ? inProgress.get(0) : null;
+		}
+		if (encounterId == null) {
+			return null;
+		}
+		Parameters parameters = new Parameters();
+		parameters.addParameter().setName(ENCOUNTER_PARAMETER).setValue(new StringType(encounterId.replaceFirst("^Encounter/", "")));
+		return parameters;
 	}
 
 	static Map<String, String> prefetchFor(List<DataRequirement> dataRequirements) {
@@ -125,9 +151,10 @@ public class PlanDefinitionCDSService extends CDSService {
 		}
 
 		PlanDefinition strategy = rules.size() == 1 && rules.get(0) == planDefinition ? null : planDefinition;
+		Parameters parameters = encounterParameter(cdsRequest, resources);
 		List<CDSCard> cards = new ArrayList<>();
 		for (PlanDefinition rule : rules) {
-			CarePlan carePlan = (CarePlan) engine.apply(rule.getIdPart(), patientId, resources, null);
+			CarePlan carePlan = (CarePlan) engine.apply(rule.getIdPart(), patientId, resources, parameters);
 			cards.addAll(cardMapper.toCards(carePlan, rule, strategy, engine.getTerminologyVersions()));
 		}
 		// Most severe first (critical, warning, info); otherwise keep the strategy's order.

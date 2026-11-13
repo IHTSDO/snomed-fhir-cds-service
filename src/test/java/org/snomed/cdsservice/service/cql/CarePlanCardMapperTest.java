@@ -3,13 +3,15 @@ package org.snomed.cdsservice.service.cql;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CarePlanCardMapperTest {
 
-	private final CarePlanCardMapper mapper = new CarePlanCardMapper(Set.of("smart.who.int"));
+	private final CarePlanCardMapper mapper = new CarePlanCardMapper(CarePlanCardMapper.parseIgPageBases(List.of(
+			"http://smart.who.int/immunizations=https://smart.who.int/immunizations",
+			"http://smart.who.int/anc=https://build.fhir.org/ig/WorldHealthOrganization/smart-anc/")));
 
 	@Test
 	void canonicalsOfPublishedIgsLinkToTheirPages() {
@@ -17,6 +19,8 @@ class CarePlanCardMapperTest {
 				mapper.igPage("http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTBCG"));
 		assertEquals(Optional.of("https://smart.who.int/immunizations/Library-IMMZD2DTBCGLogic.html"),
 				mapper.igPage("http://smart.who.int/immunizations/Library/IMMZD2DTBCGLogic|1.0.0"));
+		assertEquals(Optional.of("https://build.fhir.org/ig/WorldHealthOrganization/smart-anc/PlanDefinition-ANCDT01.html"),
+				mapper.igPage("http://smart.who.int/anc/PlanDefinition/ANCDT01"));
 	}
 
 	@Test

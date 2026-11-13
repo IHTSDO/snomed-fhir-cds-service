@@ -25,6 +25,14 @@ class PlanDefinitionEngineWarmUpTest {
 	}
 
 	@Test
+	void dataRequirementsDoNotBreakApplyOfActionsWithoutDefinition() throws Exception {
+		// The WHO SMART ANC decision tables have no action definitions; $data-requirements used to leave empty ones.
+		PlanDefinitionEngine engine = PlanDefinitionEngine.fromDirectory(FHIR_CONTEXT, Path.of("knowledge-bases/smart/anc-who"));
+		engine.dataRequirements("ANCDT01");
+		assertDoesNotThrow(() -> engine.warmUp("ANCDT01"));
+	}
+
+	@Test
 	void invalidCqlFailsTheWarmUp() {
 		Library library = new Library();
 		library.setId("Broken");

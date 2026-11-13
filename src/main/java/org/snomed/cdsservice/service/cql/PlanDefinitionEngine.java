@@ -13,6 +13,7 @@ import org.hl7.fhir.r4.model.Library;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PlanDefinition;
+import org.hl7.fhir.r4.model.PrimitiveType;
 import org.hl7.fhir.r4.model.Resource;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.fhir.cql.EvaluationSettings;
@@ -173,7 +174,19 @@ public class PlanDefinitionEngine {
 	public List<DataRequirement> dataRequirements(String planDefinitionId) {
 		Library library = (Library) new PlanDefinitionProcessor(contentRepository, crSettings)
 				.dataRequirements(Eithers.forMiddle3(new IdType("PlanDefinition", planDefinitionId)), null);
+		// $data-requirements reads each action's definition through HAPI's auto-creating getter, which leaves an empty
+		// definition on actions that have none (e.g. the WHO SMART ANC decision tables); $apply then fails on it.
+		removeEmptyDefinitions(getPlanDefinition(planDefinitionId).getAction());
 		return library.getDataRequirement();
+	}
+
+	private static void removeEmptyDefinitions(List<PlanDefinition.PlanDefinitionActionComponent> actions) {
+		for (PlanDefinition.PlanDefinitionActionComponent action : actions) {
+			if (action.getDefinition() instanceof PrimitiveType<?> definition && definition.isEmpty()) {
+				action.setDefinition(null);
+			}
+			removeEmptyDefinitions(action.getAction());
+		}
 	}
 
 	/**

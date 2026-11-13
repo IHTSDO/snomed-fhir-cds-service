@@ -612,7 +612,7 @@ service `JMImmunizationSchedule`).
   11. The service applies each composed rule separately and merges the cards instead. The registrar registers
   only entry points (PlanDefinitions not composed by another in the same content set).
 - **Cards cite their own rule.** The source is the rule's IG page (`https://smart.who.int/immunizations/PlanDefinition-<id>.html`,
-  derived from the canonical for hosts in `cards.published-ig-hosts`); the canonical URL itself returns 404.
+  derived from the canonical through `cards.ig-page-bases`); the canonical URL itself returns 404.
   CDS Hooks `links` point to the CQL library page and the national schedule document. The extension adds the
   `strategy`.
 - **Validation.** The IG's own 138 test scenarios for the 11 tables pass
@@ -623,6 +623,39 @@ service `JMImmunizationSchedule`).
   proposes bOPV and IPV with the same id.
 - **Performance.** A 9-month-old with no records gets 10 cards. Warm requests take ≈ 150–300 ms for all 11
   tables.
+
+### 9.3 Antenatal care pilot (WHO SMART ANC)
+
+Six WHO SMART ANC decision tables run as one service (`knowledge-bases/smart/anc-who`, service
+`ANCContactDecisionSupport`): danger signs (DT01), HIV testing (DT08), syphilis testing (DT11), hypertension
+(DT17), diabetes (DT23) and anaemia (DT25).
+
+- **Source.** The ANC IG has no release. Its CI build (`smart.who.int.anc#0.3.0` on `build.fhir.org`) was
+  used. The newest branch (`br-changes-2026-07-28`) also compiles and runs, once the CQL namespaces
+  `hl7.fhir.uv.cql` and `smart.who.int.base-clinical` are registered (`PlanDefinitionEngine.registerNamespace`).
+  All 39 ANC PlanDefinitions compile on both. The pilot content keeps only the CQL of the Libraries and drops
+  narratives: 3.6 MB instead of 23 MB.
+- **Contact-scoped logic.** ANC evaluates one contact: every data element is an Observation linked to the
+  current Encounter, passed as the CQL parameter `encounter`. The service now passes it from
+  `context.encounterId`, or from the only in-progress Encounter in the prefetch.
+- **Cards from actions.** ANC actions create no resources: they are decisions ("Refer urgently to a hospital",
+  "Conduct HIV test") with the L2 logic in the condition's description. Each applicable decision becomes a card,
+  with the other outcomes of the decision (e.g. the iron dose) and the L2 logic as **Why:**.
+- **Unknown conditions.** `cqf-fhir-cr` excludes an action only when its condition is `false`. A `null`
+  condition (missing data) is kept, flagged with `cpg-action-condition-result` (data-absent-reason). Without data,
+  every OGTT and random-glucose branch of DT23 "applied". The card mapper now drops such actions. The immunization
+  content never produces unknown conditions, so its behaviour is unchanged.
+- **Engine bug.** `$data-requirements` left empty `action.definition` elements on PlanDefinitions without
+  definitions, through HAPI's auto-creating getters, and the next `$apply` failed. Empty definitions are removed
+  after `$data-requirements`.
+- **Validation.** WHO's ANC test data is stale (Observations without an encounter, expectations that do not
+  match the data). Our oracle is the L2 logic: 25 scenarios (`SmartAncPilotScenariosTest`) plus API tests. One
+  deviation of the WHO content was found: for a 2-hour OGTT the L2 table gives GDM from 153 mg/dL, the CQL from
+  180 mg/dL.
+- **Terminology.** The value sets only contain ANC codes. The IG's ANC → SNOMED CT ConceptMap (723 mappings, 662
+  equivalent) has gaps for the pilot (danger signs, HIV status, urine protein) and maps haemoglobin to a
+  navigational concept. The next step is a curated SNOMED CT binding of the pilot's data elements, with a QA
+  report on the map.
 
 ### Phase 2 — Migrate content
 
