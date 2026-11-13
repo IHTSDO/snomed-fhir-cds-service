@@ -203,6 +203,14 @@ public class PlanDefinitionEngine {
 		return new TreeSet<>(valueSetVersions.values());
 	}
 
+	/**
+	 * Registers a CQL namespace, so libraries that include namespaced dependencies (e.g.
+	 * {@code include hl7.fhir.uv.cql.FHIRHelpers}) resolve them by canonical URL ({@code <uri>/Library/<name>}).
+	 */
+	public void registerNamespace(String name, String uri) {
+		crSettings.getEvaluationSettings().addRegisteredNamespace(name, uri);
+	}
+
 	public List<IBaseResource> getKnowledgeArtifacts() {
 		return knowledgeArtifacts;
 	}
