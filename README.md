@@ -231,7 +231,7 @@ content set: a FHIR package, or a subset of one.
 |---|---|---|
 | `DM2024OGTT01` | `diabetes-jm` | The diabetes OGTT rule (`DM-2024-OGTT-01`) translated from the TSV model to SMART-style CQL, with SNOMED CT ECL value sets. A differential test checks it against the TSV engine on 26 scenarios. |
 | `JMImmunizationSchedule` | `immunizations-jm` | Jamaica's routine immunization schedule, built from 11 unmodified WHO SMART Immunizations decision tables (BCG, hepatitis B, DTP, polio, Hib, measles, rubella, mumps, HPV). One card per table. The IG's own 138 test scenarios pass. See the content set's README for the mapping to the national schedule and the known differences. |
-| `ANCContactDecisionSupport` | `anc-who` | Pilot: decision support for one antenatal contact from six unmodified WHO SMART ANC decision tables (danger signs, HIV and syphilis testing, hypertension, diabetes, anaemia). Needs the current Encounter (`context.encounterId`) and ANC-coded Observations. One card per decision that applies. 25 scenarios derived from the WHO decision tables. See the content set's README for the data model. |
+| `ANCContactDecisionSupport` | `anc-who` | Pilot: decision support for one antenatal contact from six unmodified WHO SMART ANC decision tables (danger signs, HIV and syphilis testing, hypertension, diabetes, anaemia). Needs the current Encounter (`context.encounterId`) and Observations coded with ANC codes or, through a curated binding, SNOMED CT. One card per decision that applies. 34 scenarios derived from the WHO decision tables. See the content set's README for the data model, and `bindings/README.md` for the QA of WHO's SNOMED CT map. |
 
 ### How a request is handled
 - **Discovery.** The service id is the PlanDefinition id. The hook comes from the PlanDefinition's
@@ -253,6 +253,9 @@ content set: a FHIR package, or a subset of one.
 - **Rules without requests.** When a rule's actions create no resources (e.g. WHO SMART ANC), each applicable
   decision becomes a card, with the decision-table logic that was met. A decision whose condition is unknown
   (missing data) gets no card.
+- **Curated bindings.** A content set whose value sets enumerate its own codes (e.g. WHO SMART ANC) can bind
+  them to SNOMED CT with ConceptMaps in `<content set>/bindings/`. The mapped codes are added to the value sets at
+  startup; the content stays unmodified.
 - **Encounter context.** The current encounter (`context.encounterId`, or the only in-progress Encounter in the
   prefetch) is passed as the CQL parameter `encounter`; libraries that do not declare it ignore it.
 - **Startup.** The CQL is compiled when the service registers, so invalid CQL fails startup and the first

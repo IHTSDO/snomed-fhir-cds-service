@@ -652,10 +652,21 @@ Six WHO SMART ANC decision tables run as one service (`knowledge-bases/smart/anc
   match the data). Our oracle is the L2 logic: 25 scenarios (`SmartAncPilotScenariosTest`) plus API tests. One
   deviation of the WHO content was found: for a 2-hour OGTT the L2 table gives GDM from 153 mg/dL, the CQL from
   180 mg/dL.
-- **Terminology.** The value sets only contain ANC codes. The IG's ANC → SNOMED CT ConceptMap (723 mappings, 662
-  equivalent) has gaps for the pilot (danger signs, HIV status, urine protein) and maps haemoglobin to a
-  navigational concept. The next step is a curated SNOMED CT binding of the pilot's data elements, with a QA
-  report on the map.
+- **SNOMED CT binding.** The ANC value sets only contain ANC codes. A curated ConceptMap
+  (`anc-who/bindings/ConceptMap-ANCPilotSNOMEDBinding.json`, SNOMED CT International 20260701) binds the pilot's
+  49 ANC codes; `ConceptMapBindings` adds the SNOMED CT codes to the ANC value sets at startup, leaving the WHO
+  resources unmodified. This is a third terminology mechanism next to ECL value sets and stored expansions:
+  content in its own code system, bound to SNOMED CT by a reviewed map, version-recorded like the expansions.
+- **QA of the WHO map** (`anc-who/bindings/README.md`). Of WHO's entries for the pilot, 19 are kept. The others:
+  a nonexistent code (`67096006`, for `167096006`); four inactive targets, followed through their historical
+  associations (`ConceptMap/$translate`, `targetsystem=sct`), of which only pallor resolves cleanly; urine protein
+  grades mapped to *Mild/Moderate/Severe/Deep*; OGTT values mapped to the whole test, a time qualifier and a
+  regime; and "severe" danger signs mapped *equivalent* to the plain finding, which would trigger referrals on
+  any headache or vomiting. HIV status and urine dipstick protein had no map.
+- **Limits of a code-level binding.** ANC models data as form questions with answers ("Danger signs" = central
+  cyanosis); a SNOMED CT-native record states the finding itself. The pilot accepts SNOMED CT answers, not
+  standalone findings: that needs the CQL data elements to change. Repeat blood pressure readings stay ANC-only,
+  because one SNOMED CT-coded reading would count as both readings.
 
 ### Phase 2 — Migrate content
 

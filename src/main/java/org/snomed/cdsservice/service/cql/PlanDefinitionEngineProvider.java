@@ -22,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * SNOMED CT ECL value sets are loaded from the content set's stored expansions ({@link StoredExpansions}), pinned to
  * the SNOMED CT release they were reviewed with. With {@code terminology.expansions.refresh=true} they are re-expanded
  * through the terminology server and the stored expansions rewritten, for review before committing.
+ * <p>
+ * Curated bindings ({@link ConceptMapBindings}) then add standard codes (e.g. SNOMED CT) to value sets that only
+ * enumerate the content's own codes.
  */
 @Service
 public class PlanDefinitionEngineProvider {
@@ -43,6 +46,7 @@ public class PlanDefinitionEngineProvider {
 				PlanDefinitionEngine engine = PlanDefinitionEngine.fromDirectory(fhirContext, directory);
 				new EclValueSetPreloader(eclCodeResolver::expand)
 						.preload(engine, StoredExpansions.load(fhirContext, directory), refreshExpansions);
+				ConceptMapBindings.load(fhirContext, directory).applyTo(engine);
 				logger.info("Loaded FHIR knowledge artifacts from '{}'.", directory);
 				return engine;
 			} catch (IOException e) {

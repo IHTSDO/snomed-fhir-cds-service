@@ -39,8 +39,22 @@ at startup) and all resources drop their generated narrative. Nothing else is ch
 - **Settings.** `ANCConfig` holds the national settings. It sets the HIV prevalence in pregnant women to 6 %,
   a high-prevalence setting, so women are tested at the first contact and again in the third trimester.
 
-The value sets only contain ANC codes. Binding the data elements to SNOMED CT (through the IG's ANC → SNOMED CT
-ConceptMap) is the next step of the pilot.
+## SNOMED CT binding
+
+The WHO value sets only contain ANC codes. `bindings/ConceptMap-ANCPilotSNOMEDBinding.json` is a curated binding of
+the ANC codes the pilot uses to SNOMED CT (International Edition, 20260701). At startup the service adds the bound
+SNOMED CT codes to each ANC value set (`ConceptMapBindings`), so the unmodified WHO logic also accepts SNOMED
+CT-coded data, e.g. an Observation coded `167096006` |Plasma fasting glucose measurement| or a danger sign answered
+with `95837007` |Central cyanosis|. Cards then report the SNOMED CT release in `terminologyVersions`.
+
+The binding starts from the IG's ANC → SNOMED CT ConceptMap and corrects it. `bindings/README.md` reviews each of
+its entries for the pilot: 19 accepted, 10 corrected, 4 inactive targets, 1 nonexistent code, 8 too wide to bind,
+2 added. Two limits remain:
+
+- ANC form questions ("Danger signs", "Syphilis diagnosis", …) have no SNOMED CT code. SNOMED CT answers to them are
+  accepted, but a finding recorded on its own (Observation.code = the finding) is not.
+- Repeat blood pressure readings stay ANC-only: bound to the same concept as the first reading, one reading would
+  meet DT17's two-reading criteria alone.
 
 ## How it is served
 
@@ -59,7 +73,8 @@ its condition is true.
 
 WHO publishes no executable tests for this content (the IG's test data is stale). `SmartAncPilotScenariosTest`
 uses the L2 logic each action states (the decision table, in the condition's description) as the oracle:
-25 scenarios across the six tables, including data from another contact being ignored.
+25 scenarios across the six tables, including data from another contact being ignored, plus 9 with SNOMED
+CT-coded data, including codes WHO maps but the binding rejects (e.g. *Headache* for "Severe headache").
 
 Known deviation of the WHO content: for a 2-hour 75 g OGTT, the L2 table gives GDM from 153 to 199 mg/dL, while
 the CQL implements 180 to 199 mg/dL. A test pins the CQL behaviour, so a WHO fix will be noticed.

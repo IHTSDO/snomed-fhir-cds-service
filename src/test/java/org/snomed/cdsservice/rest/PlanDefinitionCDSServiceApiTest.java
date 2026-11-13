@@ -211,7 +211,8 @@ class PlanDefinitionCDSServiceApiTest {
 				  }
 				}
 				""".formatted(
-				ancObservation("danger-signs", "ANC.B5.DE48", "\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"%s\", \"code\": \"ANC.B5.DE51\" } ] }".formatted(ANC)),
+				// Central cyanosis coded with SNOMED CT, accepted through the curated binding.
+				ancObservation("danger-signs", "ANC.B5.DE48", "\"valueCodeableConcept\": { \"coding\": [ { \"system\": \"http://snomed.info/sct\", \"code\": \"95837007\" } ] }"),
 				ancObservation("ga", "ANC.B6.DE17", "\"valueQuantity\": { \"value\": 14, \"system\": \"http://unitsofmeasure.org\", \"code\": \"wk\" }"));
 
 		mockMvc.perform(post("/cds-services/ANCContactDecisionSupport").contentType(MediaType.APPLICATION_JSON).content(request))
@@ -226,7 +227,10 @@ class PlanDefinitionCDSServiceApiTest {
 				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].source.url")
 						.value(contains("https://build.fhir.org/ig/WorldHealthOrganization/smart-anc/PlanDefinition-ANCDT08.html")))
 				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].extension['org.snomed.cds-service'].strategy")
-						.value(contains(startsWith("http://snomed.org/fhir/cds-demo/PlanDefinition/ANCContactDecisionSupport"))));
+						.value(contains(startsWith("http://snomed.org/fhir/cds-demo/PlanDefinition/ANCContactDecisionSupport"))))
+				// The ANC value sets are bound to SNOMED CT (bindings/), so the cards say which release.
+				.andExpect(jsonPath("$.cards[0].extension['org.snomed.cds-service'].terminologyVersions")
+						.value(contains("http://snomed.info/sct/900000000000207008/version/20260701")));
 	}
 
 	@Test
