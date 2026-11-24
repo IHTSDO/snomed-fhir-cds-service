@@ -70,12 +70,6 @@
 			<version>17.0.0</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Spreadsheet file handling -->
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>5.2.3</version>
-		</dependency>
 		<dependency>
 			<groupId>net.steppschuh.markdowngenerator</groupId>
 			<artifactId>markdowngenerator</artifactId>
