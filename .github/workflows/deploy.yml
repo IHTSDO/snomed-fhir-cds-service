@@ -1,0 +1,56 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build (mvn clean package)
+        run: mvn -B clean package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fhir-cds-jar
+          path: target/snomed-fhir-cds-service-*.jar
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: fhir-cds-jar
+          path: dist
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.FHIR_CDS_DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.FHIR_CDS_DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Upload jar and deploy
+        run: |
+          set -euo pipefail
+          JAR=$(ls dist/snomed-fhir-cds-service-*.jar | head -n1)
+          echo "Deploying $JAR"
+          ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts \
+            "${{ secrets.FHIR_CDS_DEPLOY_USER }}@${{ secrets.FHIR_CDS_DEPLOY_HOST }}" "upload" < "$JAR"
+          ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts \
+            "${{ secrets.FHIR_CDS_DEPLOY_USER }}@${{ secrets.FHIR_CDS_DEPLOY_HOST }}" "deploy"
