@@ -1,0 +1,160 @@
+{
+  "resourceType": "PlanDefinition",
+  "id": "JMImmunizationSchedule",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/cpg/StructureDefinition/cpg-strategydefinition"
+    ]
+  },
+  "url": "http://snomed.org/fhir/cds-demo/PlanDefinition/JMImmunizationSchedule",
+  "version": "0.1.0",
+  "name": "JMImmunizationSchedule",
+  "title": "Immunization schedule: Jamaica (WHO SMART decision tables)",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/plan-definition-type",
+        "code": "workflow-definition"
+      }
+    ]
+  },
+  "status": "draft",
+  "experimental": true,
+  "description": "Says which routine vaccines are due now and when the others will be: BCG, hepatitis B, DTP, polio, Hib, measles, rubella, mumps and HPV. Cards that propose a vaccine are warnings. Source: Jamaica MOHW EPI Field Guide (January 2024), implemented with 11 unmodified WHO SMART Immunizations decision tables (CQL).",
+  "usage": "Needs the patient's birth date and Immunization records coded with the codes of the WHO value sets (WHO, ICD-11, ATC or SNOMED CT). Known differences from Jamaica's schedule: DTP, polio and Hib primary doses at 6, 10 and 14 weeks in WHO versus 6 weeks, 3 and 6 months in Jamaica; second MMR dose at 15 months in WHO versus 18 months; Jamaica's polio and DTP boosters are not covered; pneumococcal and rotavirus vaccines are not in Jamaica's public routine schedule.",
+  "relatedArtifact": [
+    {
+      "type": "documentation",
+      "label": "Jamaica MOHW, EPI Field Guide for Health Workers, Vol. 1 (January 2024)",
+      "url": "https://www.moh.gov.jm/wp-content/uploads/2025/05/EPI-Field-Guide-For-Health-Workers-Volume-1-Vaccine-Administration-and-Programme-Management-Jan-2024.pdf"
+    },
+    {
+      "type": "derived-from",
+      "label": "WHO SMART Guidelines: Immunizations",
+      "url": "https://smart.who.int/immunizations/"
+    }
+  ],
+  "action": [
+    {
+      "id": "IMMZD2DTBCG",
+      "title": "BCG",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ],
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTBCG"
+    },
+    {
+      "id": "IMMZD2DTHepatitisBBirthDose",
+      "title": "Hepatitis B birth dose",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTHepatitisBBirthDose",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTHepatitisB4Doses",
+      "title": "Hepatitis B (birth dose + 3 primary doses)",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTHepatitisB4Doses",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTDTPOnTimeStart",
+      "title": "DTP, on-time start",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTDTPOnTimeStart",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTDTPDelayedOrInterruptedSeries",
+      "title": "DTP, delayed or interrupted series",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTDTPDelayedOrInterruptedSeries",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTPolioBOPVPlusIPV",
+      "title": "Polio, bOPV plus IPV",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTPolioBOPVPlusIPV",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTHib3Doses",
+      "title": "Hib, 3 doses without booster",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTHib3Doses",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTMeaslesLowTransmission",
+      "title": "Measles, low transmission (MCV1 at 12 months)",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTMeaslesLowTransmission",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTRubellaLowIncidence",
+      "title": "Rubella, low incidence",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTRubellaLowIncidence",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTMumps",
+      "title": "Mumps",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTMumps",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    },
+    {
+      "id": "IMMZD2DTHPVSingleDose",
+      "title": "HPV, single dose",
+      "definitionCanonical": "http://smart.who.int/immunizations/PlanDefinition/IMMZD2DTHPVSingleDose",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "immunization-review"
+        }
+      ]
+    }
+  ]
+}

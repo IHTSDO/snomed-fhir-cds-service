@@ -1,0 +1,62 @@
+{
+  "today": "2025-10-01",
+  "planDefinition": "IMMZD2DTHepatitisB4Doses",
+  "cases": [
+    {
+      "patient": "HepatitisB36.2",
+      "scenario": "No hepatitis B primary series doses were administered and Client's age is less than {Member States defined lower limit}: Client is not due for a hepatitis B vaccination",
+      "bundle": "tests-HepatitisB36.2-bundle.json",
+      "guidance": "Should not vaccinate client with first hepatitis B dose as client's age is not within appropriate age range.\nCheck for any other vaccines due and inform the caregiver of when to come back for the first dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HepatitisB37.2",
+      "scenario": "No hepatitis B primary series doses were administered and Client's age is more than or equal to {Member States defined lower limit}: Client is due for a hepatitis B vaccination",
+      "bundle": "tests-HepatitisB37.2-bundle.json",
+      "guidance": "Should vaccinate client with first hepatitis B dose as client's age is within appropriate age range.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HepatitisB38.2",
+      "scenario": "One hepatitis B primary series doses were administered and The latest hepatitis B dose was administered less than 4 weeks ago: Client is not due for a hepatitis B vaccination",
+      "bundle": "tests-HepatitisB38.2-bundle.json",
+      "guidance": "Should not vaccinate client with second hepatitis B dose as the latest hepatitis B dose was administered less than 4 weeks ago.\nCheck for any other vaccines due and inform the caregiver of when to come back for the second dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HepatitisB39.2",
+      "scenario": "One hepatitis B primary series doses were administered and The latest hepatitis B dose was administered more than 4 weeks ago: Client is due for a hepatitis B vaccination",
+      "bundle": "tests-HepatitisB39.2-bundle.json",
+      "guidance": "Should vaccinate client with second hepatitis B dose as the latest hepatitis B dose was administered more than 4 weeks ago.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HepatitisB40.2",
+      "scenario": "Two hepatitis B primary series doses were administered and The latest hepatitis B dose was administered less than 4 weeks ago: Client is not due for a hepatitis B vaccination",
+      "bundle": "tests-HepatitisB40.2-bundle.json",
+      "guidance": "Should not vaccinate client with third hepatitis B dose as the latest Hepatitis B dose was administered less than 4 weeks ago.\nCheck for any other vaccines due, and inform the caregiver of when to come back for the third dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HepatitisB41.2",
+      "scenario": "Two hepatitis B primary series doses were administered and The latest hepatitis B dose was administered more than 4 weeks ago: Client is due for a hepatitis B vaccination",
+      "bundle": "tests-HepatitisB41.2-bundle.json",
+      "guidance": "Should vaccinate client with third hepatitis B dose as the latest Hepatitis B dose was administered more than 4 weeks ago.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HepatitisB42.1",
+      "scenario": "Three hepatitis B primary series doses were administered: Hepatitis B immunization schedule is complete",
+      "bundle": "tests-HepatitisB42.1-bundle.json",
+      "guidance": "The hepatitis B immunization schedule is complete. Three hepatitis B primary series doses were administered.\nCheck for any other vaccines due.",
+      "containedCount": 2,
+      "proposalCount": 0
+    }
+  ]
+}

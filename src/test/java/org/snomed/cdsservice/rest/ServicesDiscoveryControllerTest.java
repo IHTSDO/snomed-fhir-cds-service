@@ -62,6 +62,8 @@ class ServicesDiscoveryControllerTest {
 				.andExpect(jsonPath("$.services[*].id").value(hasItems(
 						"diagnostic-support-diabetes",
 						"diagnostic-support-hypertension"
-				)));
+				)))
+				// Discovery carries only CDS Hooks service fields, never the internal rule set.
+				.andExpect(jsonPath("$.services[*].ruleSet").isEmpty());
 	}
 }

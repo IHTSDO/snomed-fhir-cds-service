@@ -2,8 +2,6 @@ package org.snomed.cdsservice.service.rules;
 
 import ca.uhn.fhir.context.FhirContext;
 import jakarta.annotation.PostConstruct;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Condition;
@@ -16,6 +14,7 @@ import org.snomed.cdsservice.model.rules.Rule;
 import org.snomed.cdsservice.model.rules.RuleEvaluationResult;
 import org.snomed.cdsservice.model.rules.RuleSet;
 import org.snomed.cdsservice.service.CDSService;
+import org.snomed.cdsservice.service.PrefetchResources;
 import org.snomed.cdsservice.service.ServiceException;
 import org.snomed.cdsservice.service.rules.evaluator.RuleEvaluationContext;
 import org.snomed.cdsservice.rest.pojo.CDSRequest;
@@ -76,8 +75,8 @@ public class RuleBasedCDSService extends CDSService {
 			throw new IllegalStateException("Failed to initialise diagnostic CDS service '%s'.".formatted(getId()), e);
 		}
 		setHook(hook);
-		setTitle("Diagnostic decision support (%s)".formatted(domain));
-		setDescription("SNOMED CT driven diagnostic decision support for %s, evaluated from editable TSV rules.".formatted(domain));
+		setTitle(title(ruleSet));
+		setDescription(description(ruleSet));
 		setPrefetch(Map.of(
 				"patient", "Patient/{{context.patientId}}",
 				"conditions", "Condition?patient={{context.patientId}}",
@@ -87,7 +86,7 @@ public class RuleBasedCDSService extends CDSService {
 
 	@Override
 	public List<CDSCard> call(CDSRequest cdsRequest) {
-		List<Resource> resources = parsePrefetchResources(cdsRequest);
+		List<Resource> resources = PrefetchResources.parse(fhirContext, cdsRequest);
 		Patient patient = resources.stream().filter(Patient.class::isInstance).map(Patient.class::cast).findFirst().orElse(null);
 		Map<String, Object> hookContext = cdsRequest.getContext() == null ? Map.of() : cdsRequest.getContext();
 		RuleEvaluationContext context = new RuleEvaluationContext(patient, resources, hookContext);
@@ -131,30 +130,6 @@ public class RuleBasedCDSService extends CDSService {
 						getId(), codes, clinical, verification, isActive(condition));
 			}
 		}
-	}
-
-	private List<Resource> parsePrefetchResources(CDSRequest cdsRequest) {
-		List<Resource> resources = new ArrayList<>();
-		Map<String, String> prefetchStrings = cdsRequest.getPrefetchStrings();
-		if (prefetchStrings == null) {
-			return resources;
-		}
-		for (String json : prefetchStrings.values()) {
-			if (json == null || json.isBlank() || json.equals("null")) {
-				continue;
-			}
-			IBaseResource parsed = fhirContext.newJsonParser().parseResource(json);
-			if (parsed instanceof Bundle bundle) {
-				for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-					if (entry.hasResource()) {
-						resources.add(entry.getResource());
-					}
-				}
-			} else if (parsed instanceof Resource resource) {
-				resources.add(resource);
-			}
-		}
-		return resources;
 	}
 
 	/**
@@ -217,7 +192,38 @@ public class RuleBasedCDSService extends CDSService {
 		});
 	}
 
-	public RuleSet getRuleSet() {
-		return ruleSet;
+	/** E.g. "Diagnostic support: type 2 diabetes mellitus (TSV rules)", from the outcomes the rules suggest. */
+	static String title(RuleSet ruleSet) {
+		return "Diagnostic support: %s (TSV rules)".formatted(String.join(", ", outcomes(ruleSet)));
+	}
+
+	/** What the rules suggest, through which pathways, from which guideline, and how they are evaluated. */
+	static String description(RuleSet ruleSet) {
+		List<String> pathways = ruleSet.enabledRules().stream()
+				.map(Rule::pathway).filter(pathway -> pathway != null && !pathway.isBlank())
+				.map(pathway -> lowerFirst(pathway.replaceFirst("(?i)\\s+pathway$", "")))
+				.distinct().toList();
+		List<String> sources = ruleSet.enabledRules().stream()
+				.map(Rule::sourceLabel).filter(label -> label != null && !label.isBlank())
+				.map(label -> label.split(" — ")[0].strip())
+				.distinct().toList();
+		return "Suggests or confirms %s from %d pathway%s: %s. Source: %s. Editable TSV rules evaluated by this service's own engine.".formatted(
+				String.join(", ", outcomes(ruleSet)), pathways.size(), pathways.size() == 1 ? "" : "s",
+				String.join("; ", pathways), String.join("; ", sources));
+	}
+
+	private static List<String> outcomes(RuleSet ruleSet) {
+		List<String> outcomes = ruleSet.enabledRules().stream()
+				.map(Rule::outcomeDisplay).filter(display -> display != null && !display.isBlank())
+				.map(RuleBasedCDSService::lowerFirst).distinct().toList();
+		return outcomes.isEmpty() ? List.of(ruleSet.domain()) : outcomes;
+	}
+
+	/** Lower-cases the first letter unless the word is an acronym (e.g. keeps "HIV"). */
+	private static String lowerFirst(String text) {
+		if (text.length() > 1 && Character.isUpperCase(text.charAt(1))) {
+			return text;
+		}
+		return Character.toLowerCase(text.charAt(0)) + text.substring(1);
 	}
 }

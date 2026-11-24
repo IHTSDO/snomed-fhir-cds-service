@@ -1,0 +1,62 @@
+{
+  "today": "2025-11-25",
+  "planDefinition": "IMMZD2DTMumps",
+  "cases": [
+    {
+      "patient": "Mumps08.1",
+      "scenario": "Client's age is less than 12 months: Client is not due for mumps vaccination",
+      "bundle": "tests-Mumps08.1-bundle.json",
+      "guidance": "Should not vaccinate client with first mumps dose as client's age is less than 12 months.\nCheck for any other vaccines due and inform the caregiver of when to come back for first dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Mumps09.3",
+      "scenario": "No mumps primary series doses were administered, Client's age is more than or equal to 12 months, and Live vaccine was administered in the past 4 weeks: Client is not due for mumps vaccination",
+      "bundle": "tests-Mumps09.3-bundle.json",
+      "guidance": "Should not vaccinate client with first mumps dose as live vaccine was administered in the past 4 weeks.\nCheck for any other vaccines due and inform the caregiver of when to come back for first dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Mumps10.3",
+      "scenario": "No mumps primary series doses were administered, Client's age is more than or equal to 12 months, and No live vaccine was administered in the past 4 weeks: Client is due for mumps vaccination",
+      "bundle": "tests-Mumps10.3-bundle.json",
+      "guidance": "Should vaccinate client with first mumps dose as the client is within appropriate age range and no live vaccine was administered in the past 4 weeks.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Mumps11.2",
+      "scenario": "One mumps primary series dose was administered and The latest mumps dose was administered less than 4 weeks ago: Client is not due for mumps vaccination",
+      "bundle": "tests-Mumps11.2-bundle.json",
+      "guidance": "Should not vaccinate client with second mumps dose as latest mumps dose was administered less than 4 weeks ago.\nCheck for any other vaccines due and inform the caregiver of when to come back for the second dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Mumps12.3",
+      "scenario": "One mumps primary series dose was administered, The latest mumps dose was administered more than 4 weeks ago, and Live vaccine was administered in the past 4 weeks: Client is not due for mumps vaccination",
+      "bundle": "tests-Mumps12.3-bundle.json",
+      "guidance": "Should not vaccinate client with second mumps dose as live vaccine was administered in the past 4 weeks.\nCheck for any other vaccines due and inform the caregiver of when to come back for the second dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Mumps13.3",
+      "scenario": "One mumps primary series dose was administered, The latest mumps dose was administered more than 4 weeks ago, and No live vaccine was administered in the past 4 weeks: Client is due for mumps vaccination",
+      "bundle": "tests-Mumps13.3-bundle.json",
+      "guidance": "Should vaccinate client with second mumps dose as latest mumps dose was administered more than 4 weeks ago and no live vaccine was administered in the past 4 weeks.\nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Mumps14.1",
+      "scenario": "Two mumps primary series doses were administered: Mumps immunization schedule is complete",
+      "bundle": "tests-Mumps14.1-bundle.json",
+      "guidance": "Mumps immunization schedule is complete. Two mumps primary series doses were administered.\nCheck for any other vaccines due.",
+      "containedCount": 2,
+      "proposalCount": 0
+    }
+  ]
+}

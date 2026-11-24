@@ -1,0 +1,25 @@
+{
+  "resourceType": "ValueSet",
+  "id": "dm-classic-hyperglycaemic-symptoms",
+  "url": "http://snomed.org/fhir/cds-demo/ValueSet/dm-classic-hyperglycaemic-symptoms",
+  "version": "0.1.0",
+  "name": "DMClassicHyperglycaemicSymptoms",
+  "title": "Classic symptoms of hyperglycaemia are present",
+  "status": "draft",
+  "experimental": true,
+  "description": "Aligned to the governed DM_Classic_Symptoms_ value set. Each concept includes its subtypes (<<), since a subtype always implies its supertype; this also covers Excessive thirst, Excessive eating and Unexplained weight loss. Requires the terminology server to be reachable at startup.",
+  "compose": {
+    "include": [
+      {
+        "system": "http://snomed.info/sct",
+        "filter": [
+          {
+            "property": "constraint",
+            "op": "=",
+            "value": "<< 249477003 |Increased thirst (finding)| OR << 17173007 |Excessive thirst (finding)| OR << 72405004 |Increased appetite (finding)| OR << 267023007 |Excessive eating (finding)| OR << 28442001 |Polyuria (finding)| OR << 708126004 |Recurrent candidiasis of vagina (disorder)| OR << 72934000 |Candidiasis of vagina (disorder)| OR << 789507005 |Delayed healing of wound (finding)| OR << 111516008 |Blurring of visual image (finding)| OR << 84229001 |Fatigue (finding)| OR << 16932000 |Nausea and vomiting (disorder)| OR << 422587007 |Nausea (finding)| OR << 422400008 |Vomiting (disorder)| OR << 262285001 |Weight decreased (finding)| OR << 262286000 |Weight increased (finding)| OR << 860914002 |Erectile dysfunction (disorder)| OR << 309521004 |Numbness of hand (finding)| OR << 309538000 |Numbness of foot (finding)| OR << 441656006 |Hyperglycemic crisis due to diabetes mellitus (disorder)|"
+          }
+        ]
+      }
+    ]
+  }
+}

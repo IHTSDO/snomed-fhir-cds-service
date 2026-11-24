@@ -16,8 +16,8 @@ public class PatientViewMedicationSummaryCheckCDSService extends AbstractMedicat
 	public PatientViewMedicationSummaryCheckCDSService() {
 		super("patient-view-medication-summary-check");
 		setHook("patient-view");
-		setTitle("Patient View Medication Summary Check");
-		setDescription("Provides summary medication safety alerts when a patient record is opened.");
+		setTitle("Medication safety: patient summary");
+		setDescription("Reviews the patient's active medications for contraindications with their active problems, interactions, allergy conflicts and doses above the WHO defined daily dose. Source: curated contraindication and interaction tables (Wikipedia, DrugBank), WHO ATC/DDD index.");
 		setUsageRequirements("Supports CDS Hooks patient-view with current patient conditions, medications, and allergies provided in prefetch.");
 		setPrefetch(Map.of(
 				"patient", "Patient/{{context.patientId}}",

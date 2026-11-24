@@ -1,0 +1,77 @@
+{
+  "resourceType": "PlanDefinition",
+  "id": "ANCContactStart",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/cpg/StructureDefinition/cpg-strategydefinition"
+    ]
+  },
+  "url": "http://snomed.org/fhir/cds-demo/PlanDefinition/ANCContactStart",
+  "version": "0.1.0",
+  "name": "ANCContactStart",
+  "title": "Antenatal care: start of contact (WHO SMART, pilot)",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/plan-definition-type",
+        "code": "workflow-definition"
+      }
+    ]
+  },
+  "status": "draft",
+  "experimental": true,
+  "description": "At the start of an antenatal care contact, checks the danger signs (proceed with the contact, or refer) and whether HIV and syphilis tests are due. Source: WHO antenatal care recommendations (2016), Digital Adaptation Kit (2021), implemented with 3 unmodified WHO SMART ANC decision tables (CQL): ANC.DT.01 (WHO workflow step ANC.B5 Quick check), ANC.DT.08 and ANC.DT.11 (ANC.B9 Laboratory tests).",
+  "usage": "Pilot. Evaluates the start of one ANC contact (encounter-start): the encounter is context.encounterId. Needs the Observations of that encounter, coded with the WHO ANC data dictionary codes or, through a curated binding, SNOMED CT; the ANC contact number is an Encounter extension. WHO SMART ANC IG 0.3.0 (continuous integration build, not a published release). The data come from the IG's Questionnaires ANC.A Registration (contact number), ANC.B5 Quick check (danger signs), ANC.B6 Profile (gestational age) and ANC.B9 Lab tests (HIV and syphilis status).",
+  "relatedArtifact": [
+    {
+      "type": "documentation",
+      "label": "WHO recommendations on antenatal care for a positive pregnancy experience (2016)",
+      "url": "https://www.who.int/publications/i/item/9789241549912"
+    },
+    {
+      "type": "documentation",
+      "label": "WHO Digital Adaptation Kit for Antenatal Care (2021)",
+      "url": "https://www.who.int/publications/i/item/9789240020306"
+    },
+    {
+      "type": "derived-from",
+      "label": "WHO SMART Guidelines: Antenatal Care IG",
+      "url": "https://build.fhir.org/ig/WorldHealthOrganization/smart-anc/"
+    }
+  ],
+  "action": [
+    {
+      "id": "ANCDT01",
+      "title": "Danger signs",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "encounter-start"
+        }
+      ],
+      "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT01"
+    },
+    {
+      "id": "ANCDT08",
+      "title": "HIV testing",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "encounter-start"
+        }
+      ],
+      "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT08"
+    },
+    {
+      "id": "ANCDT11",
+      "title": "Syphilis testing",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "encounter-start"
+        }
+      ],
+      "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT11"
+    }
+  ]
+}

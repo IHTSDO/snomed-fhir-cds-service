@@ -1,0 +1,110 @@
+{
+  "today": "2025-11-13",
+  "planDefinition": "IMMZD2DTHPVSingleDose",
+  "cases": [
+    {
+      "patient": "HPV27.1",
+      "scenario": "Client's age is less than 9 years: Client is not due for HPV vaccination",
+      "bundle": "tests-HPV27.1-bundle.json",
+      "guidance": "Should not vaccinate client with first HPV dose as client's age is less than 9 years. \nCheck for any vaccines due and inform the caregiver of when to come back for the next dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HPV28.2",
+      "scenario": "No HPV primary series doses were administered and Client's age is between 9 and 20 years: Client is due for HPV vaccination",
+      "bundle": "tests-HPV28.2-bundle.json",
+      "guidance": "Should vaccinate client with first HPV dose as no HPV doses were administered and client is within appropriate age range. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HPV29.2",
+      "scenario": "No HPV primary series doses were administered and Client's age is more than 20 years: Clinical judgement is required. Create a clinical note.",
+      "bundle": "tests-HPV29.2-bundle.json",
+      "guidance": "Member States should update this action according to the national immunization programme.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HPV30.3",
+      "scenario": "One HPV primary series dose was administered, The latest HPV dose was administered less than 6 months ago, and Client's HIV status is positive: Client is not due for HPV vaccination",
+      "bundle": "tests-HPV30.3-bundle.json",
+      "guidance": "Should not vaccinate client with second HPV dose as the latest HPV dose was administered less than 6 months ago. \nCheck for any vaccines due and inform the caregiver of when to come back for the next dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HPV31.3",
+      "scenario": "One HPV primary series dose was administered, The latest HPV dose was administered more than 6 months ago, and Client's HIV status is positive: Client is due for HPV vaccination",
+      "bundle": "tests-HPV31.3-bundle.json",
+      "guidance": "Should vaccinate client with second HPV dose as client is HIV positive and the latest HPV dose was administered more than 6 months ago. \nCheck for contraindications",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HPV32.3",
+      "scenario": "One HPV primary series dose was administered, The latest HPV dose was administered less than 6 months ago, and Client is immunocompromised: Client is not due for HPV vaccination",
+      "bundle": "tests-HPV32.3-bundle.json",
+      "guidance": "Should not vaccinate client with second HPV dose as the latest HPV dose was administered less than 6 months ago. \nCheck for any vaccines due and inform the caregiver of when to come back for the next dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HPV33.3",
+      "scenario": "One HPV primary series dose was administered, The latest HPV dose was administered more than 6 months ago, and Client is immunocompromised: Client is due for HPV vaccination",
+      "bundle": "tests-HPV33.3-bundle.json",
+      "guidance": "Should vaccinate client with second HPV dose as client is immunocompromised and the latest HPV dose was administered more than 6 months ago. \nCheck for contraindications",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HPV34.3",
+      "scenario": "One HPV primary series dose was administered, Client is not immunocompromised, and Client's HIV status is negative or unknown: HPV immunization schedule is complete",
+      "bundle": "tests-HPV34.3-bundle.json",
+      "guidance": "HPV immunization schedule is complete. One HPV primary series dose was administered. \nCheck for any other vaccines due.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HPV35.3",
+      "scenario": "Two HPV primary series doses were administered, The latest HPV dose was administered less than 6 months ago, and Client's HIV status is positive: Client is not due for HPV vaccination",
+      "bundle": "tests-HPV35.3-bundle.json",
+      "guidance": "Should not vaccinate client with third HPV dose as the latest HPV dose was administered less than 6 months ago. \nCheck for any vaccines due and inform the caregiver of when to come back for the next dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HPV36.3",
+      "scenario": "Two HPV primary series doses were administered, The latest HPV dose was administered more than 6 months ago, and Client's HIV status is positive: Client is due for HPV vaccination",
+      "bundle": "tests-HPV36.3-bundle.json",
+      "guidance": "Should vaccinate client with third HPV dose as client is HIV positive and the latest HPV dose was administered more than 6 months ago. \nCheck for contraindications",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HPV37.3",
+      "scenario": "Two HPV primary series doses were administered, The latest HPV dose was administered less than 6 months ago, and Client is immunocompromised: Client is not due for HPV vaccination",
+      "bundle": "tests-HPV37.3-bundle.json",
+      "guidance": "Should not vaccinate client with third HPV dose as the latest HPV dose was administered less than 6 months ago. \nCheck for any vaccines due and inform the caregiver of when to come back for the next dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "HPV38.3",
+      "scenario": "Two HPV primary series doses were administered, The latest HPV dose was administered more than 6 months ago, and Client is immunocompromised: Client is due for HPV vaccination",
+      "bundle": "tests-HPV38.3-bundle.json",
+      "guidance": "Should vaccinate client with third HPV dose as client is immunocompromised and the latest HPV dose was administered more than 6 months ago. \nCheck for contraindications",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "HPV39.1",
+      "scenario": "Three HPV primary series doses were administered: HPV immunization schedule is complete",
+      "bundle": "tests-HPV39.1-bundle.json",
+      "guidance": "HPV immunization schedule is complete. Three HPV primary series doses were administered. \nCheck for any other vaccines due.",
+      "containedCount": 2,
+      "proposalCount": 0
+    }
+  ]
+}

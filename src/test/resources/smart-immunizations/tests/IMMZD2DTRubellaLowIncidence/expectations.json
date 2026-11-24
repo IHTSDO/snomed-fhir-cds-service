@@ -1,0 +1,38 @@
+{
+  "today": "2025-11-13",
+  "planDefinition": "IMMZD2DTRubellaLowIncidence",
+  "cases": [
+    {
+      "patient": "Rubella19.1",
+      "scenario": "Client's age is less than 12 months: Client is not due for rubella vaccination",
+      "bundle": "tests-Rubella19.1-bundle.json",
+      "guidance": "Should not vaccinate client with rubella dose. \nCheck for any vaccines due and inform the caregiver of when to come back for the first dose.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Rubella20.3",
+      "scenario": "No rubella primary series dose was administered, Client's age is more than or equal to 12 months, and No live vaccine was administered in the last 4 weeks: Client is due for rubella vaccination",
+      "bundle": "tests-Rubella20.3-bundle.json",
+      "guidance": "Should vaccinate client with rubella dose as no rubella doses were administered, client is within appropriate age range and no live vaccine was administered in the last 4 weeks. \nCheck for contraindications.",
+      "containedCount": 3,
+      "proposalCount": 1
+    },
+    {
+      "patient": "Rubella21.3",
+      "scenario": "No rubella primary series dose was administered, Client's age is more than or equal to 12 months, and Live vaccine was administered in the last the 4 weeks: Client is not due for rubella vaccination",
+      "bundle": "tests-Rubella21.3-bundle.json",
+      "guidance": "Should not vaccinate client with rubella dose as live vaccine was administered in the last 4 weeks. \nCheck for any other vaccines due.",
+      "containedCount": 2,
+      "proposalCount": 0
+    },
+    {
+      "patient": "Rubella22.1",
+      "scenario": "One rubella primary series dose was administered: Rubella immunization schedule is complete",
+      "bundle": "tests-Rubella22.1-bundle.json",
+      "guidance": "Rubella immunization schedule is complete. One rubella primary series dose was administered. \nCheck for any other vaccines due.",
+      "containedCount": 2,
+      "proposalCount": 0
+    }
+  ]
+}

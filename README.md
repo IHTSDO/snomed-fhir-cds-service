@@ -33,7 +33,8 @@ This service implements the [discovery endpoint](https://cds-hooks.hl7.org/2.0/#
 
 ### Standard CDS Hooks Services
 The discovery endpoint publishes multiple standard CDS Hooks services so the demo can be exercised against different
-workflow events using standard hook names only.
+workflow events using standard hook names. The one exception is `JMImmunizationSchedule`, on the custom hook
+`immunization-review`, so it runs only when the client asks for it.
 
 #### "Medication Order Select" Service
 This service is intended for the CDS Hooks `order-select` hook during medication prescribing. It returns user alerts if
@@ -244,12 +245,83 @@ To add a whole new domain, drop a new `<name>_criteria.tsv` + `<name>_rules.tsv`
 7. The engine evaluates only the data provided in the CDS Hooks request; missing data is `UNKNOWN`, not negative.
 8. Supplied thresholds and combinations remain traceable to their source guideline.
 
+## CQL Decision Support (FHIR Clinical Reasoning)
+The service can also run **standard FHIR Clinical Reasoning content**: `PlanDefinition`s with their CQL
+`Library`s, `ValueSet`s and `ActivityDefinition`s, the format used by WHO SMART Guidelines. Each PlanDefinition
+is published as a CDS Hooks service. The CQL is compiled and run in-process with the official cqframework
+compiler and engine ([cqf-fhir-cr](https://github.com/cqframework/clinical-reasoning)), without a HAPI FHIR
+server.
+
+> This is a spike (branch `spike/smart-cql-engine`) exploring convergence with SMART Guidelines. See the
+> [design document](docs/design/smart-guidelines-alignment.md) for the analysis, results and next steps.
+
+### Shipped content
+Content lives in `rules.plandefinition.directory` (default `knowledge-bases/smart/`). Each subdirectory is a
+content set: a FHIR package, or a subset of one.
+
+| Service id | Content set | What it shows |
+|---|---|---|
+| `DM2024OGTT01` | `diabetes-jm` | The diabetes OGTT rule (`DM-2024-OGTT-01`) translated from the TSV model to SMART-style CQL, with SNOMED CT ECL value sets. A differential test checks it against the TSV engine on 26 scenarios. |
+| `JMImmunizationSchedule` (`immunization-review`) | `immunizations-jm` | On demand: the custom hook `immunization-review` is never fired by an EHR on its own, so the client calls the service when the user asks for a schedule review. Jamaica's routine immunization schedule, built from 11 unmodified WHO SMART Immunizations decision tables (BCG, hepatitis B, DTP, polio, Hib, measles, rubella, mumps, HPV). One card per table. The IG's own 138 test scenarios pass. See the content set's README for the mapping to the national schedule and the known differences. |
+| `ANCContactStart` (`encounter-start`), `ANCContactDischarge` (`encounter-discharge`) | `anc-who` | Pilot: decision support for one antenatal contact from six unmodified WHO SMART ANC decision tables. At the start: danger-sign triage, HIV and syphilis test orders. At the end: hypertension, diabetes and anaemia, with referral and counselling. Needs the current Encounter (`context.encounterId`) and Observations coded with ANC codes or, through a curated binding, SNOMED CT. One card per decision that applies. 34 scenarios derived from the WHO decision tables. See the content set's README for the data model, and `bindings/README.md` for the QA of WHO's SNOMED CT map. |
+
+### How a request is handled
+- **Discovery.** The hooks come from the PlanDefinition's `named-event` triggers (default
+  `rules.plandefinition.default-hook=patient-view`). With one hook the service id is the PlanDefinition id; a
+  PlanDefinition with several hooks is one service per hook, `<PlanDefinition id>-<hook>` (e.g.
+  `MyRule-encounter-start`). The **prefetch is derived from `$data-requirements`**, e.g.
+  Patient, Observation and Condition for `DM2024OGTT01`; encounter hooks prefetch the Encounter by
+  `{{context.encounterId}}`.
+- **Evaluation.** The prefetched resources become an in-memory data repository for that request.
+  `PlanDefinition/$apply` evaluates the CQL with three-valued logic (`null` = unknown).
+- **Cards.** Each resulting `CommunicationRequest` becomes a card: first line as summary, full text as detail.
+  Proposed `MedicationRequest`/`ServiceRequest` codes are attached as references. The source is the
+  guideline documented on the PlanDefinition. Every card carries an `extension` entry
+  `org.snomed.cds-service` with the PlanDefinition canonical and version, and the SNOMED CT versions its ECL
+  value sets were expanded with.
+- **Strategies.** A PlanDefinition whose actions point at other PlanDefinitions (e.g. a national schedule
+  made of WHO decision tables) is one service. Its rules are applied one by one and their cards merged. The
+  composed rules are not registered as services of their own.
+- **Sources and links.** A card's source is the guideline the rule documents. For content published in an IG
+  (`cards.ig-page-bases`: canonical base `=` IG page base, e.g. WHO SMART Immunizations and ANC), the source is
+  the rule's IG page and the card links to its CQL library page; a schedule's documentation is linked too.
+- **Rules without requests.** When a rule's actions create no resources (e.g. WHO SMART ANC), each applicable
+  decision becomes a card, with the decision-table logic that was met. A decision whose condition is unknown
+  (missing data) gets no card.
+- **Curated bindings.** A content set whose value sets enumerate its own codes (e.g. WHO SMART ANC) can bind
+  them to SNOMED CT with ConceptMaps in `<content set>/bindings/`. The mapped codes are added to the value sets at
+  startup; the content stays unmodified.
+- **Encounter context.** The current encounter (`context.encounterId`, or the only in-progress Encounter in the
+  prefetch) is passed as the CQL parameter `encounter`; libraries that do not declare it ignore it.
+- **Startup.** The CQL is compiled when the service registers, so invalid CQL fails startup and the first
+  request pays no compilation.
+
+### SNOMED CT ECL value sets
+ECL can be declared as an intensional `ValueSet` (SNOMED CT `constraint` filter) or as an implicit
+`http://snomed.info/sct?fhir_vs=ecl/...` URL in CQL. Expansions are **stored** in
+`<content set>/expansions/` as FHIR ValueSets with a populated `expansion`: the ECL, the SNOMED CT version, and
+the concepts with displays. They are loaded from there, so this content stays pinned to the release it was
+reviewed with and needs no terminology server.
+
+- Refresh them, e.g. after a new SNOMED CT release or an ECL change, by starting once with
+  `--terminology.expansions.refresh=true`. Then review the diff and commit it.
+- A stored expansion made from a different ECL than the content's fails loading.
+- A value set without a stored expansion is expanded live, with a warning.
+- Expansions larger than `terminology.ecl.max-expansion-size` (default 20,000) fail loading.
+
+### Adding CQL content
+1. Create `knowledge-bases/smart/<content set>/` with the FHIR resources as JSON: PlanDefinition, Libraries
+   (CQL in `content`, `text/cql`), ValueSets and ActivityDefinitions.
+2. Start once with `--terminology.expansions.refresh=true` to store the ECL expansions, then review them.
+3. Restart. Each PlanDefinition appears in discovery.
+
 ## Running the Service
 ### Prerequisites
 - Java 17
 - Access to a FHIR Terminology Server capable of expanding [SNOMED CT Implicit Value Sets using ECL](https://www.hl7.org/fhir/snomedct.html#implicit).
   The diagnostic demo content resolves locally and runs without one; the medication services and any ECL
-  operator selectors require it.
+  operator selectors require it. The CQL content uses its stored ECL expansions and needs it only to refresh
+  them.
 
 ### Starting the Service
 Download the latest jar file from the releases page.  
@@ -258,11 +330,15 @@ _(Alternatively the jar file can be compiled from the source code using
 
 Start the service on the command line:
 ```
-java -Xms2g -jar snomed-fhir-cds-service.jar \
+java -Xmx1g -jar snomed-fhir-cds-service.jar \
   --fhir.terminology-server.url=FHIR_TS
 ```
 Where:
-- `FHIR_TR` is a Terminology Server FHIR API URL.
+- `FHIR_TS` is a Terminology Server FHIR API URL.
+
+A 1 GB heap (`-Xmx1g`) is enough: with all services loaded and under load tests the whole process stayed below
+1.5 GB, so it fits a 2 GB machine or container. Avoid `-Xms` equal to the machine's memory, which leaves no room
+for the JVM's non-heap memory.
 
 ### Local Development CORS
 For local frontend testing, a permissive CORS configuration is available through the `local` Spring profile.
@@ -279,5 +355,9 @@ java -jar target/snomed-fhir-cds-service-1.1.1.jar --spring.profiles.active=loca
 
 With the `local` profile active, the service allows cross-origin requests from any origin. By default, CORS remains disabled.
 
+The `local` profile also answers Private Network Access preflights (`app.cors.allow-private-network=true`). Chromium
+browsers require this when a frontend served from a public site calls the service on `localhost` or a private network.
+
 ### Testing the Service
-Download and import the [Postman Collection](Postman_collection.json) for API examples.
+Download and import the [Postman Collection](Postman_collection.json) for API examples, including calls to
+the CQL services `DM2024OGTT01`, `JMImmunizationSchedule`, `ANCContactStart` and `ANCContactDischarge`.

@@ -1,6 +1,7 @@
 package org.snomed.cdsservice.model;
 
 import java.util.List;
+import java.util.Map;
 public class CDSCard {
 
 	private final String uuid;
@@ -20,6 +21,12 @@ public class CDSCard {
 	private List<CDSReference> referenceConditions;
 
 	private final String alertType;
+
+	// CDS Hooks card links: further information for the clinician.
+	private List<CDSLink> links;
+
+	// CDS Hooks card extension: implementation-specific data, keyed by a namespaced name.
+	private Map<String, Object> extension;
 
 	public CDSCard(String uuid, String summary, String detail, CDSIndicator indicator, CDSSource source, List<CDSReference> referenceMedications, List<CDSReference> referenceConditions, String alertType) {
 		this.uuid = uuid;
@@ -78,10 +85,29 @@ public class CDSCard {
 	}
 
 	public CDSCard cloneCard() {
-		return new CDSCard(uuid, summary, detail, indicator, source, referenceMedications, referenceConditions, alertType);
+		CDSCard clone = new CDSCard(uuid, summary, detail, indicator, source, referenceMedications, referenceConditions, alertType);
+		clone.setLinks(links);
+		clone.setExtension(extension);
+		return clone;
 	}
 
 	public String getAlertType() {
 		return alertType;
+	}
+
+	public List<CDSLink> getLinks() {
+		return links;
+	}
+
+	public void setLinks(List<CDSLink> links) {
+		this.links = links;
+	}
+
+	public Map<String, Object> getExtension() {
+		return extension;
+	}
+
+	public void setExtension(Map<String, Object> extension) {
+		this.extension = extension;
 	}
 }

@@ -15,8 +15,8 @@ public class AllergyIntoleranceCreateCDSService extends AbstractMedicationSafety
 	public AllergyIntoleranceCreateCDSService() {
 		super("allergyintolerance-create-medication-check");
 		setHook("allergyintolerance-create");
-		setTitle("AllergyIntolerance Create Medication Check");
-		setDescription("Checks a newly created allergy or intolerance against the patient's existing medications.");
+		setTitle("Medication safety: new allergy");
+		setDescription("Checks a newly recorded allergy or intolerance against the patient's active medications. Substances are matched through the SNOMED CT hierarchy, so an allergy to a substance also covers its subtypes.");
 		setUsageRequirements("Supports CDS Hooks allergyintolerance-create with a new AllergyIntolerance resource in context and active medications in prefetch.");
 		setPrefetch(Map.of(
 				"patient", "Patient/{{context.patientId}}",

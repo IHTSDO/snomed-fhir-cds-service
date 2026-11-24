@@ -16,6 +16,10 @@ public class CorsProperties {
 
 	private List<String> allowedHeaders = List.of("*");
 
+	// Answers Private Network Access preflights, so a frontend served from a public site can call a service
+	// running on localhost or a private network (Chromium browsers).
+	private boolean allowPrivateNetwork = false;
+
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -46,5 +50,13 @@ public class CorsProperties {
 
 	public void setAllowedHeaders(List<String> allowedHeaders) {
 		this.allowedHeaders = allowedHeaders;
+	}
+
+	public boolean isAllowPrivateNetwork() {
+		return allowPrivateNetwork;
+	}
+
+	public void setAllowPrivateNetwork(boolean allowPrivateNetwork) {
+		this.allowPrivateNetwork = allowPrivateNetwork;
 	}
 }

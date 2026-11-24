@@ -15,6 +15,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -22,9 +23,13 @@ import static java.lang.String.format;
 @Service
 public class FHIRTerminologyServerClient {
 
+	private static final String SNOMED_SYSTEM = "http://snomed.info/sct";
+
 	private final RestTemplate restTemplate;
-	private final Map<String, ConceptParameters> lookupCache = new HashMap<>();
-	private final Map<String, Collection<Coding>> valueSetCache = new HashMap<>();
+	// Concurrent maps: the caches are also used at request time (e.g. the medication allergy check).
+	private final Map<String, ConceptParameters> lookupCache = new ConcurrentHashMap<>();
+	private final Map<String, Collection<Coding>> valueSetCache = new ConcurrentHashMap<>();
+	private final Map<String, String> expansionVersionCache = new ConcurrentHashMap<>();
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -65,6 +70,9 @@ public class FHIRTerminologyServerClient {
 						HttpMethod.GET, null, ValueSet.class);
 				ValueSet body = response.getBody();
 				ValueSetExpansion expansion = body.getExpansion();
+				if (offset == 0) {
+					snomedVersion(expansion).ifPresent(version -> expansionVersionCache.put(valueSetURI, version));
+				}
 				List<CDSCoding> contains = expansion.getContains();
 				if (contains != null) {
 					codings.addAll(contains);
@@ -75,9 +83,34 @@ public class FHIRTerminologyServerClient {
 					moreToLoad = false;
 				}
 			}
-			valueSetCache.put(valueSetURI, codings.stream().map(cdsCoding -> new Coding(cdsCoding.getSystem(), cdsCoding.getCode(), null)).collect(Collectors.toList()));
+			valueSetCache.put(valueSetURI, codings.stream().map(cdsCoding -> new Coding(cdsCoding.getSystem(), cdsCoding.getCode(), cdsCoding.getDisplay())).collect(Collectors.toList()));
 		}
 		return valueSetCache.get(valueSetURI);
+	}
+
+	/**
+	 * @return the SNOMED CT version (edition and release URI) the server reported for an expansion made by
+	 * {@link #expandValueSet}, if it reported one
+	 */
+	public Optional<String> getExpansionVersion(String valueSetURI) {
+		return Optional.ofNullable(expansionVersionCache.get(valueSetURI));
+	}
+
+	/**
+	 * Reads the SNOMED CT version from the expansion's {@code version} or {@code used-codesystem} parameter,
+	 * e.g. {@code http://snomed.info/sct|http://snomed.info/sct/900000000000207008/version/20260701}.
+	 */
+	static Optional<String> snomedVersion(ValueSetExpansion expansion) {
+		if (expansion == null || expansion.getParameter() == null) {
+			return Optional.empty();
+		}
+		String prefix = SNOMED_SYSTEM + "|";
+		return expansion.getParameter().stream()
+				.filter(parameter -> "version".equals(parameter.getName()) || "used-codesystem".equals(parameter.getName()))
+				.map(parameter -> parameter.getValueUri() != null ? parameter.getValueUri() : parameter.getValueString())
+				.filter(value -> value != null && value.startsWith(prefix) && value.length() > prefix.length())
+				.map(value -> value.substring(prefix.length()))
+				.findFirst();
 	}
 
 }

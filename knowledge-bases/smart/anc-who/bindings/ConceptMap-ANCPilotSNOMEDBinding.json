@@ -1,0 +1,572 @@
+{
+  "resourceType": "ConceptMap",
+  "id": "ANCPilotSNOMEDBinding",
+  "url": "http://snomed.org/fhir/cds-demo/ConceptMap/ANCPilotSNOMEDBinding",
+  "version": "0.1.0",
+  "name": "ANCPilotSNOMEDBinding",
+  "title": "SNOMED CT binding of the WHO SMART ANC pilot data elements",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-11-13",
+  "publisher": "SNOMED International (demonstrator)",
+  "description": "Curated SNOMED CT codes for the ANC codes used by the six WHO SMART ANC decision tables of the pilot. The CDS service adds them to the ANC value sets, so the unmodified WHO logic also accepts SNOMED CT-coded data. Starts from the WHO ANC -> SNOMED CT ConceptMap (http://smart.who.int/anc/ConceptMap/SNOMED-CT, 0.3.0) and corrects it; see bindings/README.md for the review of each entry.",
+  "sourceCanonical": "http://smart.who.int/anc/ValueSet/anc-custom-codes",
+  "targetUri": "http://snomed.info/sct",
+  "group": [
+    {
+      "source": "http://smart.who.int/anc/CodeSystem/anc-custom-codes",
+      "target": "http://snomed.info/sct",
+      "targetVersion": "http://snomed.info/sct/900000000000207008/version/20260701",
+      "element": [
+        {
+          "code": "ANC.B5.DE48",
+          "display": "Danger signs",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "A form question (\"Danger signs\") whose answers are findings. SNOMED CT has no observable for it, and a SNOMED CT-native record would state the finding itself (e.g. Observation.code = central cyanosis). Supporting that needs the CQL data element to change, not a code."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B6.DE17",
+          "display": "Gestational age",
+          "target": [
+            {
+              "code": "57036006",
+              "display": "Fetal gestational age (observable entity)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B6.DE83",
+          "display": "Existing chronic health conditions",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "A form question (\"Existing chronic health conditions\"); in FHIR these are usually Conditions, not Observations."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B7.DE1",
+          "display": "Medication follow-up",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "Not used by the pilot's decisions."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE17",
+          "display": "Systolic blood pressure",
+          "target": [
+            {
+              "code": "271649006",
+              "display": "Systolic blood pressure (observable entity)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE19",
+          "display": "Diastolic blood pressure",
+          "target": [
+            {
+              "code": "271650006",
+              "display": "Diastolic blood pressure (observable entity)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE20",
+          "display": "Repeat systolic blood pressure",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "Same concept as the first systolic reading. SNOMED CT has no concept for a repeat reading. If bound, one reading would count as both the first and the repeat measurement and meet the two-reading criteria of DT17 alone. Needs a data-model decision (e.g. the CQL taking the two earliest readings of one code), not a code."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE21",
+          "display": "Repeat diastolic blood pressure",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "As for the repeat systolic reading."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE27",
+          "display": "Symptoms of severe pre-eclampsia",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "A form question, as \"Danger signs\"."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE38",
+          "display": "Pallor present",
+          "target": [
+            {
+              "code": "398979000",
+              "display": "Pale complexion (finding)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 267029006 |Pale - symptom|, inactive since 20221031 (ambiguous). Both targets of its POSSIBLY EQUIVALENT TO association are bound."
+            },
+            {
+              "code": "1237486008",
+              "display": "Pale discoloration of entire skin of body (finding)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 267029006 |Pale - symptom|, inactive since 20221031 (ambiguous). Both targets of its POSSIBLY EQUIVALENT TO association are bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE110",
+          "display": "Syphilis diagnosis",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "A form question (\"Syphilis diagnosis\"), as \"Danger signs\"."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE144",
+          "display": "Urine dipstick result - protein",
+          "target": [
+            {
+              "code": "271346009",
+              "display": "Urine dipstick for protein (procedure)",
+              "equivalence": "equivalent",
+              "comment": "No WHO map."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE163",
+          "display": "Fasting plasma glucose",
+          "target": [
+            {
+              "code": "167096006",
+              "display": "Plasma fasting glucose measurement (procedure)",
+              "equivalence": "equivalent",
+              "comment": "The WHO target 67096006 does not exist in SNOMED CT. WHO gives it the display \"Plasma fasting glucose measurement\", which is 167096006, so the code looks mistyped."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE164",
+          "display": "75 g oral glucose tolerance test (OGTT) - fasting glucose",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it to 792805006 |Fasting (regime/therapy)|, which is not a measurement. Not bound: the fasting sample of an OGTT is a fasting plasma glucose (167096006), already bound to \"Fasting plasma glucose\", which leads to the same DT23 decisions."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE165",
+          "display": "75 g oral glucose tolerance test (OGTT) - 1 hour",
+          "target": [
+            {
+              "code": "442260000",
+              "display": "Measurement of glucose 1 hour after glucose challenge for glucose tolerance test (procedure)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 113076002 |Glucose tolerance test (procedure)|, the whole test rather than its 1-hour value."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE166",
+          "display": "75 g oral glucose tolerance test (OGTT) - 2 hours",
+          "target": [
+            {
+              "code": "49167009",
+              "display": "Measurement of glucose 2 hours after glucose challenge for glucose tolerance test (procedure)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 123030002 |2 hours (qualifier value)|, a time qualifier."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE167",
+          "display": "Random plasma glucose",
+          "target": [
+            {
+              "code": "167095005",
+              "display": "Plasma random glucose measurement (procedure)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE186",
+          "display": "Blood haemoglobin test result",
+          "target": [
+            {
+              "code": "271026005",
+              "display": "Hemoglobin level estimation (procedure)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 118246004 |Laboratory test finding|, a navigational concept, inactive since 20240501 (ambiguous). Its historical associations (POSSIBLY EQUIVALENT TO Measurement finding, Evaluation finding) are no better: the map was wrong before the inactivation."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE45",
+          "display": "HIV status",
+          "target": [
+            {
+              "code": "278977008",
+              "display": "Human immunodeficiency virus status (observable entity)",
+              "equivalence": "equivalent",
+              "comment": "No WHO map."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE49",
+          "display": "No danger signs",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it (relatedto) to 161915001 |No general symptom|, inactive since 20230531 (ambiguous). Its POSSIBLY EQUIVALENT TO target, 162467007 |Free of symptoms|, says more than \"no danger signs\". Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE50",
+          "display": "Bleeding vaginally",
+          "target": [
+            {
+              "code": "289530006",
+              "display": "Bleeding from vagina (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE51",
+          "display": "Central cyanosis",
+          "target": [
+            {
+              "code": "95837007",
+              "display": "Central cyanosis (disorder)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE52",
+          "display": "Convulsing",
+          "target": [
+            {
+              "code": "91175000",
+              "display": "Seizure (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE53",
+          "display": "Fever",
+          "target": [
+            {
+              "code": "386661006",
+              "display": "Fever (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE54",
+          "display": "Imminent delivery",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it to 409049004 |Delivery risk|, inactive since 20230630, REPLACED BY 1269476005 |At increased risk for complication during labor and delivery|. Neither means imminent delivery. Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE55",
+          "display": "Labour",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it to 249123005 |Onset of contractions (observable entity)|, an observable, not a value. Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE56",
+          "display": "Looks very ill",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it (equivalent) to 39104002 |Illness|, which is much wider: any illness would be a danger sign. Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE57",
+          "display": "Severe headache",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it (equivalent) to 25064002 |Headache|, dropping \"severe\": any headache would be a danger sign. Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE58",
+          "display": "Severe pain",
+          "target": [
+            {
+              "code": "76948002",
+              "display": "Severe pain (finding)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it (equivalent) to 22253000 |Pain|, dropping \"severe\"."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE59",
+          "display": "Severe vomiting",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it (equivalent) to 422400008 |Vomiting|, dropping \"severe\". Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE60",
+          "display": "Severe abdominal pain",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it (equivalent) to 21522001 |Abdominal pain|, dropping \"severe\". Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE61",
+          "display": "Unconscious",
+          "target": [
+            {
+              "code": "418107008",
+              "display": "Unconscious (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B5.DE62",
+          "display": "Visual disturbance",
+          "target": [
+            {
+              "code": "63102001",
+              "display": "Visual disturbance (disorder)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B6.DE96",
+          "display": "Hypertension",
+          "target": [
+            {
+              "code": "38341003",
+              "display": "Hypertensive disorder, systemic arterial (disorder)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B7.DE5",
+          "display": "Has side-effects from iron and folic acid supplements",
+          "target": [
+            {
+              "code": "401207004",
+              "display": "Medication side effects present (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE28",
+          "display": "No symptoms of severe pre-eclampsia",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it (relatedto) to 162001003 |No cardiovascular symptom|, which is not the absence of pre-eclampsia symptoms. Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE29",
+          "display": "Severe headache",
+          "target": [
+            {
+              "equivalence": "unmatched",
+              "comment": "WHO maps it (equivalent) to 25064002 |Headache|, dropping \"severe\". Not bound."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE30",
+          "display": "Visual disturbance",
+          "target": [
+            {
+              "code": "63102001",
+              "display": "Visual disturbance (disorder)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE31",
+          "display": "Epigastric pain",
+          "target": [
+            {
+              "code": "79922009",
+              "display": "Epigastric pain (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE32",
+          "display": "Dizziness",
+          "target": [
+            {
+              "code": "404640003",
+              "display": "Dizziness (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B8.DE33",
+          "display": "Vomiting",
+          "target": [
+            {
+              "code": "422400008",
+              "display": "Vomiting (disorder)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE111",
+          "display": "Syphilis positive",
+          "target": [
+            {
+              "code": "165781001",
+              "display": "Syphilis titer detected (finding)",
+              "equivalence": "wider",
+              "comment": "WHO's lab finding is kept; the disorder is added, being what a diagnosis is recorded with."
+            },
+            {
+              "code": "76272004",
+              "display": "Syphilis (disorder)",
+              "equivalence": "equivalent",
+              "comment": "WHO's lab finding is kept; the disorder is added, being what a diagnosis is recorded with."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE145",
+          "display": "None",
+          "target": [
+            {
+              "code": "167273002",
+              "display": "Urine protein not detected (finding)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 260413007 |None (qualifier value)|."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE146",
+          "display": "+",
+          "target": [
+            {
+              "code": "167275009",
+              "display": "Urine protein test = + (finding)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 255604002 |Mild (qualifier value)|."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE147",
+          "display": "++",
+          "target": [
+            {
+              "code": "167276005",
+              "display": "Urine protein test = ++ (finding)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 6736007 |Moderate (severity modifier)|."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE148",
+          "display": "+++",
+          "target": [
+            {
+              "code": "167277001",
+              "display": "Urine protein test = +++ (finding)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it to 24484000 |Severe (severity modifier)|."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE149",
+          "display": "++++",
+          "target": [
+            {
+              "code": "167278006",
+              "display": "Urine protein test = ++++ (finding)",
+              "equivalence": "equivalent",
+              "comment": "WHO maps it (relatedto) to 795002 |Deep (qualifier value)|."
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE46",
+          "display": "HIV positive",
+          "target": [
+            {
+              "code": "165816005",
+              "display": "Human immunodeficiency virus detected (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "ANC.B9.DE47",
+          "display": "HIV negative",
+          "target": [
+            {
+              "code": "165815009",
+              "display": "Human immunodeficiency virus not detected (finding)",
+              "equivalence": "equivalent"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

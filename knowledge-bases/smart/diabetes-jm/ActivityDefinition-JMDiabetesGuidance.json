@@ -1,0 +1,20 @@
+{
+  "resourceType": "ActivityDefinition",
+  "id": "JMDiabetesGuidance",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/cpg/StructureDefinition/cpg-communicationactivity"
+    ]
+  },
+  "url": "http://snomed.org/fhir/cds-demo/ActivityDefinition/JMDiabetesGuidance",
+  "version": "0.1.0",
+  "name": "JMDiabetesGuidance",
+  "title": "Diabetes diagnostic guidance",
+  "status": "draft",
+  "experimental": true,
+  "description": "Communicates diagnostic guidance to the clinician.",
+  "kind": "CommunicationRequest",
+  "profile": "http://hl7.org/fhir/uv/cpg/StructureDefinition/cpg-communicationrequest",
+  "intent": "proposal",
+  "doNotPerform": false
+}

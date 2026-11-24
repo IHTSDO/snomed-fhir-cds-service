@@ -1,0 +1,77 @@
+{
+  "resourceType": "PlanDefinition",
+  "id": "ANCContactDischarge",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/cpg/StructureDefinition/cpg-strategydefinition"
+    ]
+  },
+  "url": "http://snomed.org/fhir/cds-demo/PlanDefinition/ANCContactDischarge",
+  "version": "0.1.0",
+  "name": "ANCContactDischarge",
+  "title": "Antenatal care: end of contact (WHO SMART, pilot)",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/plan-definition-type",
+        "code": "workflow-definition"
+      }
+    ]
+  },
+  "status": "draft",
+  "experimental": true,
+  "description": "At the end of an antenatal care contact, checks the examination and laboratory results for pre-eclampsia and hypertension, gestational diabetes and anaemia, and says what to do: refer urgently, or counsel (with the iron and folic acid doses for anaemia). Source: WHO antenatal care recommendations (2016), Digital Adaptation Kit (2021), implemented with 3 unmodified WHO SMART ANC decision tables (CQL): ANC.DT.17 and ANC.DT.23 (WHO workflow step ANC.B10.4 Diagnosis and treatment), ANC.DT.25 (ANC.B9 Laboratory tests).",
+  "usage": "Pilot. Evaluates the results of one ANC contact before it ends (encounter-discharge): the encounter is context.encounterId. Needs the Observations of that encounter, coded with the WHO ANC data dictionary codes or, through a curated binding, SNOMED CT; the ANC contact number is an Encounter extension. WHO SMART ANC IG 0.3.0 (continuous integration build, not a published release). The data come from the IG's Questionnaires ANC.B6 Profile (gestational age, chronic conditions), ANC.B8 Physical exam (blood pressure, pre-eclampsia symptoms, pallor) and ANC.B9 Lab tests (urine protein, glucose, haemoglobin).",
+  "relatedArtifact": [
+    {
+      "type": "documentation",
+      "label": "WHO recommendations on antenatal care for a positive pregnancy experience (2016)",
+      "url": "https://www.who.int/publications/i/item/9789241549912"
+    },
+    {
+      "type": "documentation",
+      "label": "WHO Digital Adaptation Kit for Antenatal Care (2021)",
+      "url": "https://www.who.int/publications/i/item/9789240020306"
+    },
+    {
+      "type": "derived-from",
+      "label": "WHO SMART Guidelines: Antenatal Care IG",
+      "url": "https://build.fhir.org/ig/WorldHealthOrganization/smart-anc/"
+    }
+  ],
+  "action": [
+    {
+      "id": "ANCDT17",
+      "title": "Pre-eclampsia, severe pre-eclampsia and hypertension diagnosis",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
+        }
+      ],
+      "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT17"
+    },
+    {
+      "id": "ANCDT23",
+      "title": "Gestational diabetes mellitus and diabetes mellitus in pregnancy diagnosis",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
+        }
+      ],
+      "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT23"
+    },
+    {
+      "id": "ANCDT25",
+      "title": "Anaemia, iron and folic acid supplementation",
+      "trigger": [
+        {
+          "type": "named-event",
+          "name": "encounter-discharge"
+        }
+      ],
+      "definitionCanonical": "http://smart.who.int/anc/PlanDefinition/ANCDT25"
+    }
+  ]
+}
