@@ -164,7 +164,7 @@ public class PlanDefinitionCDSService extends CDSService {
 		List<CDSCard> cards = new ArrayList<>();
 		for (PlanDefinition rule : rules) {
 			CarePlan carePlan = (CarePlan) engine.apply(rule.getIdPart(), patientId, resources, parameters);
-			cards.addAll(cardMapper.toCards(carePlan, rule, strategy, engine.getTerminologyVersions()));
+			cards.addAll(cardMapper.toCards(carePlan, rule, strategy, engine.getTerminologyVersions(), engine.getActionPriorities()));
 		}
 		// Most severe first (critical, warning, info); otherwise keep the strategy's order.
 		cards.sort(Comparator.comparing((CDSCard card) -> card.getIndicator().ordinal()).reversed());

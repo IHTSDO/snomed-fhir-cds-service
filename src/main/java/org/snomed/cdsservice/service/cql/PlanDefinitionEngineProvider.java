@@ -24,7 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * through the terminology server and the stored expansions rewritten, for review before committing.
  * <p>
  * Curated bindings ({@link ConceptMapBindings}) then add standard codes (e.g. SNOMED CT) to value sets that only
- * enumerate the content's own codes.
+ * enumerate the content's own codes, and curated card indicators ({@link ActionPriorities}) give a priority to
+ * actions that carry none.
  */
 @Service
 public class PlanDefinitionEngineProvider {
@@ -47,6 +48,7 @@ public class PlanDefinitionEngineProvider {
 				new EclValueSetPreloader(eclCodeResolver::expand)
 						.preload(engine, StoredExpansions.load(fhirContext, directory), refreshExpansions);
 				ConceptMapBindings.load(fhirContext, directory).applyTo(engine);
+				engine.setActionPriorities(ActionPriorities.load(directory));
 				logger.info("Loaded FHIR knowledge artifacts from '{}'.", directory);
 				return engine;
 			} catch (IOException e) {

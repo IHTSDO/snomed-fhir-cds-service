@@ -225,6 +225,12 @@ class PlanDefinitionCDSServiceApiTest {
 				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Conduct HIV test")))
 				.andExpect(jsonPath("$.cards[*].summary").value(hasItem("Conduct syphilis test")))
 				.andExpect(jsonPath("$.cards", hasSize(3)))
+				// The WHO tables set no priority; the curated overlay (priorities/) makes the danger sign critical,
+				// and it comes first.
+				.andExpect(jsonPath("$.cards[0].summary").value("Proceed with ANC contact OR Referral for Central cyanosis"))
+				.andExpect(jsonPath("$.cards[0].indicator").value("critical"))
+				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].indicator").value(contains("info")))
+				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct syphilis test')].indicator").value(contains("info")))
 				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].detail").value(contains(containsString("**Why:**"))))
 				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')].source.url")
 						.value(contains("https://build.fhir.org/ig/WorldHealthOrganization/smart-anc/PlanDefinition-ANCDT08.html")))
@@ -293,6 +299,8 @@ class PlanDefinitionCDSServiceApiTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.cards[*].summary").value(containsInAnyOrder("Conduct hypertension counselling",
 						"Conduct REQUIRED gestational diabetes mellitus (GDM) counselling", "Conduct REQUIRED anaemia counselling")))
+				// Abnormal results that need counselling: warnings (curated overlay, priorities/).
+				.andExpect(jsonPath("$.cards[*].indicator").value(contains("warning", "warning", "warning")))
 				// The test orders of the first contact belong to the start of the contact, not to its end.
 				.andExpect(jsonPath("$.cards[?(@.summary == 'Conduct HIV test')]").isEmpty());
 	}

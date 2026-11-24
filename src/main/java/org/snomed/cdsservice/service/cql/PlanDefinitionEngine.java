@@ -60,6 +60,7 @@ public class PlanDefinitionEngine {
 	private final IRepository contentRepository;
 	private final CrSettings crSettings;
 	private final Map<String, String> valueSetVersions = new ConcurrentHashMap<>();
+	private volatile ActionPriorities actionPriorities = ActionPriorities.NONE;
 
 	public PlanDefinitionEngine(FhirContext fhirContext, Collection<? extends IBaseResource> knowledgeArtifacts) {
 		this.fhirContext = fhirContext;
@@ -214,6 +215,15 @@ public class PlanDefinitionEngine {
 	 */
 	public Set<String> getTerminologyVersions() {
 		return new TreeSet<>(valueSetVersions.values());
+	}
+
+	/** The content set's curated card indicators ({@link ActionPriorities}), for actions that carry no priority. */
+	public ActionPriorities getActionPriorities() {
+		return actionPriorities;
+	}
+
+	public void setActionPriorities(ActionPriorities actionPriorities) {
+		this.actionPriorities = actionPriorities == null ? ActionPriorities.NONE : actionPriorities;
 	}
 
 	/**

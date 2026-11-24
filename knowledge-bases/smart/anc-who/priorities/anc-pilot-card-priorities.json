@@ -1,0 +1,49 @@
+{
+  "description": "Curated CDS Hooks card indicators for the decisions of the WHO SMART ANC decision tables used by the pilot. The WHO PlanDefinitions set no priority on any action, so without this overlay every card would be 'info'. Decisions are identified by the PlanDefinition canonical URL and the action title (the card summary).",
+  "rules": [
+    {
+      "planDefinition": "http://smart.who.int/anc/PlanDefinition/ANCDT01",
+      "actions": [
+        { "title": "Proceed with ANC contact", "indicator": "info", "rationale": "No danger signs: the contact continues as normal." },
+        { "title": "Proceed with ANC contact OR Referral for Central cyanosis", "indicator": "critical", "rationale": "Danger sign: the woman needs urgent management or referral before the contact goes on." },
+        { "title": "Proceed with ANC contact OR Referral", "indicator": "critical", "rationale": "Danger sign: the woman needs urgent management or referral before the contact goes on." }
+      ]
+    },
+    {
+      "planDefinition": "http://smart.who.int/anc/PlanDefinition/ANCDT08",
+      "actions": [
+        { "title": "Conduct HIV test", "indicator": "info", "rationale": "Routine test order." },
+        { "title": "HIV test is optional", "indicator": "info", "rationale": "Routine test order." },
+        { "title": "HIV test is not required", "indicator": "info", "rationale": "No action needed." }
+      ]
+    },
+    {
+      "planDefinition": "http://smart.who.int/anc/PlanDefinition/ANCDT11",
+      "actions": [
+        { "title": "Conduct syphilis test", "indicator": "info", "rationale": "Routine test order." },
+        { "title": "No syphilis test required", "indicator": "info", "rationale": "Known syphilis: no test; the treatment is part of the known diagnosis." }
+      ]
+    },
+    {
+      "planDefinition": "http://smart.who.int/anc/PlanDefinition/ANCDT17",
+      "actions": [
+        { "title": "Refer urgently to a hospital", "indicator": "critical", "rationale": "Severe hypertension, pre-eclampsia or severe pre-eclampsia: urgent referral." },
+        { "title": "Conduct hypertension counselling", "indicator": "warning", "rationale": "Abnormal finding (hypertension) that requires counselling before the woman leaves." }
+      ]
+    },
+    {
+      "planDefinition": "http://smart.who.int/anc/PlanDefinition/ANCDT23",
+      "actions": [
+        { "title": "Conduct REQUIRED gestational diabetes mellitus (GDM) counselling", "indicator": "warning", "rationale": "Abnormal result (GDM) that requires counselling." },
+        { "title": "Conduct REQUIRED diabetes mellitus (DM) counselling", "indicator": "warning", "rationale": "Abnormal result (DM) that requires counselling." }
+      ]
+    },
+    {
+      "planDefinition": "http://smart.who.int/anc/PlanDefinition/ANCDT25",
+      "actions": [
+        { "title": "Conduct REQUIRED anaemia counselling", "indicator": "warning", "rationale": "Anaemia: required counselling and a higher iron dose." },
+        { "title": "\"Anaemia counselling conducted\" IS OPTIONAL", "indicator": "info", "rationale": "No anaemia: routine iron and folic acid supplementation." }
+      ]
+    }
+  ]
+}

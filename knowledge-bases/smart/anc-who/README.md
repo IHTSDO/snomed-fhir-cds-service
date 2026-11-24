@@ -74,6 +74,22 @@ its entries for the pilot: 19 accepted, 10 corrected, 4 inactive targets, 1 none
 - Repeat blood pressure readings stay ANC-only: bound to the same concept as the first reading, one reading would
   meet DT17's two-reading criteria alone.
 
+## Card priorities
+
+The WHO decision tables set no `priority` on any action, so every card would be `info`.
+`priorities/anc-pilot-card-priorities.json` is a curated overlay that gives each decision a CDS Hooks indicator,
+identified by the table's canonical URL and the action title (`ActionPriorities`). The WHO content stays
+unmodified; decisions not in the overlay keep the indicator derived from their priority.
+
+| Indicator | Decisions | Why |
+|---|---|---|
+| `critical` | DT01 *Proceed with ANC contact OR Referral* (and *…for Central cyanosis*); DT17 *Refer urgently to a hospital* | Danger signs and severe hypertension or pre-eclampsia need urgent management or referral |
+| `warning` | DT17 *Conduct hypertension counselling*; DT23 GDM and DM counselling; DT25 *Conduct REQUIRED anaemia counselling* | An abnormal result that needs counselling (and, for anaemia, a higher iron dose) before the woman leaves |
+| `info` | DT08 and DT11 test decisions; DT01 *Proceed with ANC contact*; DT25 *…IS OPTIONAL* | Routine orders and supplementation, or nothing to do |
+
+The service sorts cards most severe first. A test checks that every decision of the six tables has an entry, so a
+WHO title change is noticed.
+
 ## How it is served
 
 As with the immunization schedule, the service applies each table separately and merges the cards. The tables'
@@ -94,5 +110,10 @@ uses the L2 logic each action states (the decision table, in the condition's des
 25 scenarios across the six tables, including data from another contact being ignored, plus 9 with SNOMED
 CT-coded data, including codes WHO maps but the binding rejects (e.g. *Headache* for "Severe headache").
 
-Known deviation of the WHO content: for a 2-hour 75 g OGTT, the L2 table gives GDM from 153 to 199 mg/dL, while
-the CQL implements 180 to 199 mg/dL. A test pins the CQL behaviour, so a WHO fix will be noticed.
+Known deviations of the WHO content:
+
+- DT25's three "IS OPTIONAL" conditions name their CQL define with escaped quotes (`Should \"Anaemia counselling
+  conducted\" IS OPTIONAL`), which the engine cannot resolve. They evaluate to null, so the routine
+  supplementation decision never gives a card.
+- For a 2-hour 75 g OGTT, the L2 table gives GDM from 153 to 199 mg/dL, while the CQL implements 180 to
+  199 mg/dL. A test pins the CQL behaviour, so a WHO fix will be noticed.

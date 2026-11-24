@@ -93,6 +93,15 @@ public class CarePlanCardMapper {
 	 * @param strategy       the PlanDefinition that composed the rule (e.g. a national schedule), or null
 	 */
 	public List<CDSCard> toCards(CarePlan carePlan, PlanDefinition planDefinition, PlanDefinition strategy, Set<String> terminologyVersions) {
+		return toCards(carePlan, planDefinition, strategy, terminologyVersions, ActionPriorities.NONE);
+	}
+
+	/**
+	 * @param priorities curated indicators for actions that carry no priority (e.g. the WHO SMART ANC tables); they
+	 *                   take precedence over the indicator derived from the action priority
+	 */
+	public List<CDSCard> toCards(CarePlan carePlan, PlanDefinition planDefinition, PlanDefinition strategy, Set<String> terminologyVersions,
+			ActionPriorities priorities) {
 		List<Resource> contained = distinctById(carePlan.getContained());
 
 		List<CDSReference> proposals = new ArrayList<>();
@@ -129,7 +138,7 @@ public class CarePlanCardMapper {
 			}
 		}
 		if (cards.isEmpty() && proposals.isEmpty()) {
-			cards.addAll(actionCards(contained, planDefinition, source));
+			cards.addAll(actionCards(contained, planDefinition, source, priorities));
 		}
 		if (cards.isEmpty()) {
 			for (int i = 0; i < proposals.size(); i++) {
@@ -160,7 +169,8 @@ public class CarePlanCardMapper {
 	 * One card per applicable decision (an action with an applicability condition), merging decisions with the same
 	 * title. A decision with several outcomes lists its sub-actions as the actions to take.
 	 */
-	private List<CDSCard> actionCards(List<Resource> contained, PlanDefinition planDefinition, CDSSource source) {
+	private List<CDSCard> actionCards(List<Resource> contained, PlanDefinition planDefinition, CDSSource source,
+			ActionPriorities priorities) {
 		Map<String, List<RequestGroup.RequestGroupActionComponent>> byTitle = new LinkedHashMap<>();
 		for (Resource resource : contained) {
 			if (resource instanceof RequestGroup requestGroup) {
@@ -195,8 +205,9 @@ public class CarePlanCardMapper {
 			if (!references.isEmpty()) {
 				detail.append("**Reference:** ").append(String.join("; ", references));
 			}
-			CDSIndicator indicator = actions.stream().map(action -> indicator(action.getPriority()))
-					.max(Comparator.naturalOrder()).orElse(CDSIndicator.info);
+			CDSIndicator indicator = priorities.indicator(planDefinition.getUrl(), entry.getKey())
+					.orElseGet(() -> actions.stream().map(action -> indicator(action.getPriority()))
+							.max(Comparator.naturalOrder()).orElse(CDSIndicator.info));
 			String summary = summary(entry.getKey());
 			cards.add(new CDSCard(cardUuid(planDefinition, null, summary), summary, detail.toString().strip(), indicator, source,
 					null, null, ALERT_TYPE));

@@ -22,6 +22,7 @@ import org.snomed.cdsservice.model.CDSIndicator;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,12 +58,14 @@ class SmartAncPilotScenariosTest {
 
 	private static PlanDefinitionEngine engine;
 	private static Set<String> boundValueSets;
+	private static ActionPriorities priorities;
 
 	@BeforeAll
 	static void loadContent() throws Exception {
 		Path content = Path.of("knowledge-bases/smart/anc-who");
 		engine = PlanDefinitionEngine.fromDirectory(FHIR_CONTEXT, content);
 		boundValueSets = ConceptMapBindings.load(FHIR_CONTEXT, content).applyTo(engine);
+		priorities = ActionPriorities.load(content);
 	}
 
 	// ANCDT01: danger signs
@@ -289,14 +292,42 @@ class SmartAncPilotScenariosTest {
 		CarePlan carePlan = apply("ANCDT01", 1, coded("ANC.B5.DE48", "ANC.B5.DE51"));
 		PlanDefinition rule = engine.getPlanDefinition("ANCDT01");
 
-		List<CDSCard> cards = MAPPER.toCards(carePlan, rule, null, Set.of());
+		List<CDSCard> cards = MAPPER.toCards(carePlan, rule, null, Set.of(), priorities);
 
 		assertEquals(1, cards.size());
 		CDSCard card = cards.get(0);
 		assertEquals("Proceed with ANC contact OR Referral for Central cyanosis", card.getSummary());
 		assertTrue(card.getDetail().contains("**Why:**"), card.getDetail());
 		assertTrue(card.getDetail().contains("Central cyanosis"), card.getDetail());
-		assertEquals(CDSIndicator.info, card.getIndicator());
+		// The WHO tables set no priority: the indicator comes from the curated overlay (priorities/).
+		assertEquals(CDSIndicator.critical, card.getIndicator());
+		assertEquals(CDSIndicator.info, MAPPER.toCards(carePlan, rule, null, Set.of()).get(0).getIndicator());
+	}
+
+	@Test
+	void curatedPrioritiesCoverEveryDecisionOfThePilotTables() {
+		// Every decision title of the six tables has a curated indicator, so a WHO title change is noticed.
+		for (String id : List.of("ANCDT01", "ANCDT08", "ANCDT11", "ANCDT17", "ANCDT23", "ANCDT25")) {
+			PlanDefinition rule = engine.getPlanDefinition(id);
+			for (PlanDefinition.PlanDefinitionActionComponent table : rule.getAction()) {
+				for (PlanDefinition.PlanDefinitionActionComponent decision : table.getAction()) {
+					assertTrue(priorities.indicator(rule.getUrl(), decision.getTitle()).isPresent(), id + ": " + decision.getTitle());
+				}
+			}
+		}
+	}
+
+	@Test
+	void dangerSignsAndUrgentReferralAreCriticalAbnormalResultsAreWarnings() {
+		assertEquals(Map.of("Proceed with ANC contact OR Referral", CDSIndicator.critical),
+				indicators("ANCDT01", 1, coded("ANC.B5.DE48", "ANC.B5.DE50")));
+		assertEquals(Map.of("Proceed with ANC contact", CDSIndicator.info),
+				indicators("ANCDT01", 1, coded("ANC.B5.DE48", "ANC.B5.DE49")));
+		assertEquals(Map.of("Conduct HIV test", CDSIndicator.info), indicators("ANCDT08", 1));
+		assertEquals(CDSIndicator.critical, indicators("ANCDT17", 2,
+				bloodPressure(165, 165, 100, 100, coded("ANC.B9.DE144", "ANC.B9.DE146"))).get("Refer urgently to a hospital"));
+		assertEquals(Map.of("Conduct hypertension counselling", CDSIndicator.warning),
+				indicators("ANCDT17", 2, bloodPressure(150, 150, 85, 85, coded("ANC.B9.DE144", "ANC.B9.DE145"))));
 	}
 
 	@Test
@@ -315,6 +346,14 @@ class SmartAncPilotScenariosTest {
 		MAPPER.toCards(apply(planDefinitionId, contactNumber, observations), engine.getPlanDefinition(planDefinitionId), null, Set.of())
 				.forEach(card -> titles.add(card.getSummary()));
 		return titles;
+	}
+
+	/** The indicator of each card the rule produces, with the curated priorities. */
+	private static Map<String, CDSIndicator> indicators(String planDefinitionId, int contactNumber, Observation... observations) {
+		Map<String, CDSIndicator> indicators = new LinkedHashMap<>();
+		MAPPER.toCards(apply(planDefinitionId, contactNumber, observations), engine.getPlanDefinition(planDefinitionId), null, Set.of(), priorities)
+				.forEach(card -> indicators.put(card.getSummary(), card.getIndicator()));
+		return indicators;
 	}
 
 	private static CarePlan apply(String planDefinitionId, int contactNumber, Observation... observations) {
