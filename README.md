@@ -252,8 +252,8 @@ is published as a CDS Hooks service. The CQL is compiled and run in-process with
 compiler and engine ([cqf-fhir-cr](https://github.com/cqframework/clinical-reasoning)), without a HAPI FHIR
 server.
 
-> This is a spike (branch `spike/smart-cql-engine`) exploring convergence with SMART Guidelines. See the
-> [design document](docs/design/smart-guidelines-alignment.md) for the analysis, results and next steps.
+See the [design document](docs/design/smart-guidelines-alignment.md) for the analysis behind this engine, its
+results and next steps.
 
 ### Shipped content
 Content lives in `rules.plandefinition.directory` (default `smart/` in the knowledge base). Each subdirectory is a
@@ -291,6 +291,10 @@ content set: a FHIR package, or a subset of one.
 - **Curated bindings.** A content set whose value sets enumerate its own codes (e.g. WHO SMART ANC) can bind
   them to SNOMED CT with ConceptMaps in `<content set>/bindings/`. The mapped codes are added to the value sets at
   startup; the content stays unmodified.
+- **Curated priorities.** Content whose actions carry no priority (e.g. WHO SMART ANC, where every decision would
+  otherwise be `info`) can set each decision's card indicator in `<content set>/priorities/*.json`, keyed by the
+  PlanDefinition canonical and the action title. Decisions not listed keep the indicator derived from the action's
+  priority; the content stays unmodified.
 - **Encounter context.** The current encounter (`context.encounterId`, or the only in-progress Encounter in the
   prefetch) is passed as the CQL parameter `encounter`; libraries that do not declare it ignore it.
 - **Startup.** The CQL is compiled when the service registers, so invalid CQL fails startup and the first
