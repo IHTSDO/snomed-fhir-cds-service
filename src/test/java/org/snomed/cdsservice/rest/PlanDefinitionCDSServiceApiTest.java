@@ -51,7 +51,7 @@ class PlanDefinitionCDSServiceApiTest {
 	void discoveryAdvertisesPrefetchDerivedFromDataRequirements() throws Exception {
 		mockMvc.perform(get("/cds-services"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].hook").value(contains("patient-view")))
+				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].hook").value(contains("immunization-review")))
 				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.patient").value(contains("Patient/{{context.patientId}}")))
 				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.immunization").value(contains("Immunization?patient={{context.patientId}}")))
 				.andExpect(jsonPath("$.services[?(@.id == 'JMImmunizationSchedule')].prefetch.observation").value(contains("Observation?patient={{context.patientId}}")))
@@ -119,7 +119,7 @@ class PlanDefinitionCDSServiceApiTest {
 	void newbornWithoutBcgIsDue() throws Exception {
 		String request = """
 				{
-				  "hook": "patient-view",
+				  "hook": "immunization-review",
 				  "hookInstance": "test-instance",
 				  "context": { "patientId": "newborn-1" },
 				  "prefetch": {
@@ -156,7 +156,7 @@ class PlanDefinitionCDSServiceApiTest {
 	void snomedCodedBcgDoseCompletesTheSchedule() throws Exception {
 		String request = """
 				{
-				  "hook": "patient-view",
+				  "hook": "immunization-review",
 				  "hookInstance": "test-instance",
 				  "context": { "patientId": "child-1" },
 				  "prefetch": {

@@ -273,7 +273,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"hook\": \"patient-view\",\n    \"hookInstance\": \"7a3e9c10-2f4d-4b6a-8c5e-1d9b0f2a6c33\",\n    \"context\": {\n        \"userId\": \"Practitioner/nurse-1\",\n        \"patientId\": \"juan\"\n    },\n    \"prefetch\": {\n        \"patient\": {\n            \"resourceType\": \"Patient\",\n            \"id\": \"juan\",\n            \"gender\": \"male\",\n            \"birthDate\": \"{{scheduleInfantBirthDate}}\"\n        },\n        \"immunization\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        },\n        \"observation\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        }\n    }\n}",
+					"raw": "{\n    \"hook\": \"immunization-review\",\n    \"hookInstance\": \"7a3e9c10-2f4d-4b6a-8c5e-1d9b0f2a6c33\",\n    \"context\": {\n        \"userId\": \"Practitioner/nurse-1\",\n        \"patientId\": \"juan\"\n    },\n    \"prefetch\": {\n        \"patient\": {\n            \"resourceType\": \"Patient\",\n            \"id\": \"juan\",\n            \"gender\": \"male\",\n            \"birthDate\": \"{{scheduleInfantBirthDate}}\"\n        },\n        \"immunization\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        },\n        \"observation\": {\n            \"resourceType\": \"Bundle\",\n            \"type\": \"searchset\"\n        }\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"

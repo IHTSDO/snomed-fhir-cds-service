@@ -33,7 +33,8 @@ This service implements the [discovery endpoint](https://cds-hooks.hl7.org/2.0/#
 
 ### Standard CDS Hooks Services
 The discovery endpoint publishes multiple standard CDS Hooks services so the demo can be exercised against different
-workflow events using standard hook names only.
+workflow events using standard hook names. The one exception is `JMImmunizationSchedule`, on the custom hook
+`immunization-review`, so it runs only when the client asks for it.
 
 #### "Medication Order Select" Service
 This service is intended for the CDS Hooks `order-select` hook during medication prescribing. It returns user alerts if
@@ -230,7 +231,7 @@ content set: a FHIR package, or a subset of one.
 | Service id | Content set | What it shows |
 |---|---|---|
 | `DM2024OGTT01` | `diabetes-jm` | The diabetes OGTT rule (`DM-2024-OGTT-01`) translated from the TSV model to SMART-style CQL, with SNOMED CT ECL value sets. A differential test checks it against the TSV engine on 26 scenarios. |
-| `JMImmunizationSchedule` | `immunizations-jm` | Jamaica's routine immunization schedule, built from 11 unmodified WHO SMART Immunizations decision tables (BCG, hepatitis B, DTP, polio, Hib, measles, rubella, mumps, HPV). One card per table. The IG's own 138 test scenarios pass. See the content set's README for the mapping to the national schedule and the known differences. |
+| `JMImmunizationSchedule` (`immunization-review`) | `immunizations-jm` | On demand: the custom hook `immunization-review` is never fired by an EHR on its own, so the client calls the service when the user asks for a schedule review. Jamaica's routine immunization schedule, built from 11 unmodified WHO SMART Immunizations decision tables (BCG, hepatitis B, DTP, polio, Hib, measles, rubella, mumps, HPV). One card per table. The IG's own 138 test scenarios pass. See the content set's README for the mapping to the national schedule and the known differences. |
 | `ANCContactStart` (`encounter-start`), `ANCContactDischarge` (`encounter-discharge`) | `anc-who` | Pilot: decision support for one antenatal contact from six unmodified WHO SMART ANC decision tables. At the start: danger-sign triage, HIV and syphilis test orders. At the end: hypertension, diabetes and anaemia, with referral and counselling. Needs the current Encounter (`context.encounterId`) and Observations coded with ANC codes or, through a curated binding, SNOMED CT. One card per decision that applies. 34 scenarios derived from the WHO decision tables. See the content set's README for the data model, and `bindings/README.md` for the QA of WHO's SNOMED CT map. |
 
 ### How a request is handled

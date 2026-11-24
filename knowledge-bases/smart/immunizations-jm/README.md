@@ -1,9 +1,15 @@
 # Jamaica routine immunization schedule — WHO SMART decision tables
 
 FHIR Clinical Reasoning content served by the embedded CQL engine as the CDS Hooks service `JMImmunizationSchedule`
-(`patient-view`). It returns one card per decision table that has guidance for the patient: due, not due yet,
+(hook `immunization-review`). It returns one card per decision table that has guidance for the patient: due, not due yet,
 further evaluation, or schedule complete. Cards that propose a vaccine are `warning` and come first; the others
 keep WHO's `routine` priority (`info`).
+
+It runs on demand only. A schedule review for every patient on every chart opening (`patient-view`) was too
+intrusive, so the StrategyDefinition declares a custom hook, `immunization-review`, as its `named-event` trigger. No
+EHR fires it by itself: the client calls the service when the user asks to review the immunization schedule. The
+request has the same shape as a `patient-view` request (`context.patientId`, with the Patient, Immunization and
+Observation prefetch).
 
 ## Content
 
