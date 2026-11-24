@@ -129,7 +129,7 @@ descriptive documentation of the pathway only; it is not evaluated and does not 
 
 ### The two-file rule model
 Each clinical domain is defined by two tab-separated files in the rules directory (`rules.diagnostic.directory`,
-default `knowledge-bases/`):
+default the knowledge base root, `knowledge-bases/`):
 
 - **`<domain>_criteria.tsv`** — reusable *atomic criteria*. Each row defines how to find and evaluate one
   clinical fact (e.g. *fasting plasma glucose ≥ 7.0 mmol/L*, *24-hour ABPM average systolic ≥ 130 mmHg*).
@@ -256,7 +256,7 @@ server.
 > [design document](docs/design/smart-guidelines-alignment.md) for the analysis, results and next steps.
 
 ### Shipped content
-Content lives in `rules.plandefinition.directory` (default `knowledge-bases/smart/`). Each subdirectory is a
+Content lives in `rules.plandefinition.directory` (default `smart/` in the knowledge base). Each subdirectory is a
 content set: a FHIR package, or a subset of one.
 
 | Service id | Content set | What it shows |
@@ -312,8 +312,9 @@ reviewed with and needs no terminology server.
 ### Adding CQL content
 1. Create `knowledge-bases/smart/<content set>/` with the FHIR resources as JSON: PlanDefinition, Libraries
    (CQL in `content`, `text/cql`), ValueSets and ActivityDefinitions.
-2. Start once with `--terminology.expansions.refresh=true` to store the ECL expansions, then review them.
-3. Restart. Each PlanDefinition appears in discovery.
+2. Start once, with the knowledge base of the working copy (`--knowledge-base.directory=knowledge-bases`, set by
+   the `local` profile), and `--terminology.expansions.refresh=true` to store the ECL expansions; then review them.
+3. Restart. Each PlanDefinition appears in discovery. Rebuild the jar to ship the content with it.
 
 ## Running the Service
 ### Prerequisites
@@ -335,6 +336,12 @@ java -Xmx1g -jar snomed-fhir-cds-service.jar \
 ```
 Where:
 - `FHIR_TS` is a Terminology Server FHIR API URL.
+
+The knowledge base (`knowledge-bases/`: the medication and diagnostic rule tables and the CQL content) is
+bundled in the jar, so deploying the jar deploys the rules that were built and tested with it. At startup the
+bundled copy is extracted to a temporary directory, removed on shutdown. To run with editable files instead, set
+`--knowledge-base.directory=<directory>` (the `local` profile uses `knowledge-bases` from the working copy, so
+rule edits apply on restart without a rebuild). The individual `rules.*` paths can still be overridden one by one.
 
 A 1 GB heap (`-Xmx1g`) is enough: with all services loaded and under load tests the whole process stayed below
 1.5 GB, so it fits a 2 GB machine or container. Avoid `-Xms` equal to the machine's memory, which leaves no room

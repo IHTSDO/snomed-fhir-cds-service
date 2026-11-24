@@ -90,6 +90,16 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<!-- The rules and FHIR content ship inside the jar: deploying the jar deploys the content. -->
+			<resource>
+				<directory>knowledge-bases</directory>
+				<targetPath>knowledge-bases</targetPath>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
