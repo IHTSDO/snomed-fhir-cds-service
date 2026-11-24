@@ -64,6 +64,37 @@ This spreadsheet uses a simple template format for the user messages where:
 - `{{ActualCondition}}` is the condition from the patient record that triggered the rule
 - `{{ActualMedication}}` is the medication from the medication order that triggered the rule
 
+#### Excessive Dosage Checking
+The `order-select`, `order-sign` and `patient-view` medication services also check the prescribed dose of each
+medication against the WHO Defined Daily Dose (DDD) for its active substance, and raise a "High Dosage" card
+when the prescribed amount is substantially above it. (The `problem-list-item-create` and
+`allergyintolerance-create` services do not run this check.)
+
+For each `MedicationRequest`:
+1. The dosage instruction's dose quantity and frequency/period are converted into a total daily dose.
+2. The medication's SNOMED CT concept is resolved to its manufactured dose form, which is mapped to a WHO ATC
+   route of administration via `ATC_Route_Of_Administration_Snomed_DoseForm_Map.tsv` (columns: `adm_r`,
+   `adm_label`, `snomed_basic_dose_form`, `snomed_administration_method`, `snomed_intended_site`,
+   `manufactured_dose_form_snomed_query` — a SNOMED CT ECL expression resolved against the terminology
+   server — and `priority`, used when more than one row could match).
+3. The resolved route is compared against the dosage's own `route` (text or coding) on the medication order;
+   a mismatch — or a dose unit that cannot be converted to the DDD's unit — produces a "Validation Error" card
+   instead of a dosage comparison, and that medication is excluded from the dosage check. A medication order
+   with no route specified is treated as compatible.
+4. The active substance and strength are looked up in `Snomed_Substance_DDDs.tsv` (columns: `atc_code`,
+   `atc_name`, `snomed_code`, `snomed_label`, `ddd`, `uom`, `adm_r`, `note`), keyed by substance and route of
+   administration. WHO Defined Daily Doses are defined for a standard 70 kg adult; a medication whose substance
+   has no DDD entry for the resolved route is not checked.
+5. Medications that share the same active substance (for example two formulations, or a combination product)
+   are aggregated per route before being compared to the DDD.
+6. The aggregated daily dose is divided by the DDD to give a factor. Below `acceptable-daily-dose-threshold-factor`
+   (default `2`) no card is raised; at or above it the card indicator is `info`; at or above
+   `maximum-daily-dose-threshold-factor` (default `4`) the indicator is `warning`.
+
+The card summary follows `card-summary-template-content` (default *"The amount of %s prescribed is %s times
+the average daily dose."*), the detail lists the contributing medications and a per-route breakdown, and the
+card source links to the WHO ATC/DDD index entry for the substance.
+
 ## Diagnostic Decision Support Demo
 In addition to the medication safety services, the demonstrator includes a **diagnostic** decision-support
 engine. Where the medication rules match a single medication against a single condition, the diagnostic
